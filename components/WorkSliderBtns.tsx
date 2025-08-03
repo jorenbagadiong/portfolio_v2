@@ -13,7 +13,7 @@ const WorkSliderBtns = ({
   containerStyles = "",
   btnStyles = "",
   iconStyles = "",
-}) => {
+}: WorkSliderBtnsProps) => {
   const swiper = useSwiper()
   return (
     <div className={containerStyles}>
