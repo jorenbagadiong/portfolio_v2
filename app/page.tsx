@@ -1,5 +1,3 @@
-import { FiDownload } from "react-icons/fi"
-
 import Social from "@/components/Social"
 import Photo from "@/components/Photo"
 import Status from "@/components/Status"
@@ -13,7 +11,7 @@ const Home = () => {
           <div className="text-center xl:text-left order-2 xl:order-none">
             <span className="text-xl">Frontend Web Developer</span>
             <h1 className="h1 mb-6">
-              Hello I'm <br />{" "}
+              Hi, I'm <br />{" "}
               <span className="text-accent">Joren Bagadiong</span>
             </h1>
             <p className="max-w-[500px] mb-9 text-white/80">
