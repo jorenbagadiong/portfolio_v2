@@ -1,5 +1,12 @@
 import { motion } from "framer-motion"
-const ProgressBar = ({ name, percentage, index }) => {
+
+type ProgressBarProps = {
+  name: string
+  percentage: number
+  index: number
+}
+
+const ProgressBar = ({ name, percentage, index }: ProgressBarProps) => {
   return (
     <div>
       <div className="flex justify-between mb-1">
