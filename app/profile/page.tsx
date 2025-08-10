@@ -155,7 +155,7 @@ const PROFICIENCY = {
     },
     {
       name: "Problem Solving",
-      percentage: 100,
+      percentage: 98,
     },
   ] as ProficiencyItem[],
 }
@@ -164,14 +164,14 @@ const SKILLS = {
   icon: "/assets/profile/globe.svg",
   title: "My Skills",
   skillList: [
-    { icon: <FaHtml5 />, name: "HTML5" },
-    { icon: <FaCss3 />, name: "CSS3" },
-    { icon: <FaJs />, name: "Javascript" },
-    { icon: <SiTypescript />, name: "Typescript" },
     { icon: <FaReact />, name: "React.js" },
     { icon: <SiNextdotjs />, name: "Next.js" },
     { icon: <SiTailwindcss />, name: "Tailwindcss" },
     { icon: <SiMui />, name: "MUI" },
+    { icon: <FaHtml5 />, name: "HTML5" },
+    { icon: <FaCss3 />, name: "CSS3" },
+    { icon: <FaJs />, name: "Javascript" },
+    { icon: <SiTypescript />, name: "Typescript" },
     { icon: <TbBrandFramerMotion />, name: "Framer Motion" },
     { icon: <FaFigma />, name: "Figma" },
   ] as SkillItem[],

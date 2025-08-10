@@ -32,35 +32,51 @@ const PROJECTS: Project[] = [
   {
     num: "01",
     category: "frontend",
-    title: "Project 1",
+    title: "Cryptoweb App",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
-    stack: [{ name: "HTML5" }, { name: "CSS3" }, { name: "Javascript" }],
-    image: "/assets/profile/globe.svg",
-    live: "",
-    github: "",
+      "A personal practice project built with Next.js, Tailwind CSS, and animation libraries, showcasing my learning in modern frontend development and smooth UI interactions.",
+    stack: [{ name: "Next.js" }, { name: "Tailwindcss" }],
+    image: "/assets/profile/projects/cryptowebapp.svg",
+    live: "https://cryptowebapp-six.vercel.app/",
+    github: "https://github.com/jorenbagadiong/cryptowebapp",
   },
   {
     num: "02",
     category: "frontend",
-    title: "Project 2",
+    title: "Pet grooming",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
-    stack: [{ name: "HTML5" }, { name: "CSS3" }, { name: "Javascript" }],
-    image: "/assets/profile/globe.svg",
-    live: "",
-    github: "",
+      "A personal practice project — a pet grooming landing page — built with Next.js and Tailwind CSS while exploring modern frontend development techniques.",
+    stack: [{ name: "Next.js" }, { name: "Tailwindcss" }],
+    image: "/assets/profile/projects/petgrooming.svg",
+    live: "https://jorenbagadiong.github.io/petgrooming",
+    github: "https://github.com/jorenbagadiong/petgrooming",
   },
   {
     num: "03",
     category: "frontend",
-    title: "Project 3",
+    title: "CryptoList",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
-    stack: [{ name: "HTML5" }, { name: "CSS3" }, { name: "Javascript" }],
-    image: "/assets/profile/globe.svg",
-    live: "",
-    github: "",
+      "A personal practice project — CryptoList, a web app displaying a list of cryptocurrency tokens — built while learning React and API data fetching.",
+    stack: [{ name: "React.js" }, { name: "Axios" }],
+    image: "/assets/profile/projects/cryptolist.svg",
+    live: "https://jorenbagadiong.github.io/CryptoList/",
+    github: "https://github.com/jorenbagadiong/CryptoList",
+  },
+  {
+    num: "04",
+    category: "frontend",
+    title: "Portfolio v1",
+    description:
+      "My first portfolio website, built with Next.js, Tailwind CSS, and EmailJS for contact form integration.",
+    stack: [
+      { name: "Next.js" },
+      { name: "Tailwindcss" },
+      { name: "Axios" },
+      { name: "Emailjs" },
+    ],
+    image: "/assets/profile/projects/portfoliov1.svg",
+    live: "https://portfolio-jorenbagadiong.vercel.app//",
+    github: "https://github.com/jorenbagadiong/portfolio",
   },
 ]
 
@@ -88,7 +104,7 @@ const Work = () => {
                 {project.num}
               </div>
               <h2 className="text-[42px] font-bold leading-none text-white group-hover:text-accent transition-all duration-500 capitalize">
-                {project.category} project
+                {project.title}
               </h2>
               <p className="text-white/60">{project.description}</p>
               <ul className="flex gap-4">
@@ -103,7 +119,11 @@ const Work = () => {
               </ul>
               <div className="border border-white/20"></div>
               <div className="flex items-center gap-4">
-                <Link href={project.live}>
+                <Link
+                  href={project.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <TooltipProvider delayDuration={100}>
                     <Tooltip>
                       <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
@@ -115,7 +135,11 @@ const Work = () => {
                     </Tooltip>
                   </TooltipProvider>
                 </Link>
-                <Link href={project.github}>
+                <Link
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <TooltipProvider delayDuration={100}>
                     <Tooltip>
                       <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
@@ -146,7 +170,7 @@ const Work = () => {
                         <Image
                           src={project.image}
                           fill
-                          className="object-cover"
+                          className="object-fit"
                           alt=""
                         />
                       </div>
