@@ -1,20 +1,14 @@
 "use client"
 
+import { useRef, useState, FormEvent } from "react"
 import { motion } from "framer-motion"
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa"
+import { Loader2 } from "lucide-react"
+import emailjs from "@emailjs/browser"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 const INFO = [
   {
@@ -30,11 +24,43 @@ const INFO = [
   {
     icon: <FaMapMarkerAlt />,
     title: "Address",
-    description: "Micara Estates, Sahud-ulan, Tanza, Cavite",
+    description: "Micara Estates, Sahud-Ulan, Tanza, Cavite",
   },
 ]
 
 const Contact = () => {
+  const form = useRef<HTMLFormElement | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState<string | null>(null)
+
+  const sendEmail = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!form.current) return
+
+    setLoading(true)
+    setStatus(null)
+
+    emailjs
+      .sendForm(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        form.current,
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      )
+      .then(
+        () => {
+          setStatus("success")
+          setLoading(false)
+          form.current?.reset()
+        },
+        (error) => {
+          console.error("EmailJS error:", error)
+          setStatus("error")
+          setLoading(false)
+        }
+      )
+  }
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -66,7 +92,11 @@ const Contact = () => {
             </ul>
           </div>
           <div className="xl:w-[54%] order-2 xl:order-none">
-            <form className="flex flex-col gap-6 p-6 bg-[#27272c] rounded-xl ">
+            <form
+              ref={form}
+              onSubmit={sendEmail}
+              className="flex flex-col gap-6 p-6 bg-[#27272c] rounded-xl0"
+            >
               <h3 className="text-4xl text-accent">Let's work together</h3>
               <p className="text-white/60">
                 I’m a frontend web developer specializing in Next.js, Tailwind
@@ -75,29 +105,33 @@ const Contact = () => {
                 fast, reliable, and user-friendly web applications that work
                 seamlessly across devices.
               </p>
-              <Input type="fullname" placeholder="Full Name" />
-              <Input type="email" placeholder="Email" />
-              <Input type="subject" placeholder="Subject" />
-              <Select name="employment">
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Employment Type"></SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Employment Type</SelectLabel>
-                    <SelectItem value="fulltime">Full Time</SelectItem>
-                    <SelectItem value="parttime">Part Time</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <Input name="fullname" type="text" placeholder="Full Name" />
+              <Input name="email" type="email" placeholder="Email" />
+              <Input name="subject" type="text" placeholder="Subject" />
               <Textarea
+                name="message"
                 className="h-[200px]"
                 placeholder="Type your message here."
               />
               <div className="flex flex-col-reverse items-end">
-                <Button size="md" className="max-w-[300px]">
-                  Send message
-                </Button>
+                {status === "success" ? (
+                  <p className="text-green-500 font-medium">
+                    ✅ Thanks! Your message has been sent.
+                  </p>
+                ) : (
+                  <Button
+                    type="submit"
+                    size="md"
+                    className="max-w-[300px]"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      "Send message"
+                    )}
+                  </Button>
+                )}
               </div>
             </form>
           </div>
