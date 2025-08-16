@@ -164,7 +164,7 @@ const Work = () => {
               {PROJECTS.map((_, index) => {
                 return (
                   <SwiperSlide key={index} className="w-full">
-                    <div className="h-[250px] xl:h-full relative group flex justify-center items-center">
+                    <div className="h-[350px] xl:h-full relative group flex justify-center items-center">
                       <div className="absolute top-0 bottom-0 w-full h-full z-10"></div>
                       <div className="relative w-full h-full">
                         <Image

@@ -4,17 +4,7 @@ import { useEffect, useState } from "react"
 import { useSwiper } from "swiper/react"
 import { PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi"
 
-type WorkSliderBtnsProps = {
-  containerStyles?: string
-  btnStyles?: string
-  iconStyles?: string
-}
-
-const WorkSliderBtns = ({
-  containerStyles = "",
-  btnStyles = "",
-  iconStyles = "",
-}: WorkSliderBtnsProps) => {
+const WorkSliderBtns = () => {
   const swiper = useSwiper()
   const [activeIndex, setActiveIndex] = useState(0)
   const [total, setTotal] = useState(0)
@@ -40,23 +30,23 @@ const WorkSliderBtns = ({
   }, [swiper])
 
   return (
-    <div className="absolute right-0 bottom-[calc(50%_-_22px)] xl:bottom-0 z-20 flex justify-end w-full">
+    <div className="absolute bottom-4 right-4 flex gap-2 z-10">
       <div className="flex gap-2">
-        {/* Prev button (invisible if first) */}
+        {/* Prev button (disabled on first) */}
         <button
-          className={`bg-accent hover:bg-accent-hover text-primary text-[22px] w-[44px] h-[44px] flex justify-center items-center transition-all ${
-            activeIndex === 0 ? "invisible" : ""
-          }`}
+          disabled={activeIndex === 0}
+          className="bg-accent hover:bg-accent-hover text-primary text-[22px] w-[30px] h-[30px] flex justify-center items-center transition-all 
+                     disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={() => swiper.slidePrev()}
         >
           <PiCaretLeftBold className="text-xl" />
         </button>
 
-        {/* Next button (invisible if last) */}
+        {/* Next button (disabled on last) */}
         <button
-          className={`bg-accent hover:bg-accent-hover text-primary text-[22px] w-[44px] h-[44px] flex justify-center items-center transition-all ${
-            activeIndex === total - 1 ? "invisible" : ""
-          }`}
+          disabled={activeIndex === total - 1}
+          className="bg-accent hover:bg-accent-hover text-primary text-[22px] w-[30px] h-[30px] flex justify-center items-center transition-all 
+                     disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={() => swiper.slideNext()}
         >
           <PiCaretRightBold className="text-xl" />
