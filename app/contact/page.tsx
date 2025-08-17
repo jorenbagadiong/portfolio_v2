@@ -1,12 +1,23 @@
 "use client"
 
-import { useRef, useState, FormEvent } from "react"
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa"
 import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
 import emailjs from "@emailjs/browser"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -28,37 +39,55 @@ const INFO = [
   },
 ]
 
+const ContactFormSchema = z.object({
+  fullname: z.string().nonempty("Full Name is required"),
+  email: z
+    .string()
+    .nonempty("Email is required")
+    .email("Invalid email address"),
+  subject: z.string().optional(),
+  message: z.string().nonempty("Message is required"),
+})
+
+type ContactFormValues = z.infer<typeof ContactFormSchema>
+
 const Contact = () => {
-  const form = useRef<HTMLFormElement | null>(null)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<string | null>(null)
 
-  const sendEmail = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!form.current) return
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(ContactFormSchema),
+    defaultValues: {
+      fullname: "",
+      email: "",
+      subject: "",
+      message: "",
+    },
+  })
 
+  const sendEmail = async (values: ContactFormValues) => {
     setLoading(true)
     setStatus(null)
+    toast("Sending message...", { description: "Please wait..." })
 
-    emailjs
-      .sendForm(
+    try {
+      await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        form.current,
+        values,
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       )
-      .then(
-        () => {
-          setStatus("success")
-          setLoading(false)
-          form.current?.reset()
-        },
-        (error) => {
-          console.error("EmailJS error:", error)
-          setStatus("error")
-          setLoading(false)
-        }
-      )
+
+      setStatus("success")
+      toast.success("✅ Your message has been sent!")
+      form.reset()
+    } catch (error) {
+      console.error("EmailJS error:", error)
+      setStatus("error")
+      toast.error("❌ Something went wrong. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -91,49 +120,98 @@ const Contact = () => {
               })}
             </ul>
           </div>
-          <div className="xl:w-[54%] order-2 xl:order-none">
-            <form
-              ref={form}
-              onSubmit={sendEmail}
-              className="flex flex-col gap-6 p-6 bg-[#27272c] rounded-xl0"
-            >
-              <h3 className="text-4xl text-accent">Let's work together</h3>
-              <p className="text-white/60">
-                I’m a frontend web developer specializing in Next.js, Tailwind
-                CSS, and modern JavaScript. I build responsive, high-performance
-                websites with clean, maintainable code. My goal is to deliver
-                fast, reliable, and user-friendly web applications that work
-                seamlessly across devices.
-              </p>
-              <Input name="fullname" type="text" placeholder="Full Name" />
-              <Input name="email" type="email" placeholder="Email" />
-              <Input name="subject" type="text" placeholder="Subject" />
-              <Textarea
-                name="message"
-                className="h-[200px]"
-                placeholder="Type your message here."
-              />
-              <div className="flex flex-col-reverse items-end">
-                {status === "success" ? (
-                  <p className="text-green-500 font-medium">
-                    ✅ Thanks! Your message has been sent.
-                  </p>
-                ) : (
-                  <Button
-                    type="submit"
-                    size="md"
-                    className="max-w-[300px]"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      "Send message"
-                    )}
-                  </Button>
-                )}
-              </div>
-            </form>
+          <div className="w-full xl:w-[54%] order-2 xl:order-none">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(sendEmail)}
+                className="flex flex-col gap-6 p-6 bg-[#27272c] rounded-xl0 w-full"
+                noValidate
+              >
+                <h3 className="text-4xl text-accent">Let's work together</h3>
+                <p className="text-white/60 w-full">
+                  I’m a frontend web developer specializing in Next.js, Tailwind
+                  CSS, and modern JavaScript. I build responsive,
+                  high-performance websites with clean, maintainable code. My
+                  goal is to deliver fast, reliable, and user-friendly web
+                  applications that work seamlessly across devices.
+                </p>
+                <FormField
+                  control={form.control}
+                  name="fullname"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} placeholder="Full Name" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} type="email" placeholder="Email" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="subject"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} placeholder="Subject" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          placeholder="Type your message here."
+                          className="h-[200px]"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex flex-col-reverse items-end">
+                  {status === "success" ? (
+                    <p className="text-green-500 font-medium">
+                      ✅ Thanks! Your message has been sent.
+                    </p>
+                  ) : (
+                    <Button
+                      type="submit"
+                      size="md"
+                      className="max-w-[300px]"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        "Send message"
+                      )}
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
       </div>

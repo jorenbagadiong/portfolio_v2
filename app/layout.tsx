@@ -1,10 +1,12 @@
 import type { Metadata } from "next"
 import { JetBrains_Mono } from "next/font/google"
-import "./globals.css"
+import { Toaster } from "sonner"
 
 import Header from "@/components/Header"
 import PageTransition from "@/components/PageTransition"
 import StairTransition from "@/components/StairTransition"
+
+import "./globals.css"
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetsbrainMono",
@@ -41,6 +43,7 @@ export default function RootLayout({
         <Header />
         <StairTransition />
         <PageTransition>{children}</PageTransition>
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   )
