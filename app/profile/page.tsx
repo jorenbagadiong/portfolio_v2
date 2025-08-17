@@ -205,10 +205,10 @@ const Profile = () => {
         >
           <TabsList className="flex flex-col w-full max-w-[380px] mx-auto xl:mx-0 gap-6">
             <TabsTrigger value="experience">Experience</TabsTrigger>
-            <TabsTrigger value="education">Education</TabsTrigger>
             <TabsTrigger value="certification">Certification</TabsTrigger>
-            <TabsTrigger value="proficiency">Proficiency</TabsTrigger>
             <TabsTrigger value="skills">Skills</TabsTrigger>
+            <TabsTrigger value="proficiency">Proficiency</TabsTrigger>
+            <TabsTrigger value="education">Education</TabsTrigger>
           </TabsList>
 
           <div className="min-h-[70vh] w-full">
@@ -254,6 +254,34 @@ const Profile = () => {
               </div>
             </TabsContent>
 
+            <TabsContent value="certification" className="w-full">
+              <div className="flex flex-col gap-[30px] text-center xl:text-left">
+                <h3 className="text-4xl font-bold">{CERTIFICATION.title}</h3>
+
+                <ul className="grid grid-cols-1 gap-[30px]">
+                  {CERTIFICATION.items.map((item, index) => {
+                    return (
+                      <li
+                        key={index}
+                        className="bg-[#232329] py-6 px-10 rounded-xl flex flex-col justify-center items-start gap-1"
+                      >
+                        <span className="text-accent">{item.duration}</span>
+                        <h3 className="text-xl min-h-[60px] text-left">
+                          {item.degree}
+                        </h3>
+                        <div className="flex items-start gap-5">
+                          <span className="w-[10px] h-[10px] rounded-full bg-accent mt-3" />
+                          <p className="text-white/60 text-left">
+                            {item.college}
+                          </p>
+                        </div>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            </TabsContent>
+
             <TabsContent value="education" className="w-full">
               <div className="flex flex-col gap-[30px] text-center xl:text-left">
                 <h3 className="text-4xl font-bold">{EDUCATION.title}</h3>
@@ -280,34 +308,6 @@ const Profile = () => {
                     })}
                   </ul>
                 </ScrollArea>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="certification" className="w-full">
-              <div className="flex flex-col gap-[30px] text-center xl:text-left">
-                <h3 className="text-4xl font-bold">{CERTIFICATION.title}</h3>
-
-                <ul className="grid grid-cols-1 gap-[30px]">
-                  {CERTIFICATION.items.map((item, index) => {
-                    return (
-                      <li
-                        key={index}
-                        className="bg-[#232329] py-6 px-10 rounded-xl flex flex-col justify-center items-start gap-1"
-                      >
-                        <span className="text-accent">{item.duration}</span>
-                        <h3 className="text-xl min-h-[60px] text-left">
-                          {item.degree}
-                        </h3>
-                        <div className="flex items-start gap-5">
-                          <span className="w-[10px] h-[10px] rounded-full bg-accent mt-3" />
-                          <p className="text-white/60 text-left">
-                            {item.college}
-                          </p>
-                        </div>
-                      </li>
-                    )
-                  })}
-                </ul>
               </div>
             </TabsContent>
 
