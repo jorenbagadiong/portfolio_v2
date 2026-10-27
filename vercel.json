@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/motionlab",
-      "destination": "https://motionlab-six.vercel.app/"
-    }
-  ]
-}
