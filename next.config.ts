@@ -4,12 +4,12 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "motionlab",
-        destination: "https://motionlab-six.vercel.app/",
+        source: "/motionlab",
+        destination: "https://motionlab-six.vercel.app/motionlab",
       },
       {
         source: "/motionlab/:path*",
-        destination: "https://motionlab-six.vercel.app/:path*",
+        destination: "https://motionlab-six.vercel.app/motionlab/:path*",
       },
     ]
   },
