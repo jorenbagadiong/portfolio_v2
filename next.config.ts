@@ -11,6 +11,14 @@ const nextConfig: NextConfig = {
         source: "/motionlab/:path*",
         destination: "https://motionlab-six.vercel.app/motionlab/:path*",
       },
+      {
+        source: "/pokelab",
+        destination: "https://pokelab-steel.vercel.app/pokelab",
+      },
+      {
+        source: "/pokelab/:path*",
+        destination: "https://pokelab-steel.vercel.app/pokelab/:path*",
+      },
     ]
   },
 }
