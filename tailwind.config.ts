@@ -32,6 +32,7 @@ module.exports = {
           DEFAULT: "rgb(var(--accent) / <alpha-value>)",
           hover: "rgb(var(--accent-hover) / <alpha-value>)",
         },
+        "on-accent": "rgb(var(--on-accent) / <alpha-value>)",
         particle: "rgb(var(--particle) / <alpha-value>)",
         destructive: "red",
       },

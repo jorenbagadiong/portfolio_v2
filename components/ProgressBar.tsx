@@ -16,7 +16,7 @@ const ProgressBar = ({ name, percentage, index }: ProgressBarProps) => {
         </span>
       </div>
 
-      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+      <div className="w-full bg-surface rounded-full h-3 overflow-hidden">
         <motion.div
           className="h-full bg-accent"
           initial={{ width: 0 }}

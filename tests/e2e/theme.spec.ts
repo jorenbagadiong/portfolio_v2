@@ -32,3 +32,32 @@ test.describe("system dark", () => {
     await expect(page.locator("html")).toHaveClass(/dark/)
   })
 })
+
+const readColors = (page: import("@playwright/test").Page) =>
+  page.evaluate(() => ({
+    bg: getComputedStyle(document.body).backgroundColor,
+    accent: getComputedStyle(
+      document.querySelector("header span.text-accent") as Element
+    ).color,
+    particle: getComputedStyle(document.documentElement)
+      .getPropertyValue("--particle")
+      .trim(),
+  }))
+
+test.describe("computed colors", () => {
+  test.use({ colorScheme: "dark" })
+  test("tokens resolve to real colors in each theme", async ({ page }) => {
+    await page.goto("/")
+    const dark = await readColors(page)
+    expect(dark.bg).toBe("rgb(28, 28, 34)")
+    expect(dark.accent).toBe("rgb(0, 255, 153)")
+    expect(dark.particle).toBe("0 255 153")
+
+    await page.emulateMedia({ colorScheme: "light" })
+    await page.reload()
+    const light = await readColors(page)
+    expect(light.bg).toBe("rgb(245, 247, 246)")
+    expect(light.accent).toBe("rgb(0, 168, 107)")
+    expect(light.accent).not.toBe(dark.accent)
+  })
+})
