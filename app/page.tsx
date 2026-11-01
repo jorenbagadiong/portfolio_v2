@@ -17,7 +17,7 @@ const Home = () => {
                 5+ years
               </span>
             </div>
-            <h1 className="text-[28px] min-[400px]:text-[34px] sm:text-[48px] xl:text-[60px] leading-[1.1] font-semibold mb-6">
+            <h1 className="text-[28px] min-[400px]:text-[30px] sm:text-[48px] xl:text-[60px] leading-[1.1] font-semibold mb-6">
               Hello, I&apos;m <br />
               <AnimatedName
                 text="Joren D. Bagadiong"
