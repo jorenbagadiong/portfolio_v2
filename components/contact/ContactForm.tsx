@@ -1,16 +1,17 @@
 "use client"
 
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import emailjs from "@emailjs/browser"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Toaster, toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormField,
   FormItem,
+  FormLabel,
   FormControl,
   FormMessage,
 } from "@/components/ui/form"
@@ -18,6 +19,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { getEmailJsConfig } from "@/lib/emailjs-config"
 import { particles } from "@/lib/particle-store"
+
+const EMAIL = "joren.bagadiong14@gmail.com"
 
 const ContactFormSchema = z.object({
   fullname: z.string().nonempty("Full Name is required"),
@@ -31,17 +34,26 @@ const ContactFormSchema = z.object({
 
 type ContactFormValues = z.infer<typeof ContactFormSchema>
 
+type Status = { kind: "success" | "error"; text: string } | null
+
+const labelClass = "ml-1 text-sm text-muted"
+
 export function ContactForm() {
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(ContactFormSchema),
     defaultValues: { fullname: "", email: "", subject: "", message: "" },
   })
+  const [status, setStatus] = useState<Status>(null)
 
   const sendEmail = async (values: ContactFormValues) => {
+    setStatus(null)
     const config = getEmailJsConfig()
     if (!config.ok) {
       console.error("Missing EmailJS env vars:", config.missing)
-      toast.error("Contact form is not configured")
+      setStatus({
+        kind: "error",
+        text: `The contact form isn't available right now. Please email me at ${EMAIL}.`,
+      })
       return
     }
     try {
@@ -51,88 +63,101 @@ export function ContactForm() {
         values,
         config.publicKey
       )
-      toast.success("Your message has been sent!")
+      setStatus({
+        kind: "success",
+        text: "Your message has been sent! I'll get back to you soon.",
+      })
       form.reset()
       particles.pulse("burst")
     } catch (error) {
       console.error("EmailJS error:", error)
-      toast.error("Something went wrong. Please try again.")
+      setStatus({
+        kind: "error",
+        text: `Something went wrong. Please try again, or email me at ${EMAIL}.`,
+      })
     }
   }
 
   const { isSubmitting } = form.formState
 
   return (
-    <>
-      <Toaster position="top-right" richColors />
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(sendEmail)}
-          className="flex w-full flex-col gap-5 rounded-2xl border border-border bg-surface p-6 backdrop-blur-md md:p-8"
-          noValidate
-        >
-          <FormField
-            control={form.control}
-            name="fullname"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} placeholder="Full Name" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} type="email" placeholder="Email" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="subject"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} placeholder="Subject" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    placeholder="Type your message here."
-                    className="h-[180px]"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(sendEmail)}
+        className="flex w-full flex-col gap-5 rounded-2xl border border-border bg-surface p-6 backdrop-blur-md md:p-8"
+        noValidate
+      >
+        <FormField
+          control={form.control}
+          name="fullname"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={labelClass}>Full name</FormLabel>
+              <FormControl>
+                <Input {...field} type="text" autoComplete="name" required />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={labelClass}>Email</FormLabel>
+              <FormControl>
+                <Input {...field} type="email" autoComplete="email" required />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="subject"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={labelClass}>Subject (optional)</FormLabel>
+              <FormControl>
+                <Input {...field} type="text" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className={labelClass}>Message</FormLabel>
+              <FormControl>
+                <Textarea {...field} required className="h-[180px]" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex flex-col-reverse items-end gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p
+            role="status"
+            className={`text-sm font-medium ${
+              status?.kind === "error" ? "text-destructive" : "text-accent-text"
+            }`}
+          >
+            {status?.text}
+          </p>
           <Button
             type="submit"
             size="md"
-            className="self-end"
+            className="shrink-0"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Sending…" : "Send message"}
           </Button>
-        </form>
-      </Form>
-    </>
+        </div>
+      </form>
+    </Form>
   )
 }

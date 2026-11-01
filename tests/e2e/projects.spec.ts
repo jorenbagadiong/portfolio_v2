@@ -4,35 +4,46 @@ import { expect, test } from "./fixtures"
 const card = (page: Page, name: string) =>
   page.getByRole("link", { name: new RegExp(name, "i") })
 
-test("grid lists all six projects", async ({ page }) => {
+test("main projects, then earlier work", async ({ page }) => {
   await page.goto("/projects")
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1)
+  for (const name of ["MotionLab", "PokeLab"])
+    await expect(
+      page.getByRole("heading", { level: 2, name, exact: true })
+    ).toBeVisible()
+  const earlier = page.getByRole("region", { name: "Earlier work" })
   for (const name of [
-    "MotionLab",
-    "PokeLab",
-    "Cryptoweb App",
-    "Pet grooming",
+    "CryptoWeb App",
+    "Pet Grooming",
     "CryptoList",
     "Portfolio v1",
   ])
-    await expect(page.getByRole("heading", { name })).toBeVisible()
+    await expect(
+      earlier.getByRole("heading", { level: 3, name, exact: true })
+    ).toBeAttached()
+  await expect(page.getByText(/\[|tdh/i)).toHaveCount(0)
+})
+
+test("draft case study is not published", async ({ page }) => {
+  const res = await page.goto("/projects/tdh-payments")
+  expect(res?.status()).toBe(404)
 })
 
 test("card opens overlay; Esc closes and returns focus", async ({ page }) => {
   await page.goto("/projects")
-  const link = card(page, "Cryptoweb App")
+  const link = card(page, "CryptoWeb App")
   await link.click()
   await expect(page).toHaveURL(/\/projects\/cryptoweb-app$/)
   await expect(page.getByRole("dialog")).toBeVisible()
   await page.keyboard.press("Escape")
   await expect(page).toHaveURL(/\/projects$/)
   await expect(page.getByRole("dialog")).toHaveCount(0)
-  await expect(card(page, "Cryptoweb App")).toBeFocused()
+  await expect(card(page, "CryptoWeb App")).toBeFocused()
 })
 
 test("back closes, forward reopens", async ({ page }) => {
   await page.goto("/projects")
-  await card(page, "Cryptoweb App").click()
+  await card(page, "CryptoWeb App").click()
   await expect(page.getByRole("dialog")).toBeVisible()
   await page.goBack()
   await expect(page.getByRole("dialog")).toHaveCount(0)
@@ -61,7 +72,7 @@ const wipeSeen = (page: Page) =>
 test("no stair wipe opening or closing the overlay", async ({ page }) => {
   await page.goto("/projects")
   await watchWipe(page)
-  await card(page, "Cryptoweb App").click()
+  await card(page, "CryptoWeb App").click()
   await expect(page.getByRole("dialog")).toBeVisible()
   await page.keyboard.press("Escape")
   await expect(page.getByRole("dialog")).toHaveCount(0)

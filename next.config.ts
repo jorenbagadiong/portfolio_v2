@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/work", destination: "/projects", permanent: true },
       { source: "/work/:path*", destination: "/projects", permanent: true },
+      { source: "/profile", destination: "/about", permanent: true },
     ]
   },
   async rewrites() {

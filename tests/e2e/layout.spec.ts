@@ -6,7 +6,7 @@ test.describe("320px layout", () => {
   test("no horizontal scroll at 320px", async ({ page }) => {
     for (const path of [
       "/",
-      "/profile",
+      "/about",
       "/projects",
       "/projects/cryptoweb-app",
       "/contact",
@@ -25,7 +25,7 @@ test.describe("320px layout", () => {
     await page.goto("/")
     const logo = page
       .locator("header")
-      .getByRole("link", { name: /joren/i })
+      .getByRole("link", { name: "Home", exact: true })
       .first()
     const menu = page.getByRole("button", { name: /open menu/i })
     const toggle = page.getByRole("button", {

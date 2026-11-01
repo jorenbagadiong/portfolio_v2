@@ -36,7 +36,7 @@ function Entry({ item }: { item: TimelineItem }) {
                 aria-expanded={open}
                 aria-controls={panelId}
                 onClick={() => setOpen((o) => !o)}
-                className="self-start text-sm text-accent-text underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                className="self-start text-sm text-accent-text underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-text rounded"
               >
                 {open ? "Hide responsibilities" : "Show responsibilities"}
               </button>

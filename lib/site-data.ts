@@ -1,10 +1,6 @@
 import type { IconType } from "react-icons"
-import { FaHtml5, FaCss3, FaJs, FaReact, FaFigma } from "react-icons/fa"
-import { SiTailwindcss, SiNextdotjs, SiTypescript, SiMui } from "react-icons/si"
-import { TbBrandFramerMotion } from "react-icons/tb"
 import {
-  FaFacebookF,
-  FaFacebookMessenger,
+  FaGithub,
   FaLinkedinIn,
   FaTelegramPlane,
   FaPhoneAlt,
@@ -12,122 +8,228 @@ import {
   FaMapMarkerAlt,
 } from "react-icons/fa"
 
+// Text in [square brackets] is a placeholder still to be filled in.
+
 export type NavLink = { name: string; path: string }
 
 export const navLinks: NavLink[] = [
   { name: "home", path: "/" },
-  { name: "profile", path: "/profile" },
+  { name: "about", path: "/about" },
   { name: "projects", path: "/projects" },
   { name: "contact", path: "/contact" },
 ]
 
-export const intro =
-  "Frontend Web Developer building scalable web applications using React, Next.js, Tailwind, and MUI. Skilled in creating responsive UIs, optimizing user experience, and ensuring quality with Jest and Cypress testing."
+export const headline = "Frontend Developer | React & Next.js"
+
+export const intro = [
+  "I'm a Frontend Developer with 5+ years of experience building responsive, maintainable, and production-ready web applications using React, Next.js, and TypeScript.",
+  "I specialize in turning complex business requirements into intuitive interfaces, integrating REST APIs, and building reusable components that make applications easier to maintain and scale.",
+]
 
 export type Project = {
   slug: string
   num: string
-  category: string
   title: string
+  /** One line, shown on cards. */
+  pitch: string
   description: string
   stack: { name: string }[]
-  image: string
-  live: string
-  github: string
+  image?: string
+  imageAlt?: string
+  live?: string
+  github?: string
+  tier: "main" | "earlier"
+  /** Drafts are left out of listings and only render outside production. */
+  draft?: boolean
+  problem: string
+  role: string
+  outcome: string
+  highlights?: string[]
 }
 
-export const projects: Project[] = [
+const allProjects: Project[] = [
   {
     slug: "motionlab",
     num: "01",
-    category: "frontend",
     title: "MotionLab",
+    pitch:
+      "Animated React component library: 24 accessible components with live playgrounds, copy-ready Motion/Anime.js code, keyboard and reduced-motion support.",
     description:
       "An animated React component library: 24 accessible components, each with a live playground for tuning the animation and copy-ready code for Motion or Anime.js. Supports keyboard use and reduced motion, and has light and dark themes.",
     stack: [
       { name: "Next.js" },
       { name: "TypeScript" },
-      { name: "Tailwindcss" },
+      { name: "Tailwind CSS" },
       { name: "Motion" },
       { name: "Anime.js" },
       { name: "Zod" },
     ],
     image: "/assets/profile/projects/motionlab.png",
+    imageAlt:
+      "MotionLab home page: the headline “Animated components you can actually ship” beside a live text-highlight demo in a carousel.",
     live: "https://www.jorenbagadiong.dev/motionlab",
     github: "https://github.com/jorenbagadiong/motionlab",
+    tier: "main",
+    problem:
+      "I learn best by building real projects, so I set out to make a complete component library: accessible, animated, and documented with live playgrounds.",
+    role: "Personal project, built on my own.",
+    outcome:
+      "Shipped 24 accessible, animated components, each with a live playground and copy-ready code for Motion or Anime.js, in light and dark themes.",
   },
   {
     slug: "pokelab",
     num: "02",
-    category: "frontend",
     title: "PokeLab",
+    pitch:
+      "Interactive Pokédex for all 1,025 Pokémon: search, stat comparison, evolution chains, favorites, and a 3D WebGL showcase.",
     description:
       "An interactive Pokédex covering all 1,025 Pokémon, powered by PokéAPI. Search by name or number, compare base stats, trace evolution chains, browse by type, save favorites, and view Pokémon in a 3D WebGL showcase.",
     stack: [
       { name: "Next.js" },
       { name: "TypeScript" },
-      { name: "Tailwindcss" },
+      { name: "Tailwind CSS" },
       { name: "Three.js" },
       { name: "Anime.js" },
     ],
     image: "/assets/profile/projects/pokelab.png",
+    imageAlt:
+      "PokeLab home page in dark mode: a Pokédex search bar beside a large Pikachu artwork, with quick links to Charizard, Gengar, and Pikachu.",
     live: "https://www.jorenbagadiong.dev/pokelab",
     github: "https://github.com/jorenbagadiong/pokelab",
+    tier: "main",
+    problem:
+      "I learn best by building real projects, so I built a full app on a large public API to practice search, data-heavy UI, and 3D rendering.",
+    role: "Personal project, built on my own.",
+    outcome:
+      "Covers all 1,025 Pokémon with live PokéAPI data: search by name or number, stat comparison, evolution chains, type browsing, favorites, and a 3D WebGL showcase.",
   },
   {
     slug: "cryptoweb-app",
     num: "03",
-    category: "frontend",
-    title: "Cryptoweb App",
+    title: "CryptoWeb App",
+    pitch:
+      "Landing page for a crypto investment platform, built to practice layout and UI animation.",
     description:
       "A personal practice project built with Next.js, Tailwind CSS, and animation libraries, showcasing my learning in modern frontend development and smooth UI interactions.",
-    stack: [{ name: "Next.js" }, { name: "Tailwindcss" }],
+    stack: [{ name: "Next.js" }, { name: "Tailwind CSS" }],
     image: "/assets/profile/projects/cryptowebapp.svg",
+    imageAlt:
+      "CryptoWeb App landing page: a dark hero reading “Fastest & secure platform to invest in crypto” next to an isometric coin illustration.",
     live: "https://cryptowebapp-six.vercel.app/",
     github: "https://github.com/jorenbagadiong/cryptowebapp",
+    tier: "earlier",
+    problem:
+      "Practice building a polished, animated marketing page with Next.js and Tailwind CSS.",
+    role: "Personal practice project, built on my own.",
+    outcome:
+      "A responsive landing page with smooth UI interactions, deployed on Vercel.",
   },
   {
     slug: "pet-grooming",
     num: "04",
-    category: "frontend",
-    title: "Pet grooming",
+    title: "Pet Grooming",
+    pitch: "Landing page for a pet grooming business with a hero carousel.",
     description:
       "A personal practice project — a pet grooming landing page — built with Next.js and Tailwind CSS while exploring modern frontend development techniques.",
-    stack: [{ name: "Next.js" }, { name: "Tailwindcss" }],
+    stack: [{ name: "Next.js" }, { name: "Tailwind CSS" }],
     image: "/assets/profile/projects/petgrooming.svg",
+    imageAlt:
+      "Pet Grooming landing page: the headline “We take care of your pet.” beside a photo of a small long-haired dog.",
     live: "https://jorenbagadiong.github.io/petgrooming",
     github: "https://github.com/jorenbagadiong/petgrooming",
+    tier: "earlier",
+    problem:
+      "Practice turning a landing-page design into a responsive site with Next.js and Tailwind CSS.",
+    role: "Personal practice project, built on my own.",
+    outcome: "A responsive landing page deployed on GitHub Pages.",
   },
   {
     slug: "cryptolist",
     num: "05",
-    category: "frontend",
     title: "CryptoList",
+    pitch: "Live cryptocurrency price table built while learning React.",
     description:
       "A personal practice project — CryptoList, a web app displaying a list of cryptocurrency tokens — built while learning React and API data fetching.",
-    stack: [{ name: "React.js" }, { name: "Axios" }],
+    stack: [{ name: "React" }, { name: "Axios" }],
     image: "/assets/profile/projects/cryptolist.svg",
+    imageAlt:
+      "CryptoList “Coin Search” table listing coins such as BTC, ETH, and XRP with price, 24-hour change, volume, and market cap.",
     live: "https://jorenbagadiong.github.io/CryptoList/",
     github: "https://github.com/jorenbagadiong/CryptoList",
+    tier: "earlier",
+    problem: "Learn React and fetching live data from an API.",
+    role: "Personal practice project, built on my own.",
+    outcome:
+      "A table of cryptocurrency tokens with price, 24-hour change, volume, and market cap, fetched with Axios.",
   },
   {
     slug: "portfolio-v1",
     num: "06",
-    category: "frontend",
     title: "Portfolio v1",
+    pitch:
+      "My first portfolio website, with a contact form powered by EmailJS.",
     description:
       "My first portfolio website, built with Next.js, Tailwind CSS, and EmailJS for contact form integration.",
     stack: [
       { name: "Next.js" },
-      { name: "Tailwindcss" },
+      { name: "Tailwind CSS" },
       { name: "Axios" },
-      { name: "Emailjs" },
+      { name: "EmailJS" },
     ],
     image: "/assets/profile/projects/portfoliov1.svg",
+    imageAlt:
+      "Portfolio v1 home page: “Hi, I’m Joren, Frontend Developer” with Download CV and Contact Me buttons beside an illustration of a developer on a laptop.",
     live: "https://portfolio-jorenbagadiong.vercel.app/",
     github: "https://github.com/jorenbagadiong/portfolio",
+    tier: "earlier",
+    problem: "Put my work and contact details online in one place.",
+    role: "Personal project, built on my own.",
+    outcome:
+      "A deployed portfolio with a working contact form, later replaced by this site.",
+  },
+  {
+    slug: "tdh-payments",
+    num: "Case study",
+    title: "[Payment platform & back-office systems]",
+    pitch:
+      "[One line: what the platform does and who uses it, without naming confidential clients.]",
+    description:
+      "Frontend work at TDH International Inc (February 2022 – present). [Two or three sentences on the product: what it is, who uses it, and the scale, e.g. [number] merchants or [number] transactions a month, if you're allowed to share.]",
+    stack: [
+      { name: "[Framework, e.g. React / Next.js]" },
+      { name: "[Styling, e.g. Tailwind CSS / Material UI]" },
+      { name: "Jest" },
+      { name: "Cypress" },
+    ],
+    tier: "main",
+    draft: true,
+    problem:
+      "[The problem: e.g. a slow or hard-to-maintain checkout flow, manual back-office tasks, or a redesign. Keep it general enough for your NDA: no client names, internal URLs, or figures you can't share.]",
+    role: "Frontend Web Developer. [Team size and who you worked with, e.g. [number] frontend devs, designers, and back-end teams. Which parts you owned.]",
+    outcome:
+      "[Measurable results: e.g. page load cut by [X%], conversion or completion rate up [X%], [number] screens shipped, test coverage at [X%]. Use approximate or relative numbers if exact ones are confidential.]",
+    highlights: [
+      "Built a custom React icon library that turns SVG files into reusable icon components, shared across all of our applications.",
+      "Added dark mode to our applications. [How: e.g. theme tokens, CSS variables.]",
+      "Built a landing page from Figma designs. [What it was for, without naming confidential clients.]",
+      "Shipped enhancements from the UI/UX and Business Analyst teams, and fixed bugs daily.",
+      "[Optional: a screenshot you're allowed to share, with sensitive data blurred, saved to /public/assets/profile/projects/ and set as image + imageAlt above.]",
+    ],
   },
 ]
+
+const showDrafts = process.env.NODE_ENV !== "production"
+
+export const projects: Project[] = allProjects.filter(
+  (p) => !p.draft || showDrafts
+)
+
+/** Projects shown in listings: never drafts. */
+export const listedProjects = allProjects.filter((p) => !p.draft)
+export const mainProjects = listedProjects.filter((p) => p.tier === "main")
+export const earlierProjects = listedProjects.filter(
+  (p) => p.tier === "earlier"
+)
 
 export const getProjectBySlug = (slug: string): Project | undefined =>
   projects.find((p) => p.slug === slug)
@@ -145,24 +247,13 @@ export type EducationItem = {
   duration: string
 }
 
-export type SkillItem = {
-  icon: IconType
-  name: string
-}
-
 export type CertificationItem = {
   college: string
   degree: string
   duration: string
 }
 
-export type ProficiencyItem = {
-  name: string
-  percentage: number
-}
-
 export const experience = {
-  icon: "/assets/profile/globe.svg",
   title: "My Experience",
   items: [
     {
@@ -170,16 +261,12 @@ export const experience = {
       position: "Frontend Web Developer",
       duration: "February 2022 - Present",
       responsibilities: [
-        "Developed responsive, high-performance web apps, including secure payment platforms and back-office systems.",
-        "Converted Figma UI/UX designs into clean, reusable code for seamless, pixel-perfect experiences.",
-        "Optimized application speed and scalability through advanced performance techniques.",
-        "Ensured cross-browser and cross-device compatibility for consistent user experiences.",
-        "Collaborated with designers and back-end teams to integrate APIs and dynamic content.",
-        "Applied best practices in accessibility, SEO, and responsive design.",
-        "Maintained code quality via Git workflows and peer reviews.",
-        "Conducted unit testing with Jest and end-to-end testing with Cypress.",
-        "Troubleshot and resolved technical issues to improve system reliability.",
-        "Adopted emerging technologies to keep products competitive and innovative.",
+        "Built a custom React icon library that turns SVG files into reusable icon components, shared across all of our applications.",
+        "Added dark mode to our applications.",
+        "Built a landing page from Figma designs, with clean, reusable components.",
+        "Shipped enhancements requested by the UI/UX and Business Analyst teams.",
+        "Fixed bugs daily across the payment platform and back-office systems to keep them reliable.",
+        "Tested features with Jest unit tests and Cypress end-to-end tests, and kept code quality high through Git workflows and peer reviews.",
       ],
     },
     {
@@ -187,11 +274,8 @@ export const experience = {
       position: "Frontend Web Developer",
       duration: "July 2021 - October 2021",
       responsibilities: [
-        "Develop, test, and maintain responsive websites and web applications.",
-        "Ensure cross-browser and cross-device compatibility.",
-        "Collaborate with designers and back-end developers to integrate APIs and dynamic content.",
-        "Troubleshoot, debug, and improve existing applications.",
-        "Stay updated with emerging technologies, frameworks, and design trends.",
+        "Built and tested responsive websites and web apps that work across browsers and devices.",
+        "Debugged and improved existing applications.",
       ],
     },
     {
@@ -199,10 +283,8 @@ export const experience = {
       position: "Frontend Web Developer",
       duration: "October 2020 - June 2021",
       responsibilities: [
-        "Develop, test, and maintain responsive websites and web applications.",
-        "Collaborate with designers and back-end developers to integrate APIs and dynamic content.",
-        "Troubleshoot, debug, and improve existing applications.",
-        "Stay updated with emerging technologies, frameworks, and design trends.",
+        "Started my frontend career developing and maintaining responsive websites and web applications.",
+        "Worked with designers and back-end developers to integrate APIs and dynamic content.",
       ],
     },
     {
@@ -210,16 +292,17 @@ export const experience = {
       position: "Senior Staff",
       duration: "February 2013 - March 2020",
       responsibilities: [
-        "In-charge in innovating, developing and maintenance of the system in 2 years as Full Stack Developer",
-        "Handling technical feedback from user",
-        "Research and exploration of web system for its development and usefulness",
+        "Worked as a CAD Operator for five years (2013–2018), then moved into full stack development for my last two years (2018–2020).",
+        "Built a company video portal, similar to YouTube, that brings all of the company's videos together in one place.",
+        "Added global search across the company rulebook.",
+        "Built tools that automated repetitive calculations and tasks.",
+        "Wrote a training manual for new hires.",
       ],
     },
   ] as ExperienceItem[],
 }
 
 export const education = {
-  icon: "/assets/profile/globe.svg",
   title: "My Education",
   items: [
     {
@@ -229,14 +312,13 @@ export const education = {
     },
     {
       college: "Emiliano Tria Tirona Memorial National High School",
-      degree: "Highschool",
-      duration: "2008 - 2002",
+      degree: "High school",
+      duration: "2002 - 2008",
     },
   ] as EducationItem[],
 }
 
 export const certifications = {
-  icon: "/assets/profile/globe.svg",
   title: "My Certification",
   items: [
     {
@@ -257,75 +339,53 @@ export const certifications = {
   ] as CertificationItem[],
 }
 
-export const proficiency = {
-  title: "My Proficiency",
-  items: [
-    {
-      name: "Frontend Web Development",
-      percentage: 93,
-    },
-    {
-      name: "React.js | Next.js",
-      percentage: 85,
-    },
-    {
-      name: "Unit Testing(Jest) and End-to-End Testing(Cypress)",
-      percentage: 80,
-    },
-    {
-      name: "Tailwindcss | MaterialUI - Component Styling",
-      percentage: 85,
-    },
-    {
-      name: "Framer Motion - Animation",
-      percentage: 75,
-    },
-    {
-      name: "Problem Solving",
-      percentage: 98,
-    },
-  ] as ProficiencyItem[],
-}
+export type SkillGroup = { category: string; items: string[] }
 
-export const skills = {
-  icon: "/assets/profile/globe.svg",
+export const skills: { title: string; groups: SkillGroup[] } = {
   title: "My Skills",
-  skillList: [
-    { icon: FaReact, name: "React.js" },
-    { icon: SiNextdotjs, name: "Next.js" },
-    { icon: SiTailwindcss, name: "Tailwindcss" },
-    { icon: SiMui, name: "MUI" },
-    { icon: FaHtml5, name: "HTML5" },
-    { icon: FaCss3, name: "CSS3" },
-    { icon: FaJs, name: "Javascript" },
-    { icon: SiTypescript, name: "Typescript" },
-    { icon: TbBrandFramerMotion, name: "Framer Motion" },
-    { icon: FaFigma, name: "Figma" },
-  ] as SkillItem[],
+  groups: [
+    {
+      category: "Frameworks",
+      items: ["React", "Next.js", "TypeScript", "JavaScript"],
+    },
+    {
+      category: "Styling",
+      items: ["Tailwind CSS", "Material UI", "HTML5", "CSS3"],
+    },
+    { category: "Testing", items: ["Jest", "Cypress", "Vitest", "Playwright"] },
+    {
+      category: "Animation",
+      items: ["Framer Motion", "Anime.js", "Three.js"],
+    },
+    { category: "Tools", items: ["Git", "Figma", "Axios", "EmailJS"] },
+  ],
 }
 
-export type SocialItem = { icon: IconType; path: string; name: string }
+export type SocialItem = {
+  icon: IconType
+  path: string
+  name: string
+  label: string
+}
 
 export const socials: SocialItem[] = [
   {
+    name: "GitHub",
+    label: "GitHub profile",
+    icon: FaGithub,
+    path: "https://github.com/jorenbagadiong",
+  },
+  {
     name: "LinkedIn",
+    label: "LinkedIn profile",
     icon: FaLinkedinIn,
     path: "https://www.linkedin.com/in/joren-bagadiong-8943a3213",
   },
   {
     name: "Telegram",
+    label: "Message me on Telegram",
     icon: FaTelegramPlane,
     path: "https://t.me/jorenbagadiong",
-  },
-  {
-    name: "Messenger",
-    icon: FaFacebookMessenger,
-    path: "https://m.me/jorenbagadiong",
-  },
-  {
-    name: "Facebook",
-    icon: FaFacebookF,
-    path: "https://www.facebook.com/jorenbagadiong",
   },
 ]
 
@@ -333,16 +393,23 @@ export const contactInfo: {
   icon: IconType
   title: string
   description: string
+  href?: string
 }[] = [
-  { icon: FaPhoneAlt, title: "Phone", description: "+63 915 395 4186" },
+  {
+    icon: FaPhoneAlt,
+    title: "Phone",
+    description: "+63 915 395 4186",
+    href: "tel:+639153954186",
+  },
   {
     icon: FaEnvelope,
     title: "Email",
     description: "joren.bagadiong14@gmail.com",
+    href: "mailto:joren.bagadiong14@gmail.com",
   },
   {
     icon: FaMapMarkerAlt,
     title: "Address",
-    description: "Micara Estates, Sahud-Ulan, Tanza, Cavite",
+    description: "Cavite, Philippines",
   },
 ]

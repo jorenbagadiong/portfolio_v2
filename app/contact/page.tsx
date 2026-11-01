@@ -3,11 +3,14 @@ import type { Metadata } from "next"
 import { ContactForm } from "@/components/contact/ContactForm"
 import { Reveal } from "@/components/motion/Reveal"
 import { contactInfo } from "@/lib/site-data"
+import { pageMetadata } from "@/lib/metadata"
 
-export const metadata: Metadata = {
-  title: "Contact | Joren Bagadiong",
-  description: "Get in touch with Joren Bagadiong.",
-}
+export const metadata: Metadata = pageMetadata({
+  title: "Contact",
+  description:
+    "Get in touch with Joren Bagadiong, a frontend developer open to full-time roles and freelance work.",
+  path: "/contact",
+})
 
 export default function ContactPage() {
   return (
@@ -15,7 +18,7 @@ export default function ContactPage() {
       <div className="grid grid-cols-1 gap-10 xl:grid-cols-[1fr_1.2fr] xl:gap-16">
         <Reveal>
           <h1 className="text-4xl font-bold text-text xl:text-6xl">
-            Let&apos;s build
+            Let&apos;s build{" "}
             <span className="block text-accent-text">something together.</span>
           </h1>
           <p className="mt-4 text-muted">
@@ -32,7 +35,16 @@ export default function ContactPage() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm text-muted">{item.title}</p>
-                  <p className="break-words text-text">{item.description}</p>
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      className="break-words text-text underline-offset-4 transition-colors hover:text-accent-text hover:underline"
+                    >
+                      {item.description}
+                    </a>
+                  ) : (
+                    <p className="break-words text-text">{item.description}</p>
+                  )}
                 </div>
               </li>
             ))}
