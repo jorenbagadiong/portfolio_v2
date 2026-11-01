@@ -10,6 +10,7 @@ import { particles } from "@/lib/particle-store"
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
 
 import { createMorphController, MORPH_DURATION_MS } from "./morph"
+import { computePairs } from "./pairs"
 import { patterns, patternForPath } from "./patterns"
 import { fragmentShader, vertexShader } from "./shaders"
 import { useParticleCount } from "./useParticleCount"
@@ -102,7 +103,9 @@ export default function ParticleField() {
       start: number
     },
     hasColor: false,
-    pairs: [] as number[],
+    pairs: new Uint16Array(LINE_POINTS * LINE_MAX_PER_POINT * 2),
+    pairCount: 0,
+    pairCounts: new Uint8Array(LINE_POINTS),
     lastPairs: -Infinity,
     wasMorphing: true,
     pointerTarget: new THREE.Vector2(),
@@ -210,29 +213,6 @@ export default function ParticleField() {
     invalidate()
   }, [reduced, invalidate])
 
-  const computePairs = (pos: Float32Array) => {
-    const s = state.current
-    const n = Math.min(LINE_POINTS, count)
-    const degree = new Uint8Array(n)
-    const pairs: number[] = []
-    for (let i = 0; i < n; i++) {
-      if (degree[i] >= LINE_MAX_PER_POINT) continue
-      for (let j = i + 1; j < n; j++) {
-        if (degree[j] >= LINE_MAX_PER_POINT) continue
-        const dx = pos[i * 3] - pos[j * 3]
-        const dy = pos[i * 3 + 1] - pos[j * 3 + 1]
-        const dz = pos[i * 3 + 2] - pos[j * 3 + 2]
-        if (dx * dx + dy * dy + dz * dz < LINE_DIST * LINE_DIST) {
-          pairs.push(i, j)
-          degree[i]++
-          degree[j]++
-          if (degree[i] >= LINE_MAX_PER_POINT) break
-        }
-      }
-    }
-    s.pairs = pairs
-  }
-
   useFrame((frame) => {
     const s = state.current
     const now = performance.now()
@@ -277,19 +257,23 @@ export default function ParticleField() {
 
     // Lines
     const morphEnded = s.wasMorphing && !morphing
-    if (
-      morphEnded ||
-      (!morphing && now - s.lastPairs > LINE_INTERVAL_MS) ||
-      s.pairs.length === 0
-    ) {
-      computePairs(pos)
+    if (morphEnded || (!morphing && now - s.lastPairs > LINE_INTERVAL_MS)) {
+      s.pairCount = computePairs(
+        pos,
+        Math.min(LINE_POINTS, count),
+        LINE_DIST,
+        LINE_MAX_PER_POINT,
+        s.pairs,
+        s.pairCounts
+      )
       s.lastPairs = now
     }
     s.wasMorphing = morphing
     const lp = lineGeometry.getAttribute("position") as THREE.BufferAttribute
     const larr = lp.array as Float32Array
     const pairs = s.pairs
-    for (let k = 0; k < pairs.length; k += 2) {
+    const len = s.pairCount * 2
+    for (let k = 0; k < len; k += 2) {
       const a = pairs[k] * 3
       const b = pairs[k + 1] * 3
       const o = k * 3
@@ -301,7 +285,7 @@ export default function ParticleField() {
       larr[o + 5] = pos[b + 2]
     }
     lp.needsUpdate = true
-    lineGeometry.setDrawRange(0, pairs.length)
+    lineGeometry.setDrawRange(0, len)
 
     const needMore =
       morphing || tweening || uniforms.uBurst.value > 0 || !s.hasColor
