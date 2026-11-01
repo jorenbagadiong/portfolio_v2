@@ -38,8 +38,45 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "cryptoweb-app",
+    slug: "motionlab",
     num: "01",
+    category: "frontend",
+    title: "MotionLab",
+    description:
+      "An animated React component library: 24 accessible components, each with a live playground for tuning the animation and copy-ready code for Motion or Anime.js. Supports keyboard use and reduced motion, and has light and dark themes.",
+    stack: [
+      { name: "Next.js" },
+      { name: "TypeScript" },
+      { name: "Tailwindcss" },
+      { name: "Motion" },
+      { name: "Anime.js" },
+      { name: "Zod" },
+    ],
+    image: "/assets/profile/projects/motionlab.png",
+    live: "https://www.jorenbagadiong.dev/motionlab",
+    github: "https://github.com/jorenbagadiong/motionlab",
+  },
+  {
+    slug: "pokelab",
+    num: "02",
+    category: "frontend",
+    title: "PokeLab",
+    description:
+      "An interactive Pokédex covering all 1,025 Pokémon, powered by PokéAPI. Search by name or number, compare base stats, trace evolution chains, browse by type, save favorites, and view Pokémon in a 3D WebGL showcase.",
+    stack: [
+      { name: "Next.js" },
+      { name: "TypeScript" },
+      { name: "Tailwindcss" },
+      { name: "Three.js" },
+      { name: "Anime.js" },
+    ],
+    image: "/assets/profile/projects/pokelab.png",
+    live: "https://www.jorenbagadiong.dev/pokelab",
+    github: "https://github.com/jorenbagadiong/pokelab",
+  },
+  {
+    slug: "cryptoweb-app",
+    num: "03",
     category: "frontend",
     title: "Cryptoweb App",
     description:
@@ -51,7 +88,7 @@ export const projects: Project[] = [
   },
   {
     slug: "pet-grooming",
-    num: "02",
+    num: "04",
     category: "frontend",
     title: "Pet grooming",
     description:
@@ -63,7 +100,7 @@ export const projects: Project[] = [
   },
   {
     slug: "cryptolist",
-    num: "03",
+    num: "05",
     category: "frontend",
     title: "CryptoList",
     description:
@@ -75,7 +112,7 @@ export const projects: Project[] = [
   },
   {
     slug: "portfolio-v1",
-    num: "04",
+    num: "06",
     category: "frontend",
     title: "Portfolio v1",
     description:
