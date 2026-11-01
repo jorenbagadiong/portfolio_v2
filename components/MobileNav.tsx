@@ -7,8 +7,8 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { navLinks } from "@/lib/site-data"
-import HireMeButton from "@/components/HireMeButton"
 import ThemeToggle from "@/components/ThemeToggle"
+import Logo from "@/components/Logo"
 import { CiMenuFries } from "react-icons/ci"
 
 const MobileNav = () => {
@@ -31,11 +31,7 @@ const MobileNav = () => {
           <VisuallyHidden />
         </DialogTitle>
         <div className="my-28 text-center text-2xl">
-          <Link href="/">
-            <span className="text-4xl font-semibold">
-              Joren <span className="text-accent-text">.</span>
-            </span>
-          </Link>
+          <Logo />
         </div>
         <nav className="flex flex-col justify-center items-center gap-4">
           {navLinks.map((link, index) => {
@@ -52,9 +48,8 @@ const MobileNav = () => {
             )
           })}
         </nav>
-        <div className="mt-8 flex justify-center items-center gap-6">
+        <div className="mt-8 flex justify-center items-center">
           <ThemeToggle />
-          <HireMeButton />
         </div>
       </SheetContent>
     </Sheet>

@@ -37,6 +37,15 @@ module.exports = {
         particle: "rgb(var(--particle) / <alpha-value>)",
         destructive: "rgb(var(--destructive) / <alpha-value>)",
       },
+      keyframes: {
+        blink: {
+          "0%, 49%": { opacity: "1" },
+          "50%, 100%": { opacity: "0" },
+        },
+      },
+      animation: {
+        blink: "blink 1.1s step-end infinite",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
