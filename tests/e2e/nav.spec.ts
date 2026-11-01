@@ -31,3 +31,14 @@ test("each route loads", async ({ page }) => {
     ).toBeVisible()
   }
 })
+
+test("mobile menu closes after tapping a link", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "mobile only")
+  await page.goto("/")
+  await page.getByRole("button", { name: /open menu/i }).click()
+  const dialog = page.getByRole("dialog")
+  await expect(dialog).toBeVisible()
+  await dialog.getByRole("link", { name: /^profile$/i }).click()
+  await expect(page).toHaveURL(/\/profile$/)
+  await expect(dialog).toBeHidden()
+})

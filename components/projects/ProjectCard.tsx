@@ -28,7 +28,7 @@ export function ProjectCard({ project }: { project: Project }) {
           />
         </motion.div>
         <div className="flex flex-1 flex-col gap-3 p-5">
-          <span className="font-primary text-sm text-accent">
+          <span className="font-primary text-sm text-accent-text">
             {project.num}
           </span>
           <h2 className="text-2xl font-bold leading-tight text-text transition-colors group-hover:text-accent">

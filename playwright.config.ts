@@ -4,6 +4,9 @@ const PORT = Number(process.env.E2E_PORT ?? 3100)
 
 export default defineConfig({
   testDir: "tests/e2e",
+  // The intro specs measure wall-clock timing of a WebGL animation; parallel
+  // workers starve it of CPU and make them flaky.
+  workers: 1,
   use: { baseURL: `http://localhost:${PORT}` },
   projects: [
     {

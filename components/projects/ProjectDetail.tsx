@@ -31,7 +31,9 @@ export function ProjectDetail({ project, variant }: Props) {
         />
       </motion.div>
       <div className="flex flex-col gap-4">
-        <span className="font-primary text-sm text-accent">{project.num}</span>
+        <span className="font-primary text-sm text-accent-text">
+          {project.num}
+        </span>
         {variant === "page" ? (
           <h1 className="text-3xl font-bold leading-tight text-text xl:text-4xl">
             {project.title}
@@ -42,7 +44,7 @@ export function ProjectDetail({ project, variant }: Props) {
           {project.stack.map((s) => (
             <li
               key={s.name}
-              className="rounded-full border border-border px-3 py-1 text-xs text-accent"
+              className="rounded-full border border-border px-3 py-1 text-xs text-accent-text"
             >
               {s.name}
             </li>

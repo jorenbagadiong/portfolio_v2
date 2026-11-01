@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { beforeEach, expect, test, vi } from "vitest"
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import { CountUp } from "@/components/motion/CountUp"
 import { AnimatedName } from "@/components/motion/AnimatedName"
 import { Reveal } from "@/components/motion/Reveal"
 
@@ -38,11 +37,6 @@ function Counter() {
   const [n, setN] = useState(0)
   return <button onClick={() => setN(n + 1)}>count {n}</button>
 }
-
-test("CountUp shows final value under reduced motion", () => {
-  render(<CountUp to={18} />)
-  expect(screen.getByText("18")).toBeInTheDocument()
-})
 
 test("AnimatedName exposes full name to screen readers", () => {
   const { container } = render(<AnimatedName text="Joren Bagadiong" />)

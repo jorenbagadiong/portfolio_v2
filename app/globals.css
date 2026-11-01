@@ -11,6 +11,8 @@
     --muted: #5b6370;
     --accent: 0 168 107;
     --accent-hover: 0 143 91;
+    --accent-text: 0 122 77;
+    --destructive: 198 40 40;
     --particle: 0 168 107;
     --on-accent: 17 19 23;
   }
@@ -23,6 +25,8 @@
     --muted: rgba(255, 255, 255, 0.6);
     --accent: 0 255 153;
     --accent-hover: 0 225 135;
+    --accent-text: 0 255 153;
+    --destructive: 255 107 107;
     --particle: 0 255 153;
     --on-accent: 28 28 34;
   }

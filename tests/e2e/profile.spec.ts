@@ -32,3 +32,39 @@ test("skill names available", async ({ page }) => {
   await skill.focus()
   await expect(page.getByRole("tooltip")).toContainText("React.js")
 })
+
+test.describe("light accent text contrast", () => {
+  test.use({ colorScheme: "light" })
+  test("timeline date meets AA against --bg", async ({ page }) => {
+    await page.goto("/profile")
+    const date = page.locator("main li span.text-accent-text").first()
+    await expect(date).toBeVisible()
+    const { fg, bg } = await page.evaluate(() => {
+      const el = document.querySelector("main li span.text-accent-text")!
+      const probe = document.createElement("div")
+      probe.style.color =
+        "rgb(" +
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--bg")
+          .trim()
+          .replace(/ /g, ",") +
+        ")"
+      document.body.appendChild(probe)
+      const bg = getComputedStyle(probe).color
+      probe.remove()
+      return { fg: getComputedStyle(el).color, bg }
+    })
+    const parse = (c: string) =>
+      (c.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number)
+    const lum = ([r, g, b]: number[]) => {
+      const f = (v: number) => {
+        const x = v / 255
+        return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4
+      }
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+    }
+    const [a, b] = [lum(parse(fg)), lum(parse(bg))]
+    const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+    expect(ratio).toBeGreaterThanOrEqual(4.5)
+  })
+})

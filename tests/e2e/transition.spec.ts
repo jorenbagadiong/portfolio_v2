@@ -5,9 +5,9 @@ const wipe = (page: Page) => page.locator("[data-stair-transition]")
 
 async function go(page: Page, isMobile: boolean | undefined, name: string) {
   if (isMobile) {
-    // The sheet may still be open from a previous navigation.
-    const menu = page.getByRole("button", { name: /open menu/i })
-    if (await menu.isVisible()) await menu.click()
+    // The sheet closes after each navigation, so open it before each click.
+    await expect(page.getByRole("dialog")).toHaveCount(0)
+    await page.getByRole("button", { name: /open menu/i }).click()
   }
   await page
     .getByRole("link", { name: new RegExp(`^${name}$`, "i") })
