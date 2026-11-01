@@ -63,3 +63,32 @@
     opacity: 0;
   }
 }
+
+/* Loading intro. The head script sets html.intro before first paint; header and
+   main stay hidden until IntroLoader removes it. The CSS-only animation reveals
+   them after 3s regardless, so content can never stay stuck hidden. */
+header,
+main {
+  transition: opacity 0.3s ease;
+}
+
+.intro-overlay {
+  display: none;
+}
+
+@keyframes intro-failsafe {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.intro header,
+  html.intro main {
+    opacity: 0;
+    animation: intro-failsafe 0.3s ease 3s forwards;
+  }
+  html.intro .intro-overlay {
+    display: flex;
+  }
+}

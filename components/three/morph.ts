@@ -21,14 +21,17 @@ export type MorphController = {
   isMorphing(now: number): boolean
 }
 
-export function createMorphController(initial: Float32Array): MorphController {
+export function createMorphController(
+  initial: Float32Array,
+  durationMs: number = MORPH_DURATION_MS
+): MorphController {
   let from = new Float32Array(initial)
   let to = new Float32Array(initial)
   let startedAt = -Infinity
   const out = new Float32Array(initial)
 
   const progress = (now: number) =>
-    Math.min(1, Math.max(0, (now - startedAt) / MORPH_DURATION_MS))
+    Math.min(1, Math.max(0, (now - startedAt) / durationMs))
 
   return {
     start(target, now) {

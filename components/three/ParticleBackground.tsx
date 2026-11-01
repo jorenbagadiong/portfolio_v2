@@ -3,6 +3,8 @@
 import { Component, type ReactNode, useEffect, useState } from "react"
 import { Canvas } from "@react-three/fiber"
 
+import { hasWebGL } from "@/lib/intro"
+
 import ParticleField from "./ParticleField"
 
 class CanvasBoundary extends Component<
@@ -16,15 +18,6 @@ class CanvasBoundary extends Component<
   componentDidCatch() {}
   render() {
     return this.state.failed ? null : this.props.children
-  }
-}
-
-function hasWebGL(): boolean {
-  try {
-    const c = document.createElement("canvas")
-    return !!(c.getContext("webgl2") ?? c.getContext("webgl"))
-  } catch {
-    return false
   }
 }
 

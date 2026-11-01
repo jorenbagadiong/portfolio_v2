@@ -1,27 +1,38 @@
 "use client"
 
 import { useEffect, useMemo, useRef } from "react"
-import { usePathname } from "next/navigation"
 import { useFrame, useThree } from "@react-three/fiber"
 import { useTheme } from "next-themes"
 import * as THREE from "three"
 
+import { INTRO_MORPH_MS, INTRO_SKIP_EVENT, introClock } from "@/lib/intro"
 import { particles } from "@/lib/particle-store"
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
 
-import { createMorphController, MORPH_DURATION_MS } from "./morph"
+import { nearestPoints } from "./cursor"
+import { displace, type DisplaceState } from "./displace"
+import { createMorphController } from "./morph"
 import { computePairs } from "./pairs"
-import { patterns, patternForPath } from "./patterns"
-import { fragmentShader, vertexShader } from "./shaders"
+import { constellation } from "./patterns"
+import {
+  fragmentShader,
+  lineFragmentShader,
+  lineVertexShader,
+  vertexShader,
+} from "./shaders"
 import { useParticleCount } from "./useParticleCount"
 
 const SEED = 7
-const LINE_POINTS = 150
-const LINE_DIST = 1.6
+const LINE_DIST = 2.2
 const LINE_MAX_PER_POINT = 3
-const LINE_INTERVAL_MS = 500
-const BURST_MS = 900
+const CURSOR_RADIUS = 2.5
+const CURSOR_LINES = 4
+const VIEW_FILL = 1.1
+const Z_RANGE = 1.5
 const COLOR_TWEEN_MS = 400
+const SCROLL_FACTOR = 0.0015
+const SCROLL_LIMIT = 1.5
+const TILT = 0.05
 
 function readParticleColor(): THREE.Color {
   const raw = getComputedStyle(document.documentElement)
@@ -35,25 +46,38 @@ function readParticleColor(): THREE.Color {
 }
 
 export default function ParticleField() {
-  const pathname = usePathname()
   const count = useParticleCount()
   const reduced = usePrefersReducedMotion()
   const { resolvedTheme } = useTheme()
   const { invalidate, gl } = useThree()
 
-  const pointsRef = useRef<THREE.Points>(null)
-  const linesRef = useRef<THREE.LineSegments>(null)
-
+  const groupRef = useRef<THREE.Group>(null)
   const pointsMaterialRef = useRef<THREE.ShaderMaterial>(null)
-  const lineMaterialRef = useRef<THREE.LineBasicMaterial>(null)
+  const lineMaterialRef = useRef<THREE.ShaderMaterial>(null)
 
-  const controller = useMemo(
-    () =>
-      createMorphController(patterns[patternForPath(pathname)](count, SEED)),
-    // Created once per count; route changes go through controller.start.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [count]
+  const maxPairs = count * LINE_MAX_PER_POINT
+  const maxSegments = maxPairs + CURSOR_LINES
+
+  // Mounted during the intro: assemble from the center over 1.4s, on the
+  // clock shared with IntroLoader. Otherwise start in the final state.
+  const intro = useMemo(
+    () => document.documentElement.classList.contains("intro"),
+    []
   )
+
+  const { controller, introStart } = useMemo(() => {
+    const target = constellation(count, SEED)
+    const now = performance.now()
+    if (!intro) {
+      return { controller: createMorphController(target), introStart: 0 }
+    }
+    const start = new Float32Array(target.length)
+    for (let i = 0; i < start.length; i++) start[i] = target[i] * 0.02
+    const c = createMorphController(start, INTRO_MORPH_MS)
+    const t0 = introClock.t0 || now
+    c.start(target, t0)
+    return { controller: c, introStart: t0 }
+  }, [count, intro])
 
   const geometry = useMemo(() => {
     const g = new THREE.BufferGeometry()
@@ -71,31 +95,37 @@ export default function ParticleField() {
     const g = new THREE.BufferGeometry()
     g.setAttribute(
       "position",
-      new THREE.BufferAttribute(
-        new Float32Array(LINE_POINTS * LINE_MAX_PER_POINT * 6),
-        3
-      )
+      new THREE.BufferAttribute(new Float32Array(maxSegments * 6), 3)
+    )
+    g.setAttribute(
+      "aAlpha",
+      new THREE.BufferAttribute(new Float32Array(maxSegments * 2), 1)
     )
     g.setDrawRange(0, 0)
     return g
-  }, [])
+  }, [maxSegments])
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uPointer: { value: new THREE.Vector3(999, 999, 0) },
-      uBurst: { value: 0 },
-      uSize: { value: 5 },
+      uTwinkle: { value: 0 },
+      uSize: { value: 12 },
       uPixelRatio: { value: 1 },
       uColor: { value: new THREE.Color(0, 1, 0.6) },
       uOpacity: { value: 0.9 },
     }),
     []
   )
+  const lineUniforms = useMemo(
+    () => ({
+      uColor: uniforms.uColor,
+      uOpacity: { value: 0.3 },
+    }),
+    [uniforms]
+  )
 
   const state = useRef({
     active: true,
-    lastPathname: pathname,
     burstStart: -Infinity,
     colorTween: null as null | {
       from: THREE.Color
@@ -103,30 +133,28 @@ export default function ParticleField() {
       start: number
     },
     hasColor: false,
-    pairs: new Uint16Array(LINE_POINTS * LINE_MAX_PER_POINT * 2),
-    pairCount: 0,
-    pairCounts: new Uint8Array(LINE_POINTS),
-    lastPairs: -Infinity,
-    wasMorphing: true,
-    pointerTarget: new THREE.Vector2(),
+    lineBase: 0.3,
+    pairs: new Uint16Array(maxPairs * 2),
+    pairDist: new Float32Array(maxPairs),
+    pairCounts: new Uint8Array(count),
+    cursorIdx: new Int16Array(CURSOR_LINES),
+    positions: new Float32Array(count * 3),
+    pointerNdc: { x: 0, y: 0 },
+    pointer: { x: 0, y: 0 },
     pointerSeen: false,
-    needsApply: true,
+    tiltX: 0,
+    tiltY: 0,
+    scale: { x: 1, y: 1, z: Z_RANGE },
+    dstate: {
+      time: 0,
+      pointer: null,
+      burstAge: null,
+      scale: { x: 1, y: 1, z: Z_RANGE },
+    } as DisplaceState,
   })
 
   const reducedRef = useRef(reduced)
   reducedRef.current = reduced
-
-  // Morph on route change.
-  useEffect(() => {
-    const s = state.current
-    if (s.lastPathname === pathname && !s.needsApply) return
-    s.lastPathname = pathname
-    const target = patterns[patternForPath(pathname)](count, SEED)
-    const now = performance.now()
-    controller.start(target, reducedRef.current ? now - MORPH_DURATION_MS : now)
-    s.wasMorphing = true
-    invalidate()
-  }, [pathname, count, controller, invalidate])
 
   // Burst pulses (ignored under reduced motion).
   useEffect(() => {
@@ -137,15 +165,26 @@ export default function ParticleField() {
     })
   }, [invalidate])
 
-  // Pointer, projected onto z = 0 each frame.
+  // Skipping the intro jumps the points to their final positions.
+  useEffect(() => {
+    const onSkip = () => {
+      controller.start(
+        constellation(count, SEED),
+        performance.now() - INTRO_MORPH_MS
+      )
+      invalidate()
+    }
+    window.addEventListener(INTRO_SKIP_EVENT, onSkip)
+    return () => window.removeEventListener(INTRO_SKIP_EVENT, onSkip)
+  }, [controller, count, invalidate])
+
+  // Pointer position as normalized device coordinates.
   useEffect(() => {
     if (reduced) return
     const onMove = (e: PointerEvent) => {
       const s = state.current
-      s.pointerTarget.set(
-        (e.clientX / window.innerWidth) * 2 - 1,
-        -(e.clientY / window.innerHeight) * 2 + 1
-      )
+      s.pointerNdc.x = (e.clientX / window.innerWidth) * 2 - 1
+      s.pointerNdc.y = -(e.clientY / window.innerHeight) * 2 + 1
       s.pointerSeen = true
       invalidate()
     }
@@ -181,20 +220,17 @@ export default function ParticleField() {
     const dark = resolvedTheme === "dark"
     const id = requestAnimationFrame(() => {
       const next = readParticleColor()
+      const blending = dark ? THREE.AdditiveBlending : THREE.NormalBlending
       if (pointsMaterialRef.current) {
-        pointsMaterialRef.current.blending = dark
-          ? THREE.AdditiveBlending
-          : THREE.NormalBlending
+        pointsMaterialRef.current.blending = blending
       }
       if (lineMaterialRef.current) {
-        lineMaterialRef.current.opacity = dark ? 0.25 : 0.35
-        lineMaterialRef.current.blending = dark
-          ? THREE.AdditiveBlending
-          : THREE.NormalBlending
+        lineMaterialRef.current.blending = blending
       }
+      s.lineBase = dark ? 0.3 : 0.36
+      uniforms.uOpacity.value = dark ? 0.9 : 0.85
       if (!s.hasColor || reducedRef.current) {
         uniforms.uColor.value.copy(next)
-        lineMaterialRef.current?.color.copy(next)
         s.hasColor = true
       } else {
         s.colorTween = {
@@ -217,78 +253,139 @@ export default function ParticleField() {
     const s = state.current
     const now = performance.now()
     const isReduced = reducedRef.current
-    const morphing = controller.isMorphing(now)
-
-    const pos = controller.update(now)
-    const attr = geometry.getAttribute("position") as THREE.BufferAttribute
-    ;(attr.array as Float32Array).set(pos)
-    attr.needsUpdate = true
-
-    uniforms.uPixelRatio.value = frame.gl.getPixelRatio()
+    const group = groupRef.current
 
     // Color tween
     let tweening = false
     if (s.colorTween) {
       const k = Math.min(1, (now - s.colorTween.start) / COLOR_TWEEN_MS)
       uniforms.uColor.value.lerpColors(s.colorTween.from, s.colorTween.to, k)
-      lineMaterialRef.current?.color.copy(uniforms.uColor.value)
       if (k >= 1) s.colorTween = null
       else tweening = true
     }
 
+    const base = controller.update(now)
+    const morphing = controller.isMorphing(now)
+
+    // Field scale tracks the visible viewport so it fills any aspect ratio.
+    const { width, height } = frame.viewport
+    s.scale.x = (width / 2) * VIEW_FILL
+    s.scale.y = (height / 2) * VIEW_FILL
+    s.scale.z = Z_RANGE
+
+    // Group transform: scroll parallax and pointer tilt.
+    let burstAge: number | null = null
+    s.dstate.pointer = null
     if (isReduced) {
-      uniforms.uTime.value = 1
-      uniforms.uBurst.value = 0
-      uniforms.uPointer.value.set(999, 999, 0)
+      uniforms.uTime.value = 0
+      uniforms.uTwinkle.value = 0
+      if (group) {
+        group.position.y = 0
+        group.rotation.set(0, 0, 0)
+      }
     } else {
       uniforms.uTime.value = now / 1000
-      uniforms.uBurst.value = Math.max(0, 1 - (now - s.burstStart) / BURST_MS)
-      if (s.pointerSeen) {
-        const cam = frame.camera as THREE.PerspectiveCamera
-        const halfH =
-          Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)) * cam.position.z
-        uniforms.uPointer.value.set(
-          s.pointerTarget.x * halfH * cam.aspect,
-          s.pointerTarget.y * halfH,
-          0
+      uniforms.uTwinkle.value = 0.35
+      const age = (now - s.burstStart) / 1000
+      if (age >= 0 && age < 1.2) burstAge = age
+      if (group) {
+        const targetY = s.pointerSeen ? s.pointerNdc.x * TILT : 0
+        const targetX = s.pointerSeen ? -s.pointerNdc.y * TILT : 0
+        s.tiltY += (targetY - s.tiltY) * 0.06
+        s.tiltX += (targetX - s.tiltX) * 0.06
+        group.rotation.set(s.tiltX, s.tiltY, 0)
+        group.position.y = Math.max(
+          -SCROLL_LIMIT,
+          Math.min(SCROLL_LIMIT, -window.scrollY * SCROLL_FACTOR)
         )
+      }
+      if (s.pointerSeen) {
+        s.pointer.x = s.pointerNdc.x * (width / 2)
+        s.pointer.y = s.pointerNdc.y * (height / 2) - (group?.position.y ?? 0)
+        s.dstate.pointer = s.pointer
       }
     }
 
-    // Lines
-    const morphEnded = s.wasMorphing && !morphing
-    if (morphEnded || (!morphing && now - s.lastPairs > LINE_INTERVAL_MS)) {
-      s.pairCount = computePairs(
-        pos,
-        Math.min(LINE_POINTS, count),
-        LINE_DIST,
-        LINE_MAX_PER_POINT,
-        s.pairs,
-        s.pairCounts
+    s.dstate.time = isReduced ? 0 : now / 1000
+    s.dstate.burstAge = burstAge
+    s.dstate.scale = s.scale
+    const pos = s.positions
+    displace(base, pos, count, s.dstate)
+
+    const attr = geometry.getAttribute("position") as THREE.BufferAttribute
+    ;(attr.array as Float32Array).set(pos)
+    attr.needsUpdate = true
+    uniforms.uPixelRatio.value = frame.gl.getPixelRatio()
+
+    // Line opacity ramps in over the last 30% of the intro morph.
+    let ramp = 1
+    if (intro) {
+      ramp = Math.min(
+        1,
+        Math.max(0, ((now - introStart) / INTRO_MORPH_MS - 0.7) / 0.3)
       )
-      s.lastPairs = now
     }
-    s.wasMorphing = morphing
+    lineUniforms.uOpacity.value = s.lineBase * ramp
+
+    // Lines: pairs recomputed every frame, alpha fades linearly with distance.
+    const n = computePairs(
+      pos,
+      count,
+      LINE_DIST,
+      LINE_MAX_PER_POINT,
+      s.pairs,
+      s.pairCounts,
+      s.pairDist
+    )
     const lp = lineGeometry.getAttribute("position") as THREE.BufferAttribute
+    const la = lineGeometry.getAttribute("aAlpha") as THREE.BufferAttribute
     const larr = lp.array as Float32Array
-    const pairs = s.pairs
-    const len = s.pairCount * 2
-    for (let k = 0; k < len; k += 2) {
-      const a = pairs[k] * 3
-      const b = pairs[k + 1] * 3
-      const o = k * 3
+    const aarr = la.array as Float32Array
+    for (let k = 0; k < n; k++) {
+      const a = s.pairs[k * 2] * 3
+      const b = s.pairs[k * 2 + 1] * 3
+      const o = k * 6
       larr[o] = pos[a]
       larr[o + 1] = pos[a + 1]
       larr[o + 2] = pos[a + 2]
       larr[o + 3] = pos[b]
       larr[o + 4] = pos[b + 1]
       larr[o + 5] = pos[b + 2]
+      aarr[k * 2] = aarr[k * 2 + 1] = 1 - s.pairDist[k] / LINE_DIST
+    }
+    let segments = n
+
+    // Cursor lines: faint links from the pointer to its nearest points.
+    if (s.dstate.pointer && !morphing) {
+      const m = nearestPoints(
+        pos,
+        count,
+        s.pointer.x,
+        s.pointer.y,
+        CURSOR_RADIUS,
+        CURSOR_LINES,
+        s.cursorIdx
+      )
+      for (let c = 0; c < m; c++) {
+        const idx = s.cursorIdx[c] * 3
+        const o = segments * 6
+        larr[o] = s.pointer.x
+        larr[o + 1] = s.pointer.y
+        larr[o + 2] = 0
+        larr[o + 3] = pos[idx]
+        larr[o + 4] = pos[idx + 1]
+        larr[o + 5] = pos[idx + 2]
+        const d = Math.hypot(pos[idx] - s.pointer.x, pos[idx + 1] - s.pointer.y)
+        aarr[segments * 2] = aarr[segments * 2 + 1] =
+          0.7 * (1 - d / CURSOR_RADIUS)
+        segments++
+      }
     }
     lp.needsUpdate = true
-    lineGeometry.setDrawRange(0, len)
+    la.needsUpdate = true
+    lineGeometry.setDrawRange(0, segments * 2)
 
-    const needMore =
-      morphing || tweening || uniforms.uBurst.value > 0 || !s.hasColor
+    const needMore = morphing || tweening || burstAge !== null || !s.hasColor
     if (s.active && (needMore || !isReduced)) invalidate()
   })
 
@@ -301,8 +398,8 @@ export default function ParticleField() {
   )
 
   return (
-    <>
-      <points ref={pointsRef} geometry={geometry} frustumCulled={false}>
+    <group ref={groupRef}>
+      <points geometry={geometry} frustumCulled={false}>
         <shaderMaterial
           ref={pointsMaterialRef}
           vertexShader={vertexShader}
@@ -313,18 +410,17 @@ export default function ParticleField() {
           blending={THREE.AdditiveBlending}
         />
       </points>
-      <lineSegments
-        ref={linesRef}
-        geometry={lineGeometry}
-        frustumCulled={false}
-      >
-        <lineBasicMaterial
+      <lineSegments geometry={lineGeometry} frustumCulled={false}>
+        <shaderMaterial
           ref={lineMaterialRef}
+          vertexShader={lineVertexShader}
+          fragmentShader={lineFragmentShader}
+          uniforms={lineUniforms}
           transparent
-          opacity={0.25}
           depthWrite={false}
+          blending={THREE.AdditiveBlending}
         />
       </lineSegments>
-    </>
+    </group>
   )
 }

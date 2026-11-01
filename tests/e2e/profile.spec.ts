@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test } from "./fixtures"
 
 test("timeline shows all experience entries", async ({ page }) => {
   await page.goto("/profile")
