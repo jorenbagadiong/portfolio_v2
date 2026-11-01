@@ -94,7 +94,7 @@ The background is one page-independent constellation, rendered by a single persi
 Content lives in one data file. You don't need a CMS:
 
 - **Experience, education, skills, certifications, projects, socials:** [lib/site-data.ts](lib/site-data.ts)
-- **Nav links:** [components/Nav.tsx](components/Nav.tsx) and [components/MobileNav.tsx](components/MobileNav.tsx)
+- **Nav links:** `navLinks` in [lib/site-data.ts](lib/site-data.ts)
 - **Resume:** drop the PDF in `public/assets/files/` and update the `href` in [components/DownloadCVButton.tsx](components/DownloadCVButton.tsx)
 - **Theme colors:** CSS variables in [app/globals.css](app/globals.css). Use `text-accent-text` for small accent text (AA contrast in both themes)
 - **SEO metadata:** `metadata` in [app/layout.tsx](app/layout.tsx)

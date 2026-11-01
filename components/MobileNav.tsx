@@ -23,7 +23,7 @@ const MobileNav = () => {
         aria-label="Open menu"
         className="flex justify-center items-center"
       >
-        <CiMenuFries className="text-[32px] text-accent" />
+        <CiMenuFries className="text-[32px] text-accent-text" />
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         {/* Required for accessibility */}
@@ -33,7 +33,7 @@ const MobileNav = () => {
         <div className="my-28 text-center text-2xl">
           <Link href="/">
             <h1 className="text-4xl font-semibold">
-              Joren <span className="text-accent">.</span>
+              Joren <span className="text-accent-text">.</span>
             </h1>
           </Link>
         </div>
@@ -45,7 +45,7 @@ const MobileNav = () => {
                 key={index}
                 onClick={() => setOpen(false)}
                 aria-current={link.path === pathname ? "page" : undefined}
-                className={`${link.path === pathname && "text-accent border-b-2 border-accent"} text-l capitalize hover:text-accent transition-all`}
+                className={`${link.path === pathname && "text-accent-text border-b-2 border-accent"} text-l capitalize hover:text-accent-text transition-all`}
               >
                 {link.name}
               </Link>

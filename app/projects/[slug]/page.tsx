@@ -29,7 +29,7 @@ export default async function ProjectPage({ params }: Props) {
     <section className="container mx-auto max-w-3xl py-12">
       <Link
         href="/projects"
-        className="mb-6 inline-block text-sm text-muted transition-colors hover:text-accent"
+        className="mb-6 inline-block text-sm text-muted transition-colors hover:text-accent-text"
       >
         &larr; All projects
       </Link>

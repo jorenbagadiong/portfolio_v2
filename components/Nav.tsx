@@ -17,7 +17,7 @@ const Nav = () => {
             href={link.path}
             key={link.path}
             aria-current={active ? "page" : undefined}
-            className={`${active ? "text-accent" : ""} relative capitalize font-medium hover:text-accent transition-all`}
+            className={`${active ? "text-accent-text" : ""} relative capitalize font-medium hover:text-accent-text transition-all`}
           >
             {link.name}
             {active && (

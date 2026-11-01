@@ -67,7 +67,7 @@ export function SkillsPanel({ skills, proficiency }: Props) {
                 <Tooltip>
                   <TooltipTrigger
                     aria-label={skill.name}
-                    className="w-full aspect-square bg-surface backdrop-blur-md border border-border rounded-xl flex justify-center items-center text-4xl text-text transition-all duration-300 hover:-translate-y-1 hover:text-accent focus-visible:-translate-y-1 focus-visible:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                    className="w-full aspect-square bg-surface backdrop-blur-md border border-border rounded-xl flex justify-center items-center text-4xl text-text transition-all duration-300 hover:-translate-y-1 hover:text-accent-text focus-visible:-translate-y-1 focus-visible:text-accent-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                   >
                     <skill.icon aria-hidden="true" />
                   </TooltipTrigger>

@@ -31,7 +31,7 @@ export function ProjectCard({ project }: { project: Project }) {
           <span className="font-primary text-sm text-accent-text">
             {project.num}
           </span>
-          <h2 className="text-2xl font-bold leading-tight text-text transition-colors group-hover:text-accent">
+          <h2 className="text-2xl font-bold leading-tight text-text transition-colors group-hover:text-accent-text">
             {project.title}
           </h2>
           <ul className="mt-auto flex flex-wrap gap-2">

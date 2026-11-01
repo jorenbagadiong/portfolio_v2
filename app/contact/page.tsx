@@ -16,7 +16,7 @@ export default function ContactPage() {
         <Reveal>
           <h1 className="text-4xl font-bold text-text xl:text-6xl">
             Let&apos;s build
-            <span className="block text-accent">something together.</span>
+            <span className="block text-accent-text">something together.</span>
           </h1>
           <p className="mt-4 text-muted">
             Open to full-time roles and freelance work.
@@ -27,7 +27,7 @@ export default function ContactPage() {
                 key={item.title}
                 className="flex items-center gap-4 rounded-xl border border-border bg-surface p-4 backdrop-blur-md"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border text-xl text-accent">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border text-xl text-accent-text">
                   <item.icon aria-hidden />
                 </div>
                 <div className="min-w-0">
