@@ -27,7 +27,7 @@ test("each route loads", async ({ page }) => {
     const res = await page.goto(path)
     expect(res?.status()).toBe(200)
     await expect(
-      page.locator("h1, h2").filter({ visible: true }).first()
+      page.locator("main").getByRole("heading").first()
     ).toBeVisible()
   }
 })

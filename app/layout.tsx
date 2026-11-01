@@ -51,7 +51,9 @@ export default function RootLayout({
           <StaticBackground />
           <ParticleBackground />
           <Header />
-          <PageTransition>{children}</PageTransition>
+          <main>
+            <PageTransition>{children}</PageTransition>
+          </main>
           <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>
