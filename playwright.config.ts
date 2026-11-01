@@ -6,9 +6,23 @@ export default defineConfig({
   projects: [
     {
       name: "desktop",
-      use: { browserName: "chromium", viewport: { width: 1280, height: 800 } },
+      use: {
+        browserName: "chromium",
+        viewport: { width: 1280, height: 800 },
+        launchOptions: {
+          args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"],
+        },
+      },
     },
-    { name: "mobile", use: { ...devices["Pixel 7"] } },
+    {
+      name: "mobile",
+      use: {
+        ...devices["Pixel 7"],
+        launchOptions: {
+          args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"],
+        },
+      },
+    },
   ],
   webServer: {
     command: "yarn build && yarn start -p 3100",

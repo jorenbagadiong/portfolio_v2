@@ -12,3 +12,36 @@ export function blendPositions(
   for (let i = 0; i < out.length; i++) out[i] = from[i] + (to[i] - from[i]) * k
   return out
 }
+
+export const MORPH_DURATION_MS = 1200
+
+export type MorphController = {
+  start(to: Float32Array, now: number): void
+  update(now: number): Float32Array
+  isMorphing(now: number): boolean
+}
+
+export function createMorphController(initial: Float32Array): MorphController {
+  let from = new Float32Array(initial)
+  let to = new Float32Array(initial)
+  let startedAt = -Infinity
+  const out = new Float32Array(initial)
+
+  const progress = (now: number) =>
+    Math.min(1, Math.max(0, (now - startedAt) / MORPH_DURATION_MS))
+
+  return {
+    start(target, now) {
+      // New morph begins from whatever is currently displayed.
+      from = new Float32Array(blendPositions(from, to, progress(now), out))
+      to = new Float32Array(target)
+      startedAt = now
+    },
+    update(now) {
+      return blendPositions(from, to, progress(now), out)
+    },
+    isMorphing(now) {
+      return progress(now) < 1
+    },
+  }
+}

@@ -4,25 +4,28 @@ import { ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 
+import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
+
 type Props = {
   children: ReactNode
 }
 
 const PageTransition = ({ children }: Props) => {
   const pathname = usePathname()
+  const reduced = usePrefersReducedMotion()
+
+  if (reduced) return <>{children}</>
+
   return (
-    <AnimatePresence>
-      <div key={pathname}>
-        <motion.div
-          initial={{ opacity: 1 }}
-          animate={{
-            opacity: 0,
-            transition: { delay: 1, duration: 0.4, ease: "easeInOut" },
-          }}
-          className="h-screen w-screen fixed bg-bg top-0 pointer-events-none"
-        />
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={pathname}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, transition: { duration: 0.25 } }}
+      >
         {children}
-      </div>
+      </motion.div>
     </AnimatePresence>
   )
 }
