@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 
+import { isProjectsRoute } from "@/lib/route-label"
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
 
 type Props = {
@@ -21,7 +22,7 @@ const PageTransition = ({ children }: Props) => {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={/^\/projects(\/|$)/.test(pathname) ? "/projects" : pathname}
+        key={isProjectsRoute(pathname) ? "/projects" : pathname}
         initial={reduced || !mounted ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         exit={

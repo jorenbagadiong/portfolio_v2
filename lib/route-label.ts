@@ -11,7 +11,7 @@ export function routeLabel(pathname: string): string {
   return match.name.charAt(0).toUpperCase() + match.name.slice(1)
 }
 
-const isProjectsRoute = (p: string) =>
+export const isProjectsRoute = (p: string) =>
   p === "/projects" || /^\/projects\/[^/]+$/.test(p)
 
 /** The stair wipe plays on every pathname change except within /projects. */

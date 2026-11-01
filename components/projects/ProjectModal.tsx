@@ -16,6 +16,8 @@ export function ProjectModal({ project }: { project: Project }) {
   useEffect(() => {
     return () => {
       setTimeout(() => {
+        const active = document.activeElement
+        if (active && active !== document.body) return
         document
           .querySelector<HTMLElement>(`a[href="/projects/${project.slug}"]`)
           ?.focus()
