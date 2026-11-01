@@ -43,7 +43,7 @@ test("portrait has alt text", async ({ page }) => {
 
 test("shows experience badge, no stats strip", async ({ page }) => {
   await page.goto("/")
-  await expect(page.getByText("6+ years", { exact: true })).toBeVisible()
+  await expect(page.getByText("5+ years", { exact: true })).toBeVisible()
   await expect(page.getByText("Code commits", { exact: true })).toHaveCount(0)
   await expect(
     page.getByText("Projects completed", { exact: true })

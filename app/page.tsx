@@ -26,7 +26,7 @@ const Home = () => {
               <div className="flex flex-wrap items-center justify-center xl:justify-start gap-3">
                 <span className="text-xl text-muted">{headline}</span>
                 <span className="inline-flex items-center rounded-full border border-accent px-3 py-1 font-primary text-xs uppercase tracking-wider text-accent-text">
-                  6+ years
+                  5+ years
                 </span>
               </div>
               <h1 className="text-[28px] min-[400px]:text-[30px] sm:text-[48px] xl:text-[60px] leading-[1.1] font-semibold mb-6">
