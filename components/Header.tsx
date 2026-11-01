@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import HireMeButton from "@/components/HireMeButton"
 
 import Nav from "@/components/Nav"
 import MobileNav from "@/components/MobileNav"
@@ -17,9 +17,7 @@ const Header = () => {
         {/* desktop nav & hire me button */}
         <div className="hidden xl:flex gap-8 items-center">
           <Nav />
-          <Link href="/contact">
-            <Button>Hire me!</Button>
-          </Link>
+          <HireMeButton />
         </div>
         {/* mobile nav */}
         <div className="xl:hidden">

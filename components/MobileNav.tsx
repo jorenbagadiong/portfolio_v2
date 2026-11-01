@@ -6,13 +6,17 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { navLinks } from "@/lib/site-data"
+import HireMeButton from "@/components/HireMeButton"
 import { CiMenuFries } from "react-icons/ci"
 
 const MobileNav = () => {
   const pathname = usePathname()
   return (
     <Sheet>
-      <SheetTrigger className="flex justify-center items-center">
+      <SheetTrigger
+        aria-label="Open menu"
+        className="flex justify-center items-center"
+      >
         <CiMenuFries className="text-[32px] text-accent" />
       </SheetTrigger>
       <SheetContent className="flex flex-col">
@@ -33,6 +37,7 @@ const MobileNav = () => {
               <Link
                 href={link.path}
                 key={index}
+                aria-current={link.path === pathname ? "page" : undefined}
                 className={`${link.path === pathname && "text-accent border-b-2 border-accent"} text-l capitalize hover:text-accent transition-all`}
               >
                 {link.name}
@@ -40,6 +45,9 @@ const MobileNav = () => {
             )
           })}
         </nav>
+        <div className="mt-8 flex justify-center">
+          <HireMeButton />
+        </div>
       </SheetContent>
     </Sheet>
   )
