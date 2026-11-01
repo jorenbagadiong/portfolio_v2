@@ -142,6 +142,7 @@ export function ContactForm() {
         <div className="flex flex-col-reverse items-end gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p
             role="status"
+            aria-live="polite"
             className={`text-sm font-medium ${
               status?.kind === "error" ? "text-destructive" : "text-accent-text"
             }`}
