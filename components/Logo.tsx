@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 const Logo = () => (
-  <Link href="/" aria-label="Joren D. Bagadiong, home">
+  <Link href="/" aria-label="Home">
     <span
       aria-hidden="true"
       className="inline-flex items-baseline text-4xl font-semibold tracking-tight"

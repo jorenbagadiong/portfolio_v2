@@ -19,16 +19,16 @@ test("no wipe on first load", async ({ page }) => {
   await page.goto("/")
   await page.waitForTimeout(300)
   await expect(wipe(page)).toHaveCount(0)
-  await page.goto("/profile")
+  await page.goto("/about")
   await page.waitForTimeout(300)
   await expect(wipe(page)).toHaveCount(0)
 })
 
 test("wipe plays on navigation", async ({ page, isMobile }) => {
   await page.goto("/")
-  await go(page, isMobile, "Profile")
+  await go(page, isMobile, "About")
   await expect(wipe(page)).toBeAttached()
-  await expect(wipe(page)).toContainText("Profile")
+  await expect(wipe(page)).toContainText("About")
   await expect(wipe(page)).toBeHidden({ timeout: 1200 })
   await expect(wipe(page)).toHaveCount(0)
 })
@@ -36,15 +36,15 @@ test("wipe plays on navigation", async ({ page, isMobile }) => {
 test("reduced motion: no wipe", async ({ page, isMobile }) => {
   await page.emulateMedia({ reducedMotion: "reduce" })
   await page.goto("/")
-  await go(page, isMobile, "Profile")
-  await expect(page).toHaveURL(/\/profile$/)
+  await go(page, isMobile, "About")
+  await expect(page).toHaveURL(/\/about$/)
   await page.waitForTimeout(300)
   await expect(wipe(page)).toHaveCount(0)
 })
 
 test("clicks not blocked", async ({ page, isMobile }) => {
   await page.goto("/")
-  await go(page, isMobile, "Profile")
+  await go(page, isMobile, "About")
   await expect(wipe(page)).toBeAttached()
   await go(page, isMobile, "Projects")
   await expect(page).toHaveURL(/\/projects$/)
@@ -52,8 +52,8 @@ test("clicks not blocked", async ({ page, isMobile }) => {
 
 test("rapid navigation restarts a single wipe", async ({ page, isMobile }) => {
   await page.goto("/")
-  await go(page, isMobile, "Profile")
-  await expect(wipe(page)).toContainText("Profile")
+  await go(page, isMobile, "About")
+  await expect(wipe(page)).toContainText("About")
   await go(page, isMobile, "Contact")
   await expect(page).toHaveURL(/\/contact$/)
   await expect(wipe(page)).toContainText("Contact")

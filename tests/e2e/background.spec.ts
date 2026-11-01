@@ -1,6 +1,6 @@
 import { expect, test } from "./fixtures"
 
-const routes = ["/", "/profile", "/projects", "/contact"]
+const routes = ["/", "/about", "/projects", "/contact"]
 
 function collectErrors(page: import("@playwright/test").Page) {
   const errors: string[] = []

@@ -40,7 +40,7 @@ test("home: hero name meets AA", async ({ page }) => {
 
 test("active nav link meets AA", async ({ page, isMobile }) => {
   test.skip(!!isMobile, "desktop nav")
-  await page.goto("/profile")
+  await page.goto("/about")
   const link = page.locator("header nav a[aria-current='page']")
   expect(await ratioAgainstBg(page, link)).toBeGreaterThanOrEqual(4.5)
 })
@@ -52,7 +52,7 @@ test("contact: accent heading span meets AA", async ({ page }) => {
 })
 
 test("profile: timeline date (small text) meets AA", async ({ page }) => {
-  await page.goto("/profile")
+  await page.goto("/about")
   const date = page.locator("main span.text-accent-text.text-sm").first()
   expect(await ratioAgainstBg(page, date)).toBeGreaterThanOrEqual(4.5)
 })

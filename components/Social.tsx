@@ -9,13 +9,14 @@ type Props = {
 const Social = ({ containerStyles = "", iconStyles = "" }: Props) => {
   return (
     <div className={containerStyles}>
-      {SOCIALS.map(({ path, name, icon: Icon }) => (
+      {SOCIALS.map(({ path, label, icon: Icon }) => (
         <Link
           key={path}
           href={path}
-          aria-label={name}
+          aria-label={label}
           className={iconStyles}
           target="_blank"
+          rel="noopener noreferrer"
         >
           <Icon aria-hidden="true" />
         </Link>

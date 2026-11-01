@@ -43,7 +43,7 @@ export function ProjectModal({ project }: { project: Project }) {
           </Dialog.Title>
           <Dialog.Close
             aria-label="Close"
-            className="absolute right-4 top-4 rounded-full p-2 text-accent-text outline-none transition-colors hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="absolute right-4 top-4 rounded-full p-2 text-accent-text outline-none transition-colors hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-text"
           >
             <IoMdClose className="text-2xl" />
           </Dialog.Close>

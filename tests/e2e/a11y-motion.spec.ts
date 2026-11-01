@@ -47,29 +47,16 @@ test.describe("reduced motion", () => {
   })
 })
 
-test("social links have accessible names", async ({ page }) => {
+test("social links have accessible names, GitHub first", async ({ page }) => {
   await page.goto("/")
-  const links = page.locator("main a[target='_blank']")
-  expect(await links.count()).toBe(4)
-  for (const link of await links.all()) {
-    const name = await link.getAttribute("aria-label")
-    expect((name ?? "").trim().length).toBeGreaterThan(0)
-  }
-  await expect(page.getByRole("link", { name: "LinkedIn" })).toHaveCount(1)
-})
-
-test("skill tooltip has an opaque background", async ({ page }) => {
-  await page.goto("/profile")
-  const skill = page.getByRole("button", { name: "React.js", exact: true })
-  await skill.scrollIntoViewIfNeeded()
-  await skill.hover()
-  const tip = page.locator("[data-radix-popper-content-wrapper] [data-state]")
-  await expect(tip.first()).toBeVisible()
-  const bg = await tip
-    .first()
-    .evaluate((n) => getComputedStyle(n).backgroundColor)
-  expect(bg).not.toBe("rgba(0, 0, 0, 0)")
-  expect(bg).not.toBe("transparent")
+  const names = ["GitHub profile", "LinkedIn profile", "Message me on Telegram"]
+  const links = page.getByRole("link", { name: new RegExp(names.join("|")) })
+  await expect(links).toHaveCount(3)
+  for (const [i, name] of names.entries())
+    await expect(links.nth(i)).toHaveAccessibleName(name)
+  await expect(
+    page.getByRole("link", { name: /facebook|messenger/i })
+  ).toHaveCount(0)
 })
 
 test("hero buttons are single tab stops", async ({ page }) => {

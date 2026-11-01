@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 
 import { ProjectDetail } from "@/components/projects/ProjectDetail"
 import { getProjectBySlug, projects } from "@/lib/site-data"
+import { pageMetadata } from "@/lib/metadata"
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -15,10 +16,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const project = getProjectBySlug(slug)
   if (!project) return {}
-  return {
-    title: `${project.title} | Joren Bagadiong`,
-    description: project.description,
-  }
+  const metadata = pageMetadata({
+    title: project.title,
+    description: project.pitch,
+    path: `/projects/${project.slug}`,
+  })
+  // Drafts only exist in development, but never let them be indexed.
+  if (project.draft) metadata.robots = { index: false, follow: false }
+  return metadata
 }
 
 export default async function ProjectPage({ params }: Props) {

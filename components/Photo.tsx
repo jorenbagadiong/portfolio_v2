@@ -12,7 +12,7 @@ const Photo = () => {
           quality={80}
           fill
           sizes="(min-width: 1280px) 498px, (min-width: 640px) 298px, 170px"
-          alt=""
+          alt="Portrait of Joren Bagadiong"
           className="object-cover"
         />
       </div>

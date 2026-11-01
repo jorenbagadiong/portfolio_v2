@@ -10,6 +10,7 @@ import StaticBackground from "@/components/StaticBackground"
 import ParticleBackground from "@/components/three/ParticleBackgroundLazy"
 
 import { INTRO_FLAG } from "@/lib/intro"
+import { SITE_NAME, SITE_URL } from "@/lib/metadata"
 
 import "./globals.css"
 
@@ -23,9 +24,12 @@ const jetbrainsMono = JetBrains_Mono({
 const INTRO_HEAD_SCRIPT = `(function(){var d=document.documentElement;d.classList.add('js');try{if(!sessionStorage.getItem('${INTRO_FLAG}')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro')}catch(e){}})()`
 
 export const metadata: Metadata = {
-  title: "Joren D. Bagadiong | Frontend Web Developer",
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
   description:
     "Portfolio of Joren D. Bagadiong, a frontend developer focused on creating fast and accessible websites with React, Next.js, and Tailwind CSS.",
+  openGraph: { type: "website", siteName: SITE_NAME, locale: "en_US" },
+  twitter: { card: "summary_large_image" },
   keywords: [
     "Joren D. Bagadiong",
     "Frontend Developer",

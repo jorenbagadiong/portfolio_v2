@@ -1,7 +1,7 @@
 import { expect, test } from "./fixtures"
 
 test("timeline shows all experience entries", async ({ page }) => {
-  await page.goto("/profile")
+  await page.goto("/about")
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1)
   await expect(page.getByText("TDH International Inc")).toBeVisible()
   await page.getByText("MadTech Geek").scrollIntoViewIfNeeded()
@@ -9,7 +9,7 @@ test("timeline shows all experience entries", async ({ page }) => {
 })
 
 test("responsibilities toggle", async ({ page }) => {
-  await page.goto("/profile")
+  await page.goto("/about")
   await expect(
     page.getByRole("button", { name: /show responsibilities/i }).first()
   ).toBeVisible()
@@ -18,25 +18,41 @@ test("responsibilities toggle", async ({ page }) => {
   await expect(toggle).toHaveAttribute("aria-expanded", "false")
   await toggle.click()
   await expect(toggle).toHaveAttribute("aria-expanded", "true")
-  const text = page.getByText("Converted Figma UI/UX designs")
+  const text = page.getByText("Built a custom React icon library")
   await expect(text).toBeVisible()
   await toggle.focus()
   await page.keyboard.press("Enter")
   await expect(text).toBeHidden()
 })
 
-test("skill names available", async ({ page }) => {
-  await page.goto("/profile")
-  const skill = page.getByRole("button", { name: "React.js", exact: true })
-  await skill.scrollIntoViewIfNeeded()
-  await skill.focus()
-  await expect(page.getByRole("tooltip")).toContainText("React.js")
+test("skills are a grouped list, no percentages", async ({ page }) => {
+  await page.goto("/about")
+  for (const group of [
+    "Frameworks",
+    "Styling",
+    "Testing",
+    "Animation",
+    "Tools",
+  ])
+    await expect(
+      page.getByRole("heading", { name: group, exact: true })
+    ).toHaveCount(1)
+  await expect(page.getByText("Tailwind CSS", { exact: true })).toBeAttached()
+  await expect(page.getByText(/\d+%/)).toHaveCount(0)
+  await expect(
+    page.getByRole("heading", { name: "My Proficiency" })
+  ).toHaveCount(0)
+})
+
+test("has its own title", async ({ page }) => {
+  await page.goto("/about")
+  await expect(page).toHaveTitle("About | Joren Bagadiong – Frontend Developer")
 })
 
 test.describe("light accent text contrast", () => {
   test.use({ colorScheme: "light" })
   test("timeline date meets AA against --bg", async ({ page }) => {
-    await page.goto("/profile")
+    await page.goto("/about")
     const date = page.locator("main li span.text-accent-text").first()
     await expect(date).toBeVisible()
     const { fg, bg } = await page.evaluate(() => {
