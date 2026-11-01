@@ -9,9 +9,9 @@ const HireMeButton = ({ className }: { className?: string }) => {
   const pathname = usePathname()
   if (!shouldShowHireMe(pathname)) return null
   return (
-    <Link href="/contact" className={className}>
-      <Button>Hire me!</Button>
-    </Link>
+    <Button asChild className={className}>
+      <Link href="/contact">Hire me!</Link>
+    </Button>
   )
 }
 

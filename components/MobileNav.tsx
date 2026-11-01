@@ -32,9 +32,9 @@ const MobileNav = () => {
         </DialogTitle>
         <div className="my-28 text-center text-2xl">
           <Link href="/">
-            <h1 className="text-4xl font-semibold">
+            <span className="text-4xl font-semibold">
               Joren <span className="text-accent-text">.</span>
-            </h1>
+            </span>
           </Link>
         </div>
         <nav className="flex flex-col justify-center items-center gap-4">

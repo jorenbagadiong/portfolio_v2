@@ -267,16 +267,17 @@ export const skills = {
   ] as SkillItem[],
 }
 
-export type SocialItem = { icon: IconType; path: string }
+export type SocialItem = { icon: IconType; path: string; name: string }
 
 export const socials: SocialItem[] = [
   {
+    name: "LinkedIn",
     icon: FaLinkedinIn,
     path: "https://www.linkedin.com/in/joren-bagadiong-8943a3213",
   },
-  { icon: FaTelegramPlane, path: "https://t.me/jorenbagadiong" },
-  { icon: FaFacebookMessenger, path: "https://m.me/jorenbagadiong" },
-  { icon: FaFacebookF, path: "https://www.facebook.com/jorenbagadiong" },
+  { name: "Telegram", icon: FaTelegramPlane, path: "https://t.me/jorenbagadiong" },
+  { name: "Messenger", icon: FaFacebookMessenger, path: "https://m.me/jorenbagadiong" },
+  { name: "Facebook", icon: FaFacebookF, path: "https://www.facebook.com/jorenbagadiong" },
 ]
 
 export const contactInfo: {
