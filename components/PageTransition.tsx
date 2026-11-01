@@ -21,7 +21,7 @@ const PageTransition = ({ children }: Props) => {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={pathname}
+        key={/^\/projects(\/|$)/.test(pathname) ? "/projects" : pathname}
         initial={reduced || !mounted ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         exit={

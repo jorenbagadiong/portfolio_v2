@@ -6,7 +6,7 @@ import { animate, stagger } from "animejs"
 
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
 import { particles } from "@/lib/particle-store"
-import { routeLabel } from "@/lib/route-label"
+import { routeLabel, shouldWipe } from "@/lib/route-label"
 
 const BARS = 6
 const BAR_MS = 450
@@ -30,7 +30,9 @@ export default function StairTransition() {
   // Start (or restart) the wipe when the pathname changes after first render.
   useEffect(() => {
     if (prev.current === pathname) return
+    const from = prev.current
     prev.current = pathname
+    if (!shouldWipe(from, pathname)) return
     if (reduced || document.documentElement.classList.contains("intro")) return
     particles.pulse("ripple")
     setWipe({ key: pathname, label: routeLabel(pathname) })
