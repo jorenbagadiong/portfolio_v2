@@ -41,7 +41,7 @@ function lockPointer(root: HTMLElement) {
 }
 
 /**
- * Centered "Joren." over the assembling particles. The overlay is always
+ * Centered full name over the assembling particles. The overlay is always
  * server-rendered but only displayed while `html.intro` is set (see
  * globals.css), so there is no flash. The overlay is transparent so the
  * particles stay visible behind it.
@@ -130,8 +130,8 @@ export default function IntroLoader() {
       }}
     >
       <AnimatedName
-        text="Joren."
-        className="text-6xl xl:text-8xl font-semibold text-text"
+        text="Joren D. Bagadiong"
+        className="whitespace-nowrap text-[clamp(1.5rem,8vw,6rem)] font-semibold text-text"
       />
     </div>
   )

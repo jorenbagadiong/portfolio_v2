@@ -4,10 +4,12 @@ import { expect, test } from "./fixtures"
 const card = (page: Page, name: string) =>
   page.getByRole("link", { name: new RegExp(name, "i") })
 
-test("grid lists all four projects", async ({ page }) => {
+test("grid lists all six projects", async ({ page }) => {
   await page.goto("/projects")
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1)
   for (const name of [
+    "MotionLab",
+    "PokeLab",
     "Cryptoweb App",
     "Pet grooming",
     "CryptoList",

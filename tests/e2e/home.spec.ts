@@ -15,7 +15,7 @@ test("heading names Joren", async ({ page }) => {
   await page.goto("/")
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1)
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Joren Bagadiong"
+    "Joren D. Bagadiong"
   )
 })
 

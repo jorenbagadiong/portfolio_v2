@@ -20,7 +20,7 @@ const Home = () => {
             <h1 className="text-[28px] min-[400px]:text-[34px] sm:text-[48px] xl:text-[60px] leading-[1.1] font-semibold mb-6">
               Hello, I&apos;m <br />
               <AnimatedName
-                text="Joren Bagadiong"
+                text="Joren D. Bagadiong"
                 waitForIntro
                 className="text-accent-text"
               />

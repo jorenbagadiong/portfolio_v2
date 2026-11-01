@@ -41,7 +41,7 @@ const groups: TimelineGroup[] = [
 export default function Profile() {
   return (
     <div className="container mx-auto py-12">
-      <h1 className="text-5xl font-bold mb-12">Profile</h1>
+      <h1 className="sr-only">Profile</h1>
       <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-14">
         <Timeline groups={groups} />
         <SkillsPanel skills={skills} proficiency={proficiency} />
