@@ -64,10 +64,10 @@ test("hero is visible with JavaScript disabled", async ({ browser }) => {
   const page = await context.newPage()
   await page.goto("/")
   await expect(
-    page.getByRole("heading", { name: "Joren Bagadiong" })
+    page.getByRole("heading", { name: "Joren D. Bagadiong" })
   ).toBeVisible()
   const opacity = await page
-    .getByRole("heading", { name: "Joren Bagadiong" })
+    .getByRole("heading", { name: "Joren D. Bagadiong" })
     .evaluate((el) => {
       let product = 1
       for (let node: Element | null = el; node; node = node.parentElement) {

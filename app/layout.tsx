@@ -23,11 +23,11 @@ const jetbrainsMono = JetBrains_Mono({
 const INTRO_HEAD_SCRIPT = `(function(){var d=document.documentElement;d.classList.add('js');try{if(!sessionStorage.getItem('${INTRO_FLAG}')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro')}catch(e){}})()`
 
 export const metadata: Metadata = {
-  title: "Joren Bagadiong | Frontend Web Developer",
+  title: "Joren D. Bagadiong | Frontend Web Developer",
   description:
-    "Portfolio of Joren Bagadiong, a frontend developer focused on creating fast and accessible websites with React, Next.js, and Tailwind CSS.",
+    "Portfolio of Joren D. Bagadiong, a frontend developer focused on creating fast and accessible websites with React, Next.js, and Tailwind CSS.",
   keywords: [
-    "Joren Bagadiong",
+    "Joren D. Bagadiong",
     "Frontend Developer",
     "Web Developer",
     "Next.js",
