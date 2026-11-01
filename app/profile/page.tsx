@@ -1,182 +1,11 @@
 "use client"
-import { ReactNode } from "react"
-import { FaHtml5, FaCss3, FaJs, FaReact, FaFigma } from "react-icons/fa"
-import { SiTailwindcss, SiNextdotjs, SiTypescript, SiMui } from "react-icons/si"
-import { TbBrandFramerMotion } from "react-icons/tb"
-
-// Type Definitions
-type ExperienceItem = {
-  company: string
-  position: string
-  duration: string
-  responsibilities: string[]
-}
-
-type EducationItem = {
-  college: string
-  degree: string
-  duration: string
-}
-
-type SkillItem = {
-  icon: ReactNode
-  name: string
-}
-
-type CertificationItem = {
-  college: string
-  degree: string
-  duration: string
-}
-
-type ProficiencyItem = {
-  name: string
-  percentage: number
-}
-
-const EXPERIENCE = {
-  icon: "/assets/profile/globe.svg",
-  title: "My Experience",
-  items: [
-    {
-      company: "TDH International Inc",
-      position: "Frontend Web Developer",
-      duration: "February 2022 - Present",
-      responsibilities: [
-        "Developed responsive, high-performance web apps, including secure payment platforms and back-office systems.",
-        "Converted Figma UI/UX designs into clean, reusable code for seamless, pixel-perfect experiences.",
-        "Optimized application speed and scalability through advanced performance techniques.",
-        "Ensured cross-browser and cross-device compatibility for consistent user experiences.",
-        "Collaborated with designers and back-end teams to integrate APIs and dynamic content.",
-        "Applied best practices in accessibility, SEO, and responsive design.",
-        "Maintained code quality via Git workflows and peer reviews.",
-        "Conducted unit testing with Jest and end-to-end testing with Cypress.",
-        "Troubleshot and resolved technical issues to improve system reliability.",
-        "Adopted emerging technologies to keep products competitive and innovative.",
-      ],
-    },
-    {
-      company: "MadTech Geek",
-      position: "Frontend Web Developer",
-      duration: "July 2021 - October 2021",
-      responsibilities: [
-        "Develop, test, and maintain responsive websites and web applications.",
-        "Ensure cross-browser and cross-device compatibility.",
-        "Collaborate with designers and back-end developers to integrate APIs and dynamic content.",
-        "Troubleshoot, debug, and improve existing applications.",
-        "Stay updated with emerging technologies, frameworks, and design trends.",
-      ],
-    },
-    {
-      company: "OLE Elite Software Philippines Inc",
-      position: "Frontend Web Developer",
-      duration: "October 2020 - June 2021",
-      responsibilities: [
-        "Develop, test, and maintain responsive websites and web applications.",
-        "Collaborate with designers and back-end developers to integrate APIs and dynamic content.",
-        "Troubleshoot, debug, and improve existing applications.",
-        "Stay updated with emerging technologies, frameworks, and design trends.",
-      ],
-    },
-    {
-      company: "H.R.D Singapore Pte Ltd",
-      position: "Senior Staff",
-      duration: "February 2013 - March 2020",
-      responsibilities: [
-        "In-charge in innovating, developing and maintenance of the system in 2 years as Full Stack Developer",
-        "Handling technical feedback from user",
-        "Research and exploration of web system for its development and usefulness",
-      ],
-    },
-  ] as ExperienceItem[],
-}
-
-const EDUCATION = {
-  icon: "/assets/profile/globe.svg",
-  title: "My Education",
-  items: [
-    {
-      college: "International Electronics and Technical Institute",
-      degree: "Associate in Information and Communication Technology",
-      duration: "2006 - 2008",
-    },
-    {
-      college: "Emiliano Tria Tirona Memorial National High School",
-      degree: "Highschool",
-      duration: "2008 - 2002",
-    },
-  ] as EducationItem[],
-}
-
-const CERTIFICATION = {
-  icon: "/assets/profile/globe.svg",
-  title: "My Certification",
-  items: [
-    {
-      college: "UX+",
-      degree: "Certification of Attendance in UX+ Conference 2024",
-      duration: "2024",
-    },
-    {
-      college: "UX+",
-      degree: "Certification of Attendance in UX+ Conference 2023",
-      duration: "2023",
-    },
-    {
-      college: "Udemy",
-      degree: "React - The Complete Guide 2025 (incl. Next.js, Redux)",
-      duration: "2022",
-    },
-  ] as CertificationItem[],
-}
-
-const PROFICIENCY = {
-  title: "My Proficiency",
-  items: [
-    {
-      name: "Frontend Web Development",
-      percentage: 93,
-    },
-    {
-      name: "React.js | Next.js",
-      percentage: 85,
-    },
-    {
-      name: "Unit Testing(Jest) and End-to-End Testing(Cypress)",
-      percentage: 80,
-    },
-    {
-      name: "Tailwindcss | MaterialUI - Component Styling",
-      percentage: 85,
-    },
-    {
-      name: "Framer Motion - Animation",
-      percentage: 75,
-    },
-    {
-      name: "Problem Solving",
-      percentage: 98,
-    },
-  ] as ProficiencyItem[],
-}
-
-const SKILLS = {
-  icon: "/assets/profile/globe.svg",
-  title: "My Skills",
-  skillList: [
-    { icon: <FaReact />, name: "React.js" },
-    { icon: <SiNextdotjs />, name: "Next.js" },
-    { icon: <SiTailwindcss />, name: "Tailwindcss" },
-    { icon: <SiMui />, name: "MUI" },
-    { icon: <FaHtml5 />, name: "HTML5" },
-    { icon: <FaCss3 />, name: "CSS3" },
-    { icon: <FaJs />, name: "Javascript" },
-    { icon: <SiTypescript />, name: "Typescript" },
-    { icon: <TbBrandFramerMotion />, name: "Framer Motion" },
-    { icon: <FaFigma />, name: "Figma" },
-  ] as SkillItem[],
-}
-
+import {
+  experience as EXPERIENCE,
+  education as EDUCATION,
+  certifications as CERTIFICATION,
+  proficiency as PROFICIENCY,
+  skills as SKILLS,
+} from "@/lib/site-data"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Tooltip,
@@ -342,7 +171,7 @@ const Profile = () => {
                             <Tooltip>
                               <TooltipTrigger className="w-full h-[150px] bg-[#232329] rounded-xl flex justify-center items-center group">
                                 <div className="text-6xl group-hover:text-accent transition-all duration-300 ">
-                                  {skill.icon}
+                                  <skill.icon />
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent>

@@ -5,26 +5,8 @@ import { DialogTitle } from "@radix-ui/react-dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { navLinks } from "@/lib/site-data"
 import { CiMenuFries } from "react-icons/ci"
-
-const LINKS = [
-  {
-    name: "home",
-    path: "/",
-  },
-  {
-    name: "profile",
-    path: "/profile",
-  },
-  {
-    name: "work",
-    path: "/work",
-  },
-  {
-    name: "contact",
-    path: "/contact",
-  },
-]
 
 const MobileNav = () => {
   const pathname = usePathname()
@@ -46,7 +28,7 @@ const MobileNav = () => {
           </Link>
         </div>
         <nav className="flex flex-col justify-center items-center gap-4">
-          {LINKS.map((link, index) => {
+          {navLinks.map((link, index) => {
             return (
               <Link
                 href={link.path}

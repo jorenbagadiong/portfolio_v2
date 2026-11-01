@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa"
 import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import emailjs from "@emailjs/browser"
@@ -18,26 +17,9 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form"
+import { contactInfo as INFO } from "@/lib/site-data"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-
-const INFO = [
-  {
-    icon: <FaPhoneAlt />,
-    title: "Phone",
-    description: "+63 915 395 4186",
-  },
-  {
-    icon: <FaEnvelope />,
-    title: "Email",
-    description: "joren.bagadiong14@gmail.com",
-  },
-  {
-    icon: <FaMapMarkerAlt />,
-    title: "Address",
-    description: "Micara Estates, Sahud-Ulan, Tanza, Cavite",
-  },
-]
 
 const ContactFormSchema = z.object({
   fullname: z.string().nonempty("Full Name is required"),
@@ -107,7 +89,9 @@ const Contact = () => {
                 return (
                   <li key={index} className="flex items-center gap-6 ">
                     <div className="w-[52px] h-[52px] xl:w-[72px] xl:h-[72px] bg-[#27272c] text-accent rounded-md flex items-center justify-center">
-                      <div className="text-[28px] ">{item.icon}</div>
+                      <div className="text-[28px] ">
+                        <item.icon />
+                      </div>
                     </div>
                     <div className="flex flex-col w-full">
                       <p className="text-white/60">{item.title}</p>

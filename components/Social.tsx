@@ -1,34 +1,10 @@
 import Link from "next/link"
-import { IconType } from "react-icons"
-import {
-  FaFacebookF,
-  FaFacebookMessenger,
-  FaLinkedinIn,
-  FaTelegramPlane,
-} from "react-icons/fa"
-
-type SocialItem = {
-  icon: IconType
-  path: string
-}
+import { socials as SOCIALS } from "@/lib/site-data"
 
 type Props = {
   containerStyles?: string
   iconStyles?: string
 }
-
-const SOCIALS: SocialItem[] = [
-  {
-    icon: FaLinkedinIn,
-    path: "https://www.linkedin.com/in/joren-bagadiong-8943a3213",
-  },
-  { icon: FaTelegramPlane, path: "https://t.me/jorenbagadiong" },
-  {
-    icon: FaFacebookMessenger,
-    path: "https://m.me/jorenbagadiong",
-  },
-  { icon: FaFacebookF, path: "https://www.facebook.com/jorenbagadiong" },
-]
 
 const Social = ({ containerStyles = "", iconStyles = "" }: Props) => {
   return (

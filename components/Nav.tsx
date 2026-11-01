@@ -2,31 +2,13 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-
-const LINKS = [
-  {
-    name: "home",
-    path: "/",
-  },
-  {
-    name: "profile",
-    path: "/profile",
-  },
-  {
-    name: "work",
-    path: "/work",
-  },
-  {
-    name: "contact",
-    path: "/contact",
-  },
-]
+import { navLinks } from "@/lib/site-data"
 
 const Nav = () => {
   const pathname = usePathname()
   return (
     <nav className="flex gap-8">
-      {LINKS.map((link, index) => {
+      {navLinks.map((link, index) => {
         return (
           <Link
             href={link.path}

@@ -15,70 +15,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { projects as PROJECTS } from "@/lib/site-data"
 import WorkSliderBtns from "@/components/WorkSliderBtns"
-
-type Project = {
-  num: string
-  category: string
-  title: string
-  description: string
-  stack: { name: string }[]
-  image: string
-  live: string
-  github: string
-}
-
-const PROJECTS: Project[] = [
-  {
-    num: "01",
-    category: "frontend",
-    title: "Cryptoweb App",
-    description:
-      "A personal practice project built with Next.js, Tailwind CSS, and animation libraries, showcasing my learning in modern frontend development and smooth UI interactions.",
-    stack: [{ name: "Next.js" }, { name: "Tailwindcss" }],
-    image: "/assets/profile/projects/cryptowebapp.svg",
-    live: "https://cryptowebapp-six.vercel.app/",
-    github: "https://github.com/jorenbagadiong/cryptowebapp",
-  },
-  {
-    num: "02",
-    category: "frontend",
-    title: "Pet grooming",
-    description:
-      "A personal practice project — a pet grooming landing page — built with Next.js and Tailwind CSS while exploring modern frontend development techniques.",
-    stack: [{ name: "Next.js" }, { name: "Tailwindcss" }],
-    image: "/assets/profile/projects/petgrooming.svg",
-    live: "https://jorenbagadiong.github.io/petgrooming",
-    github: "https://github.com/jorenbagadiong/petgrooming",
-  },
-  {
-    num: "03",
-    category: "frontend",
-    title: "CryptoList",
-    description:
-      "A personal practice project — CryptoList, a web app displaying a list of cryptocurrency tokens — built while learning React and API data fetching.",
-    stack: [{ name: "React.js" }, { name: "Axios" }],
-    image: "/assets/profile/projects/cryptolist.svg",
-    live: "https://jorenbagadiong.github.io/CryptoList/",
-    github: "https://github.com/jorenbagadiong/CryptoList",
-  },
-  {
-    num: "04",
-    category: "frontend",
-    title: "Portfolio v1",
-    description:
-      "My first portfolio website, built with Next.js, Tailwind CSS, and EmailJS for contact form integration.",
-    stack: [
-      { name: "Next.js" },
-      { name: "Tailwindcss" },
-      { name: "Axios" },
-      { name: "Emailjs" },
-    ],
-    image: "/assets/profile/projects/portfoliov1.svg",
-    live: "https://portfolio-jorenbagadiong.vercel.app//",
-    github: "https://github.com/jorenbagadiong/portfolio",
-  },
-]
 
 const Work = () => {
   const [project, setProject] = useState(PROJECTS[0])
