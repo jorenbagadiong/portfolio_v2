@@ -28,7 +28,7 @@ async function ratioAgainstBg(page: Page, el: Locator) {
 
 test("home: Download CV outline button text meets AA", async ({ page }) => {
   await page.goto("/")
-  const btn = page.locator("main button", { hasText: /download cv/i })
+  const btn = page.locator("main a[download]")
   expect(await ratioAgainstBg(page, btn.first())).toBeGreaterThanOrEqual(4.5)
 })
 
