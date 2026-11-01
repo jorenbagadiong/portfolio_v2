@@ -1,8 +1,11 @@
 "use client"
 
-import { ReactNode } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
+
+import { isProjectsRoute } from "@/lib/route-label"
+import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
 
 type Props = {
   children: ReactNode
@@ -10,19 +13,25 @@ type Props = {
 
 const PageTransition = ({ children }: Props) => {
   const pathname = usePathname()
+  const reduced = usePrefersReducedMotion()
+  // Server and first client render use initial={false}: no inline opacity 0,
+  // so the page is visible before hydration. Later route changes get the fade.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
   return (
-    <AnimatePresence>
-      <div key={pathname}>
-        <motion.div
-          initial={{ opacity: 1 }}
-          animate={{
-            opacity: 0,
-            transition: { delay: 1, duration: 0.4, ease: "easeInOut" },
-          }}
-          className="h-screen w-screen fixed bg-primary top-0 pointer-events-none"
-        />
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={isProjectsRoute(pathname) ? "/projects" : pathname}
+        initial={reduced || !mounted ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={
+          reduced ? undefined : { opacity: 0, transition: { duration: 0.25 } }
+        }
+        transition={reduced ? { duration: 0 } : undefined}
+      >
         {children}
-      </div>
+      </motion.div>
     </AnimatePresence>
   )
 }

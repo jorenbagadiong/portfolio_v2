@@ -5,14 +5,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-base font-semibold ring-offset-white transition-colors",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-base font-semibold transition-colors",
   {
     variants: {
       variant: {
-        default: "bg-accent text-primary hover:bg-accent-hover",
-        primary: "bg-primary text-white",
+        default: "bg-accent text-on-accent hover:bg-accent-hover",
+        primary: "bg-bg text-text",
         outline:
-          "border border-accent bg-transparent text-accent hover:bg-accent hover:text-primary",
+          "border border-accent bg-transparent text-accent-text hover:bg-accent hover:text-on-accent",
       },
       size: {
         default: "h-[44px] px-6",
@@ -28,7 +28,8 @@ const buttonVariants = cva(
 )
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }

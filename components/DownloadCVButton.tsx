@@ -6,16 +6,17 @@ import { Button } from "@/components/ui/button"
 
 const DownloadCVButton: React.FC = () => {
   return (
-    <a href="/assets/files/Joren_Bagadiong_Resume_ATS.pdf" download>
-      <Button
-        variant="outline"
-        size="lg"
-        className="uppercase flex items-center gap-2"
-      >
+    <Button
+      asChild
+      variant="outline"
+      size="lg"
+      className="uppercase flex items-center gap-2"
+    >
+      <a href="/assets/files/Joren_Bagadiong_Resume_ATS.pdf" download>
         <span>Download CV</span>
         <FiDownload className="text-xl" />
-      </Button>
-    </a>
+      </a>
+    </Button>
   )
 }
 

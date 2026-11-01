@@ -1,6 +1,12 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: "/work", destination: "/projects", permanent: true },
+      { source: "/work/:path*", destination: "/projects", permanent: true },
+    ]
+  },
   async rewrites() {
     return [
       {

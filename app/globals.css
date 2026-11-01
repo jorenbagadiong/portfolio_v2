@@ -3,8 +3,36 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --bg: 245 247 246;
+    --surface: rgba(255, 255, 255, 0.7);
+    --border: rgba(0, 0, 0, 0.08);
+    --text: 17 19 23;
+    --muted: #5b6370;
+    --accent: 0 168 107;
+    --accent-hover: 0 143 91;
+    --accent-text: 0 122 77;
+    --destructive: 198 40 40;
+    --particle: 0 168 107;
+    --on-accent: 17 19 23;
+  }
+
+  .dark {
+    --bg: 28 28 34;
+    --surface: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.12);
+    --text: 255 255 255;
+    --muted: rgba(255, 255, 255, 0.6);
+    --accent: 0 255 153;
+    --accent-hover: 0 225 135;
+    --accent-text: 0 255 153;
+    --destructive: 255 107 107;
+    --particle: 0 255 153;
+    --on-accent: 28 28 34;
+  }
+
   body {
-    @apply font-primary bg-primary text-white leading-loose;
+    @apply font-primary bg-bg text-text leading-loose;
   }
 
   .h1 {
@@ -21,9 +49,77 @@
 }
 
 .text-outline {
-  -webkit-text-stroke: 1px #ffffff;
+  -webkit-text-stroke: 1px rgb(var(--text));
 }
 
 .text-outline-hover {
-  -webkit-text-stroke: 1px #00ff99;
+  -webkit-text-stroke: 1px rgb(var(--accent));
+}
+
+/* Server-rendered initial hidden state for motion primitives. Only applies when
+   JS is present (.js set by an inline script in <head>) and motion is allowed,
+   so reduced-motion and no-JS users see content immediately. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .motion-hidden {
+    opacity: 0;
+  }
+  .js .motion-hidden-letters > span {
+    opacity: 0;
+  }
+  .js .motion-hidden-ring circle {
+    opacity: 0;
+  }
+}
+
+/* Loading intro. The head script sets html.intro before first paint; header and
+   main stay hidden until IntroLoader removes it. The CSS-only animation reveals
+   them after 3s regardless, so content can never stay stuck hidden. */
+header,
+main {
+  transition: opacity 0.3s ease;
+}
+
+.intro-overlay {
+  display: none;
+}
+
+@keyframes intro-failsafe {
+  to {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Hidden content must not be clickable, and the click that skips the intro is
+   swallowed by .intro-lock (see IntroLoader). */
+html.intro-lock header,
+html.intro-lock main {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.intro header,
+  html.intro main {
+    opacity: 0;
+    pointer-events: none;
+    animation: intro-failsafe 0.3s ease 3s forwards;
+  }
+  html.intro .intro-overlay,
+  .intro-overlay[data-phase="fading"] {
+    display: flex;
+  }
+}
+
+/* If hydration fails the overlay must not linger over the revealed content. */
+@keyframes intro-overlay-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.intro .intro-overlay {
+    animation: intro-overlay-failsafe 0.3s ease 3s forwards;
+  }
 }

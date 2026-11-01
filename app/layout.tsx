@@ -1,10 +1,15 @@
 import type { Metadata } from "next"
 import { JetBrains_Mono } from "next/font/google"
-import { Toaster } from "sonner"
 
+import IntroLoader from "@/components/IntroLoader"
 import Header from "@/components/Header"
-import PageTransition from "@/components/PageTransition"
 import StairTransition from "@/components/StairTransition"
+import PageTransition from "@/components/PageTransition"
+import ThemeProvider from "@/components/ThemeProvider"
+import StaticBackground from "@/components/StaticBackground"
+import ParticleBackground from "@/components/three/ParticleBackgroundLazy"
+
+import { INTRO_FLAG } from "@/lib/intro"
 
 import "./globals.css"
 
@@ -13,6 +18,9 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
   subsets: ["latin"],
 })
+
+// Adds `js`, and `intro` when the intro should play, before first paint.
+const INTRO_HEAD_SCRIPT = `(function(){var d=document.documentElement;d.classList.add('js');try{if(!sessionStorage.getItem('${INTRO_FLAG}')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro')}catch(e){}})()`
 
 export const metadata: Metadata = {
   title: "Joren Bagadiong | Frontend Web Developer",
@@ -35,15 +43,26 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.jpg" sizes="any" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: INTRO_HEAD_SCRIPT,
+          }}
+        />
       </head>
       <body className={jetbrainsMono.variable}>
-        <Header />
-        <StairTransition />
-        <PageTransition>{children}</PageTransition>
-        <Toaster position="top-right" richColors />
+        <ThemeProvider>
+          <StaticBackground />
+          <ParticleBackground />
+          <IntroLoader />
+          <StairTransition />
+          <Header />
+          <main>
+            <PageTransition>{children}</PageTransition>
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   )
