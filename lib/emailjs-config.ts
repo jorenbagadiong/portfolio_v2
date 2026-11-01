@@ -9,6 +9,10 @@ const defaultEnv = (): Record<string, string | undefined> => ({
   NEXT_PUBLIC_EMAILJS_PUBLIC_KEY: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
 })
 
+console.log("serviceId:", process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID)
+console.log("templateId:", process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID)
+console.log("publicKey:", process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY)
+
 export function getEmailJsConfig(
   env: Record<string, string | undefined> = defaultEnv()
 ): EmailJsConfig {
