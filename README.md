@@ -6,12 +6,12 @@ Personal portfolio site for Joren Bagadiong, frontend web developer. Built with 
 
 - **Framework:** [Next.js 15](https://nextjs.org) (App Router, Turbopack in dev)
 - **UI:** React 19, TypeScript, Tailwind CSS 3, [shadcn/ui](https://ui.shadcn.com) components on Radix UI primitives
-- **Animation:** Framer Motion (transitions, reveals, tilt), [Anime.js](https://animejs.com) v4 (name, rings, timeline)
-- **3D:** three, React Three Fiber and drei (particle background)
+- **Animation:** Framer Motion (transitions, reveals, tilt), [Anime.js](https://animejs.com) v4 (name, ring, stair-wipe label). The profile timeline line uses Framer Motion `useScroll`
+- **3D:** three and React Three Fiber (particle background)
 - **Theming:** next-themes (light, dark, system)
 - **Forms:** react-hook-form + Zod validation, sent through [EmailJS](https://www.emailjs.com)
 - **Notifications:** sonner
-- **Icons:** react-icons, lucide-react
+- **Icons:** react-icons
 
 ## Pages
 
@@ -29,7 +29,7 @@ Personal portfolio site for Joren Bagadiong, frontend web developer. Built with 
 
 ## Getting started
 
-Requirements: Node.js 18.18 or later, and Yarn (the repo ships a `yarn.lock`).
+Requirements: Node.js 20.19 or later, and Yarn (the repo ships a `yarn.lock`).
 
 ```bash
 yarn install
@@ -82,6 +82,8 @@ npx playwright install chromium  # one-time browser download
 yarn test:e2e                  # builds, serves and runs Playwright specs
 E2E_PORT=3260 yarn test:e2e    # use another port if 3100 is busy
 ```
+
+`yarn test:e2e` always builds and serves a fresh production build on `E2E_PORT` (default 3100); it never reuses an already running server.
 
 E2E specs import from `tests/e2e/fixtures.ts`, which marks the first-load intro as played so it does not race the tests.
 

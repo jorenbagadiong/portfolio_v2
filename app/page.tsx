@@ -13,7 +13,7 @@ const Home = () => {
           <div className="text-center xl:text-left order-2 xl:order-none max-xl:rounded-xl max-xl:bg-bg/60 max-xl:p-3">
             <div className="flex flex-wrap items-center justify-center xl:justify-start gap-3">
               <span className="text-xl text-muted">Frontend Web Developer</span>
-              <span className="inline-flex items-center rounded-full border border-accent px-3 py-1 font-mono text-xs uppercase tracking-wider text-accent-text">
+              <span className="inline-flex items-center rounded-full border border-accent px-3 py-1 font-primary text-xs uppercase tracking-wider text-accent-text">
                 5+ years
               </span>
             </div>

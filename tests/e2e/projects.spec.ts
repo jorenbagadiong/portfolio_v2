@@ -70,7 +70,7 @@ test("no stair wipe opening or closing the overlay", async ({ page }) => {
   await page.goForward()
   await expect(page.getByRole("dialog")).toBeVisible()
   await page.waitForTimeout(300)
-  expect(await wipeSeen(page)).toBeFalsy()
+  expect(await wipeSeen(page)).toBe(false)
 })
 
 test("control: wipe detector sees /projects to /contact", async ({

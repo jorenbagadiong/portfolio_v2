@@ -50,3 +50,9 @@ test("contact: accent heading span meets AA", async ({ page }) => {
   const span = page.locator("main h1 > span.block")
   expect(await ratioAgainstBg(page, span)).toBeGreaterThanOrEqual(4.5)
 })
+
+test("profile: timeline date (small text) meets AA", async ({ page }) => {
+  await page.goto("/profile")
+  const date = page.locator("main span.text-accent-text.text-sm").first()
+  expect(await ratioAgainstBg(page, date)).toBeGreaterThanOrEqual(4.5)
+})
