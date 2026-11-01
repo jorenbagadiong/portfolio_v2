@@ -31,7 +31,7 @@ export function AnimatedName({ text, className }: AnimatedNameProps) {
   return (
     <span className={className}>
       <span className="sr-only">{text}</span>
-      <span ref={ref} aria-hidden="true">
+      <span ref={ref} aria-hidden="true" className="motion-hidden-letters">
         {Array.from(text).map((ch, i) => (
           <span key={i} className="inline-block">
             {ch === " " ? " " : ch}

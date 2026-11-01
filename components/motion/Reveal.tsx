@@ -1,7 +1,7 @@
 "use client"
 
-import type { ReactNode } from "react"
-import { motion } from "framer-motion"
+import { useEffect, useRef, useState, type ReactNode } from "react"
+import { motion, useInView } from "framer-motion"
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
 
 type RevealProps = {
@@ -11,6 +11,12 @@ type RevealProps = {
   children: ReactNode
 }
 
+/**
+ * The element type is stable (always motion[as]) so a reduced-motion flip
+ * never remounts children. Server markup carries no inline opacity; the hidden
+ * state comes from the CSS-gated `motion-hidden` class (JS present + motion
+ * allowed). After mount we take over with animate values, revealing once in view.
+ */
 export function Reveal({
   as = "div",
   delay = 0,
@@ -18,19 +24,31 @@ export function Reveal({
   children,
 }: RevealProps) {
   const reduced = usePrefersReducedMotion()
+  const ref = useRef<HTMLElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.2 })
+  const [armed, setArmed] = useState(false)
 
-  if (reduced) {
-    const Tag = as
-    return <Tag>{children}</Tag>
-  }
+  useEffect(() => setArmed(true), [])
 
   const MotionTag = motion[as]
+
+  let animate
+  if (!armed) animate = undefined
+  else if (reduced) animate = { opacity: 1, y: 0, transition: { duration: 0 } }
+  else if (inView)
+    animate = {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as const },
+    }
+  else animate = { opacity: 0, y, transition: { duration: 0 } }
+
   return (
     <MotionTag
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
+      ref={ref as never}
+      initial={false}
+      animate={animate}
+      className="motion-hidden"
     >
       {children}
     </MotionTag>

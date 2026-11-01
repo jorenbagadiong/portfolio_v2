@@ -40,6 +40,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.jpg" sizes="any" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "document.documentElement.classList.add('js')",
+          }}
+        />
       </head>
       <body className={jetbrainsMono.variable}>
         <ThemeProvider>

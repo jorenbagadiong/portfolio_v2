@@ -51,3 +51,15 @@
 .text-outline-hover {
   -webkit-text-stroke: 1px rgb(var(--accent));
 }
+
+/* Server-rendered initial hidden state for motion primitives. Only applies when
+   JS is present (.js set by an inline script in <head>) and motion is allowed,
+   so reduced-motion and no-JS users see content immediately. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .motion-hidden {
+    opacity: 0;
+  }
+  .js .motion-hidden-letters > span {
+    opacity: 0;
+  }
+}

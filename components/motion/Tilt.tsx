@@ -17,10 +17,8 @@ export function Tilt({ max = 8, className, children }: TiltProps) {
   const rotateX = useSpring(rx, { stiffness: 200, damping: 20 })
   const rotateY = useSpring(ry, { stiffness: 200, damping: 20 })
 
-  if (reduced) return <div className={className}>{children}</div>
-
   function onMove(e: PointerEvent<HTMLDivElement>) {
-    if (window.matchMedia("(hover: none)").matches) return
+    if (reduced || window.matchMedia("(hover: none)").matches) return
     const rect = e.currentTarget.getBoundingClientRect()
     const px = (e.clientX - rect.left) / rect.width - 0.5
     const py = (e.clientY - rect.top) / rect.height - 0.5
