@@ -71,7 +71,7 @@ const allProjects: Project[] = [
     github: "https://github.com/jorenbagadiong/motionlab",
     tier: "main",
     problem:
-      "I learn best by building real projects, so I set out to make a complete component library: accessible, animated, and documented with live playgrounds.",
+      "Animated UI is easy to make look good and hard to make usable. Most animation snippets online ignore keyboard users, skip prefers-reduced-motion, and come as one-off demos that need reworking before they're usable in a real project. I wanted a library where every component is accessible by default, can be tuned live before you copy it, and works with either Motion or Anime.js, so developers don't have to choose between polished motion and inclusive UX.",
     role: "Personal project, built on my own.",
     outcome:
       "Shipped 24 accessible, animated components, each with a live playground and copy-ready code for Motion or Anime.js, in light and dark themes.",
@@ -98,7 +98,7 @@ const allProjects: Project[] = [
     github: "https://github.com/jorenbagadiong/pokelab",
     tier: "main",
     problem:
-      "I learn best by building real projects, so I built a full app on a large public API to practice search, data-heavy UI, and 3D rendering.",
+      "Most Pokédex sites are static lists or cluttered with ads, which makes it slow to look up a Pokémon, compare stats, or follow an evolution chain. With 1,025 Pokémon and data spread across many API endpoints, the challenge was keeping search instant and the interface responsive, while still adding richer features like side-by-side stat comparison, saved favorites, and a 3D WebGL showcase that doesn't slow the page down.",
     role: "Personal project, built on my own.",
     outcome:
       "Covers all 1,025 Pokémon with live PokéAPI data: search by name or number, stat comparison, evolution chains, type browsing, favorites, and a 3D WebGL showcase.",
@@ -289,7 +289,7 @@ export const experience = {
     },
     {
       company: "H.R.D Singapore Pte Ltd",
-      position: "Senior Staff",
+      position: "CAD Operator → Full Stack Developer",
       duration: "February 2013 - March 2020",
       responsibilities: [
         "Worked as a CAD Operator for five years (2013–2018), then moved into full stack development for my last two years (2018–2020).",
@@ -313,13 +313,13 @@ export const education = {
     {
       college: "Emiliano Tria Tirona Memorial National High School",
       degree: "High school",
-      duration: "2002 - 2008",
+      duration: "2002 - 2006",
     },
   ] as EducationItem[],
 }
 
 export const certifications = {
-  title: "My Certification",
+  title: "Certifications",
   items: [
     {
       college: "UX+",
@@ -333,7 +333,7 @@ export const certifications = {
     },
     {
       college: "Udemy",
-      degree: "React - The Complete Guide 2025 (incl. Next.js, Redux)",
+      degree: "React – The Complete Guide (incl. Next.js, Redux)",
       duration: "2022",
     },
   ] as CertificationItem[],
@@ -383,7 +383,7 @@ export const socials: SocialItem[] = [
   },
   {
     name: "Telegram",
-    label: "Message me on Telegram",
+    label: "Telegram",
     icon: FaTelegramPlane,
     path: "https://t.me/jorenbagadiong",
   },

@@ -10,12 +10,15 @@ type AnimatedNameProps = {
   className?: string
   /** Hold the animation until the loading intro has ended (hero use). */
   waitForIntro?: boolean
+  /** Purely visual copy (inside an aria-hidden container): skip the screen-reader text. */
+  decorative?: boolean
 }
 
 export function AnimatedName({
   text,
   className,
   waitForIntro = false,
+  decorative = false,
 }: AnimatedNameProps) {
   const reduced = usePrefersReducedMotion()
   const introDone = useIntroDone()
@@ -39,7 +42,7 @@ export function AnimatedName({
 
   return (
     <span className={className}>
-      <span className="sr-only">{text}</span>
+      {!decorative && <span className="sr-only">{text}</span>}
       <span ref={ref} aria-hidden="true" className="motion-hidden-letters">
         {Array.from(text).map((ch, i) => (
           <span key={i} className="inline-block">

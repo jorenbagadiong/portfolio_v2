@@ -131,6 +131,7 @@ export default function IntroLoader() {
     >
       <AnimatedName
         text="Joren D. Bagadiong"
+        decorative
         className="whitespace-nowrap text-[clamp(1.5rem,8vw,6rem)] font-semibold text-text"
       />
     </div>

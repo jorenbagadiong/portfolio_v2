@@ -49,7 +49,7 @@ test.describe("reduced motion", () => {
 
 test("social links have accessible names, GitHub first", async ({ page }) => {
   await page.goto("/")
-  const names = ["GitHub profile", "LinkedIn profile", "Message me on Telegram"]
+  const names = ["GitHub profile", "LinkedIn profile", "Telegram"]
   const links = page.getByRole("link", { name: new RegExp(names.join("|")) })
   await expect(links).toHaveCount(3)
   for (const [i, name] of names.entries())
