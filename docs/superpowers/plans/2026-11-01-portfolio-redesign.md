@@ -17,9 +17,9 @@
 - The import alias is `@/*` → repo root.
 - Content copy (experience, education, certifications, skills, proficiency, projects, stats, socials, contact info, the intro paragraph) is copied **verbatim** from the current files. Never reword it.
 - Color tokens are exactly as in the spec table. Dark: bg `#1c1c22`, accent `#00ff99`, hover `#00e187`. Light: bg `#f5f7f6`, accent `#00a86b`, hover `#008f5b`, text `#111317`, muted `#5b6370`.
-- Particle count: 1500 on desktop, 600 when `(max-width: 768px)` matches or `navigator.hardwareConcurrency <= 4`. DPR is `[1, 1.5]`.
-- Morph duration is 1.2s and the theme color tween is 400ms.
-- Route → pattern: `/` cloud, `/profile` column, `/projects` and `/projects/*` grid, `/contact` sphere, anything else cloud.
+- Particle count (revised in Task 6b): 260 on desktop, 140 when `(max-width: 768px)` matches or `navigator.hardwareConcurrency <= 4`. DPR is `[1, 1.5]`.
+- The intro assemble is 1.4s, the whole intro is capped at 2.0s, and the theme color tween is 400ms.
+- The particle field is the same on every route (revised in Task 6b). There is no per-route pattern.
 - "Hire me" links to `/contact` and is hidden when the pathname is `/contact`. This applies on desktop and in the mobile menu.
 - `/work` and `/work/:path*` permanently redirect to `/projects`.
 - Every animated component must render its final state with no animation when `prefers-reduced-motion: reduce` is set.
@@ -409,6 +409,64 @@ Then do a manual check with `yarn dev`:
 - Clicking Profile and then Projects quickly doesn't snap.
 
 - [ ] **Step 9: Commit.** `git commit -m "feat: add persistent 3D particle background with route morphing"`
+
+---
+
+### Task 6b: Sparse constellation and loading intro (revision approved 2026-11-01)
+
+The user rejected the per-route dense patterns. This task replaces them with the spec's revised "Particle system (revised 2026-11-01)" and "Loading intro" sections, which are normative. Read them first.
+
+**Files:**
+- Create: `components/three/patterns/constellation.ts`, `components/three/displace.ts`, `components/three/cursor.ts`, `lib/intro.ts`, `components/IntroLoader.tsx`, `tests/unit/constellation.test.ts`, `tests/unit/displace.test.ts`, `tests/unit/cursor.test.ts`, `tests/unit/intro.test.ts`, `tests/e2e/intro.spec.ts`, `tests/e2e/fixtures.ts`
+- Modify: `components/three/ParticleField.tsx`, `components/three/shaders.ts`, `components/three/pairs.ts` (add per-pair distance output), `components/three/useParticleCount.ts`, `components/three/patterns/index.ts`, `lib/particle-store.ts` only if needed, `app/layout.tsx` (inline head script and `IntroLoader`), `app/globals.css` (`html.intro` rules and the 3s fallback), every existing `tests/e2e/*.spec.ts` (switch to the shared fixture that skips the intro)
+- Delete: `components/three/patterns/{cloud,column,grid,sphere,config}.ts`, the route-morph logic in `ParticleField`, and the pattern tests for the deleted patterns in `tests/unit/patterns.test.ts`
+
+**Interfaces:**
+- Produces:
+  - `constellation(count: number, seed: number): Float32Array`. The length is `count * 3`, every value is in [−1, 1], it's deterministic per seed, and it's evenly spread.
+  - `displace(base: Float32Array, out: Float32Array, count: number, s: { time: number; pointer: { x: number; y: number } | null; burstAge: number | null; scale: { x: number; y: number; z: number } }): void`. This is pure, allocation-free, and applies drift, cursor pull and the burst ripple from the spec values. `burstAge` is seconds since the pulse, and `null` means no burst.
+  - `nearestPoints(positions: Float32Array, count: number, px: number, py: number, radius: number, k: number, outIdx: Int16Array): number`. It returns up to k indices within radius, nearest first.
+  - `computePairs(...)` gains an `outDist: Float32Array` parameter that holds each pair's distance, used for the line fade.
+  - `shouldPlayIntro(e: { jsEnabled: boolean; reducedMotion: boolean; webgl: boolean; played: boolean }): boolean`
+  - `INTRO_FLAG = "intro-played"`
+  - `<IntroLoader />`
+- Consumes: `createMorphController` (morph.ts), `particles.subscribe`, `usePrefersReducedMotion`, `AnimatedName`, and the theme `--particle` color reading already in `ParticleField`.
+
+- [ ] **Step 1: Write the failing unit tests**
+  - **constellation:** for 260 with seed 1, the length is 780 and every |v| ≤ 1. It's deterministic for seed 7 and differs between seed 1 and seed 2. It's evenly spread: split x and y into a 4×4 grid, and every cell holds at least 8 points. The minimum nearest-neighbour distance in xy is above 0.03. With count 0, the length is 0.
+  - **displace:**
+    - With `pointer: null`, `burstAge: null` and `time: 0`, every |out − base·scale| ≤ 0.12 (drift only).
+    - A point 1 unit from the pointer moves toward it. A point 4 units away moves by ≤ 0.12, drift only.
+    - With `burstAge` at 0.3, points are farther from the center than with `burstAge: null`. At `burstAge` 1.5, the offset is back within the drift bound.
+    - `out` keeps the same identity, with no reallocation.
+  - **nearestPoints:** it returns at most k, sorted nearest first, and excludes points beyond the radius.
+  - **computePairs:** the `outDist` values match the real distances, and all are < maxDist.
+  - **shouldPlayIntro:** it's true only when `jsEnabled && !reducedMotion && webgl && !played`. Cover the four false cases.
+- [ ] **Step 2: Run them and confirm they fail.** Run `yarn test` and expect FAIL.
+- [ ] **Step 3: Implement the pure modules, then rewrite `ParticleField`** to the revised spec:
+  - CPU positions every frame through `displace`.
+  - Line pairs every frame with a distance fade, written into a vertex-color or alpha attribute.
+  - Cursor lines.
+  - Scroll parallax and pointer tilt applied on the group.
+  - The twinkle and per-point size in the shader.
+  - The intro: when `html.intro` is present on mount, the start positions are near the center, the morph runs over 1.4s, and the line opacity ramps from 70%.
+  - Reduced motion renders the static final state.
+  - Delete the route morph and the old patterns.
+- [ ] **Step 4: Implement the intro**
+  - The inline head script in `app/layout.tsx`.
+  - The `html.intro` CSS and the 3s pure-CSS fallback reveal in `globals.css`.
+  - `IntroLoader`: the centered "Joren." with `AnimatedName`, the 2.0s cap, skip on click, key or touch, and an immediate end when WebGL is unavailable. It removes `html.intro` and sets the session flag.
+- [ ] **Step 5: Add the e2e fixture and tests**
+  - `tests/e2e/fixtures.ts` exports a `test` that runs `addInitScript(() => sessionStorage.setItem("intro-played", "1"))`. Switch every existing spec to import `test` and `expect` from it.
+  - `tests/e2e/intro.spec.ts` uses the base Playwright `test`, not the fixture:
+    - `"intro plays once per session"`: on a fresh context, `html` has the class `intro` right after load. Within 2.5s the class is gone, and the effective opacity of `main` is 1, multiplied up the tree. After `page.reload()`, `html` never gets `intro`.
+    - `"click skips intro"`: click at about 100ms. Within 0.6s, `intro` is gone.
+    - `"reduced motion never plays intro"`: with `emulateMedia({ reducedMotion: "reduce" })` set before navigation, `html` never has `intro`.
+    - `"no WebGL ends intro"`: with `getContext` stubbed to return null for webgl, `intro` is removed within 0.5s.
+- [ ] **Step 6: Run the tests and the visual check**
+  - Run `yarn test`, `yarn build` and `E2E_PORT=<free port> yarn test:e2e`, and expect all to PASS.
+  - Take screenshots of `/` and `/profile` in both themes, plus three intro frames at about 300ms, 900ms and 1600ms on a fresh context. Look at them and confirm the sparse, evenly spread, mockup-like constellation, and that it's identical across pages.
+- [ ] **Step 7: Commit.** `git commit -m "feat: sparse page-independent constellation with assembling intro"`
 
 ---
 

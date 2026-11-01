@@ -33,7 +33,7 @@ Redesign the portfolio so it impresses three audiences at once:
 | Topic | Decision |
 |---|---|
 | 3D intensity | A persistent 3D background across all pages |
-| Visual direction | A particle constellation: glowing points joined by thin lines, in the current dark + `#00ff99` palette |
+| Visual direction | A sparse particle constellation (as in the approved mockup), the same on every page, with an assembling intro on first visit. Glowing points joined by thin lines, in the current dark + `#00ff99` palette |
 | Structure | Keep 4 pages. Rename **Work → Projects** (`/work` → `/projects`, with a permanent redirect) |
 | Layouts | All four pages fully redesigned (see Pages) |
 | 3D tech | React Three Fiber + drei, one persistent canvas in the root layout |
@@ -49,38 +49,42 @@ Redesign the portfolio so it impresses three audiences at once:
 2. **`<ParticleBackground />`.** A fixed, full-viewport R3F `<Canvas>` with `pointer-events: none` and `aria-hidden`. It loads with `next/dynamic({ ssr: false })` and mounts after first paint. It stays mounted across route changes.
 3. **Content.** The header, then each page wrapped in a Framer Motion `AnimatePresence` fade/slide transition. This replaces `PageTransition`'s current behavior and removes `StairTransition` and `Stairs`.
 
-### Route → pattern
+### Particle system (revised 2026-11-01)
 
-Configured in `components/three/patterns/config.ts`:
+> **Revision.** After seeing the first build, the user asked for one sparse constellation that matches the approved mockup and is **the same on every page**, plus an assembling intro. The per-route patterns (cloud, column, grid, sphere) and the route morph are removed.
 
-| Route | Pattern | Notes |
-|---|---|---|
-| `/` | `cloud` | A loose 3D cloud that drifts and leans toward the cursor |
-| `/profile` | `column` | A vertical column that echoes the timeline |
-| `/projects`, `/projects/[slug]` | `grid` | A grid that echoes the cards |
-| `/contact` | `sphere` | A sphere that bursts outward on a successful send |
-| anything else | `cloud` | Default |
+- **One pattern, `constellation`.** `constellation(count, seed) => Float32Array` returns normalized positions with x, y and z in [−1, 1]. They're spread evenly with no clumps, using best-candidate or Poisson-style sampling with a fixed seed. `ParticleField` scales them to the visible viewport (`useThree().viewport`) × 1.1 in x and y, and to ±1.5 world units in z, so the field always fills the screen at any aspect ratio.
+- **Count:** 260 on desktop and 140 on phones (`matchMedia("(max-width: 768px)")` or `navigator.hardwareConcurrency <= 4`), decided once on mount.
+- **Motion runs on the CPU** so the lines follow the points exactly. Every frame, each point's displayed position is its base position plus:
+  - **drift:** a slow per-point sinusoidal wander, amplitude about 0.12 world units
+  - **cursor pull:** points within 2.5 units of the pointer lean toward it, up to 0.35, with smoothstep falloff
+  - **burst ripple:** after `particles.pulse("burst")`, a ring wave travels outward from the screen center over about 1.2s and pushes points radially, with amplitude decaying to 0
+  - **scroll parallax:** the whole field shifts by `−scrollY × 0.0015` world units in y, clamped to ±1.5, and tilts up to ±0.05 rad toward the pointer
+- **Lines:** every frame, pairs closer than 2.2 units are connected, with at most 3 per point. Each line's opacity fades linearly from full at distance 0 to 0 at 2.2, so connections fade in and out instead of popping. **Cursor lines:** faint lines join the pointer to its nearest 4 points within 2.5 units. Everything runs on preallocated buffers with no per-frame allocation.
+- **Points:** a `THREE.Points` with a custom shader that draws soft round glowing dots, with sizes varying ±30% per point and a gentle twinkle (alpha modulated by `sin(uTime + seed)`). Color and blending follow the theme as before.
+- **Same on every page:** route changes don't affect the field. Only the page content transitions.
+- **Intro, "particles assemble":** see Loading intro below. On the intro, every point starts near the center and flies to its base position over 1.4s through the existing morph controller. Line opacity ramps from 0 starting at 70% of the morph.
+- **Frame loop:** continuous while visible and motion is allowed. Paused when `document.hidden`. DPR is capped at `[1, 1.5]`.
+- **Reduced motion:** the constellation renders once in its final state. There's no drift, cursor pull, cursor lines, parallax, twinkle, burst or intro.
+- **Failure:** the error boundary and WebGL check fall back to the static layer, as before.
 
-`ParticleBackground` reads `usePathname()` and morphs to the mapped pattern. Pages need no wiring.
+One-off effects still go through `lib/particle-store.ts`, `particles.pulse("burst")`, which Contact calls on a successful send.
 
-One-off effects go through a tiny store (`lib/particle-store.ts`, built on `useSyncExternalStore`, with no new dependency). Its API is `particles.pulse(kind: "burst")`. Contact calls it on a successful send.
+### Loading intro
 
-### Particle system
-
-- **Pattern functions** are pure. `(count: number, seed: number) => Float32Array` returns `count * 3` positions. There's one function per pattern in `components/three/patterns/`.
-- **Count:** about 1,500 on desktop and about 600 on phones (when `matchMedia("(max-width: 768px)")` matches or `navigator.hardwareConcurrency <= 4`).
-- **Rendering:** one `THREE.Points` with a custom `ShaderMaterial`.
-  - The attributes are `aFrom` and `aTo` (positions) plus `aSeed`.
-  - The uniforms are `uMorph` (0→1), `uTime`, `uPointer` (vec2, world space), `uBurst`, `uColor`, `uOpacity` and `uAdditive`.
-  - The vertex shader mixes `aFrom` → `aTo` with an ease, adds noise drift from `aSeed` and `uTime`, adds a cursor attraction falloff, and adds a radial burst offset.
-- **Morph:** on a route change, the current displayed positions are copied into `aFrom`, the new pattern goes into `aTo`, and `uMorph` tweens 0→1 over about 1.2s.
-- **Lines:** `LineSegments` connect a fixed subset (about 150 points). Neighbor pairs are recomputed on the CPU after each morph completes and on a throttled interval. The work is capped at a small budget per frame.
-- **Frame loop:**
-  - `frameloop="demand"` while idle. The loop runs continuously while morphing, while the pointer moves, or while drift is enabled.
-  - Paused when `document.hidden` or when the canvas isn't intersecting.
-  - DPR is capped at `[1, 1.5]`.
-- **Reduced motion:** renders one frame with the current pattern and never animates (no drift, no pointer, no morph). The pattern for the new route is applied instantly.
-- **Failure:** an error boundary around the canvas, plus a WebGL availability check, falls back to the static layer only.
+- **When it plays:** on the first page load of a browser session, when JS is running, motion is allowed, WebGL is available, and `sessionStorage["intro-played"]` isn't set. Otherwise it never plays.
+- **No flash:** a tiny inline script in `<head>` adds the class `intro` to `<html>` before first paint when the session flag is unset and `prefers-reduced-motion` isn't `reduce`. CSS hides `header` and `main` (opacity 0) while `html.intro` is set.
+- **Safety net:** a pure-CSS fallback animation reveals `header` and `main` after 3s even if JS never runs the intro. Content can never get stuck hidden.
+- **Sequence**, capped at 2.0s:
+  1. Particles assemble from the center (1.4s).
+  2. A centered "Joren." animates in with `AnimatedName` at the same time.
+  3. A 0.3s hold.
+  4. The overlay logo fades out and the class is removed, so header and main fade in over 0.3s.
+  5. The session flag is set.
+- **Skip:** any click, keypress or touch ends the intro immediately. The particles jump to their final positions.
+- **WebGL unsupported:** the intro ends immediately and content shows.
+- **Component:** `components/IntroLoader.tsx`, a client component in the root layout. The overlay is `fixed inset-0 z-50`, with a transparent background so the assembling particles stay visible, and `aria-hidden`. The real content is not hidden from screen readers.
+- **Performance note:** the intro delays the visible hero by up to about 2s on the first visit only. The Lighthouse desktop target of 90 or higher still applies, so measure it in Task 12.
 
 ### Theming
 
@@ -190,7 +194,8 @@ components/
     ParticleBackground.tsx      dynamic import target, error boundary, WebGL check
     ParticleField.tsx           Points + LineSegments, morph/pointer/burst logic
     shaders.ts
-    patterns/{cloud,column,grid,sphere,config}.ts
+    patterns/constellation.ts  (revised: single pattern)
+    ../IntroLoader.tsx       (loading intro)
   motion/
     Reveal.tsx  Tilt.tsx  AnimatedName.tsx  DrawRing.tsx  CountUp.tsx  ScrollLine.tsx
   ThemeToggle.tsx
@@ -219,8 +224,8 @@ tests/
 
 **Unit (Vitest):**
 
-- Each pattern returns `count * 3` finite numbers, and the same seed gives the same output.
-- The route → pattern mapping covers all routes plus the default.
+- `constellation` returns `count * 3` values in [−1, 1], is deterministic per seed, and is evenly spread.
+- The intro decision logic, the CPU displacement, and the cursor nearest-points helper.
 - Project slug lookup and `generateStaticParams` output.
 - The `particle-store` pulse subscription.
 - `usePrefersReducedMotion` responds to `matchMedia`.
