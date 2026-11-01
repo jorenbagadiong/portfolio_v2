@@ -58,3 +58,13 @@ test("reduced motion renders without errors", async ({ page }) => {
   }
   expect(errors).toEqual([])
 })
+
+test("hero is visible with JavaScript disabled", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false })
+  const page = await context.newPage()
+  await page.goto("/")
+  await expect(
+    page.getByRole("heading", { name: "Joren Bagadiong" })
+  ).toBeVisible()
+  await context.close()
+})
