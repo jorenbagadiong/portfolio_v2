@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import { useTheme } from "next-themes"
 import * as THREE from "three"
@@ -25,6 +25,7 @@ import {
   lineVertexShader,
   vertexShader,
 } from "./shaders"
+import { nextFrameDelay, isSmallDevice } from "./budget"
 import { useParticleCount } from "./useParticleCount"
 
 const SEED = 7
@@ -52,6 +53,7 @@ function readParticleColor(): THREE.Color {
 
 export default function ParticleField() {
   const count = useParticleCount()
+  const [small] = useState(isSmallDevice)
   const reduced = usePrefersReducedMotion()
   const { resolvedTheme } = useTheme()
   const { invalidate, gl } = useThree()
@@ -70,17 +72,21 @@ export default function ParticleField() {
     []
   )
 
-  const { controller, introStart } = useMemo(() => {
+  const { controller, introStart, target } = useMemo(() => {
     const target = constellation(count, SEED)
     const now = performance.now()
     if (!intro) {
-      return { controller: createMorphController(target), introStart: 0 }
+      return {
+        controller: createMorphController(target),
+        introStart: 0,
+        target,
+      }
     }
     const start = new Float32Array(target.length)
     for (let i = 0; i < start.length; i++) start[i] = target[i] * 0.02
     const c = createMorphController(start, INTRO_MORPH_MS)
     c.start(target, now)
-    return { controller: c, introStart: now }
+    return { controller: c, introStart: now, target }
   }, [count, intro])
 
   // Tell IntroLoader the canvas is live so the intro timing follows it.
@@ -183,15 +189,12 @@ export default function ParticleField() {
   useEffect(() => {
     const onSkip = () => {
       state.current.skipped = true
-      controller.start(
-        constellation(count, SEED),
-        performance.now() - INTRO_MORPH_MS
-      )
+      controller.start(target, performance.now() - INTRO_MORPH_MS)
       invalidate()
     }
     window.addEventListener(INTRO_SKIP_EVENT, onSkip)
     return () => window.removeEventListener(INTRO_SKIP_EVENT, onSkip)
-  }, [controller, count, invalidate])
+  }, [controller, target, invalidate])
 
   // Pointer position as normalized device coordinates.
   useEffect(() => {
@@ -402,7 +405,12 @@ export default function ParticleField() {
     lineGeometry.setDrawRange(0, segments * 2)
 
     const needMore = morphing || tweening || burstAge !== null || !s.hasColor
-    if (s.active && (needMore || !isReduced)) invalidate()
+    if (s.active && (needMore || !isReduced)) {
+      // Small devices render at ~30fps: wait out the rest of the frame budget.
+      const wait = nextFrameDelay(small, performance.now() - now)
+      if (wait > 0) window.setTimeout(invalidate, wait)
+      else invalidate()
+    }
   })
 
   useEffect(

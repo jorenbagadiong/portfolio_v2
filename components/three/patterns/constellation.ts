@@ -1,17 +1,8 @@
+import { mulberry32 } from "@/lib/random"
+
 import type { PatternFn } from "./types"
 
 const CANDIDATES = 14
-
-function rng(seed: number) {
-  let a = (seed * 2654435761) >>> 0 || 1
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0
-    let t = a
-    t = Math.imul(t ^ (t >>> 15), t | 1)
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
 
 /**
  * Evenly spread points in [-1, 1]^3 using best-candidate (Mitchell) sampling:
@@ -20,7 +11,7 @@ function rng(seed: number) {
  */
 export const constellation: PatternFn = (count, seed) => {
   const out = new Float32Array(count * 3)
-  const rand = rng(seed)
+  const rand = mulberry32((seed * 2654435761) >>> 0 || 1)
   for (let i = 0; i < count; i++) {
     let bx = 0
     let by = 0

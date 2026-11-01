@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { JetBrains_Mono } from "next/font/google"
-import { Toaster } from "sonner"
 
 import IntroLoader from "@/components/IntroLoader"
 import Header from "@/components/Header"
@@ -63,7 +62,6 @@ export default function RootLayout({
           <main>
             <PageTransition>{children}</PageTransition>
           </main>
-          <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>
     </html>

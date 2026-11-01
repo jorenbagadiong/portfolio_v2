@@ -9,15 +9,6 @@ export function shouldPlayIntro(e: {
   return e.jsEnabled && !e.reducedMotion && e.webgl && !e.played
 }
 
-export function hasWebGL(): boolean {
-  try {
-    const c = document.createElement("canvas")
-    return !!(c.getContext("webgl2") ?? c.getContext("webgl"))
-  } catch {
-    return false
-  }
-}
-
 /** Shared by IntroLoader and the particle field so both run on one clock. */
 export const introClock: { ready: number | null } = { ready: null }
 export const INTRO_READY_EVENT = "intro:ready"

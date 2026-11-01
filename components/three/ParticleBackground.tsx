@@ -3,8 +3,9 @@
 import { Component, type ReactNode, useEffect, useState } from "react"
 import { Canvas } from "@react-three/fiber"
 
-import { hasWebGL } from "@/lib/intro"
+import { hasWebGL } from "@/lib/webgl"
 
+import { isSmallDevice } from "./budget"
 import ParticleField from "./ParticleField"
 
 class CanvasBoundary extends Component<
@@ -25,9 +26,11 @@ export default function ParticleBackground() {
   const [supported, setSupported] = useState(false)
   const [ready, setReady] = useState(false)
   const [intro, setIntro] = useState(false)
+  const [small, setSmall] = useState(false)
 
   useEffect(() => {
     setIntro(document.documentElement.classList.contains("intro"))
+    setSmall(isSmallDevice())
     setSupported(hasWebGL())
   }, [])
 
@@ -45,7 +48,7 @@ export default function ParticleBackground() {
       <CanvasBoundary>
         <Canvas
           frameloop="demand"
-          dpr={[1, 1.5]}
+          dpr={small ? 1 : [1, 1.5]}
           camera={{ position: [0, 0, 10], fov: 50 }}
           gl={{ antialias: false, alpha: true }}
           onCreated={() => setReady(true)}

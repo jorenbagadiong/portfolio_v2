@@ -2,12 +2,9 @@
 
 import { useState } from "react"
 
+import { isSmallDevice } from "./budget"
+
 export function useParticleCount(): number {
-  const [count] = useState(() => {
-    const small =
-      window.matchMedia("(max-width: 768px)").matches ||
-      (navigator.hardwareConcurrency ?? 8) <= 4
-    return small ? 140 : 260
-  })
+  const [count] = useState(() => (isSmallDevice() ? 140 : 260))
   return count
 }

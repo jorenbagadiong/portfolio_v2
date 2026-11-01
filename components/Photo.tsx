@@ -8,9 +8,9 @@ const Photo = () => {
       <Image
         src="/assets/photo.png"
         priority
-        quality={100}
+        quality={80}
         fill
-        sizes="(min-width: 1280px) 498px, 298px"
+        sizes="(min-width: 1280px) 498px, (min-width: 640px) 298px, 170px"
         alt=""
         className="object-contain"
       />

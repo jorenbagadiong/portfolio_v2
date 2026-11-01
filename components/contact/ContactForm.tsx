@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import emailjs from "@emailjs/browser"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { toast } from "sonner"
+import { Toaster, toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -63,73 +63,76 @@ export function ContactForm() {
   const { isSubmitting } = form.formState
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(sendEmail)}
-        className="flex w-full flex-col gap-5 rounded-2xl border border-border bg-surface p-6 backdrop-blur-md md:p-8"
-        noValidate
-      >
-        <FormField
-          control={form.control}
-          name="fullname"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input {...field} placeholder="Full Name" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input {...field} type="email" placeholder="Email" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="subject"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input {...field} placeholder="Subject" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="Type your message here."
-                  className="h-[180px]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          size="md"
-          className="self-end"
-          disabled={isSubmitting}
+    <>
+      <Toaster position="top-right" richColors />
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(sendEmail)}
+          className="flex w-full flex-col gap-5 rounded-2xl border border-border bg-surface p-6 backdrop-blur-md md:p-8"
+          noValidate
         >
-          {isSubmitting ? "Sending…" : "Send message"}
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="fullname"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} placeholder="Full Name" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} type="email" placeholder="Email" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subject"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} placeholder="Subject" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="message"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    placeholder="Type your message here."
+                    className="h-[180px]"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            size="md"
+            className="self-end"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Sending…" : "Send message"}
+          </Button>
+        </form>
+      </Form>
+    </>
   )
 }

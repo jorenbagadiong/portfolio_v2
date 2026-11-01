@@ -5,7 +5,6 @@ import { flushSync } from "react-dom"
 
 import { AnimatedName } from "@/components/motion/AnimatedName"
 import {
-  hasWebGL,
   INTRO_END_EVENT,
   INTRO_FLAG,
   INTRO_SKIP_EVENT,
@@ -14,6 +13,7 @@ import {
   introEndAt,
   shouldPlayIntro,
 } from "@/lib/intro"
+import { hasWebGL } from "@/lib/webgl"
 
 const FADE_MS = 300
 
