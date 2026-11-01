@@ -29,7 +29,7 @@ const Photo = () => {
         </div>
 
         <motion.svg
-          className="w-[300px] xl:w-[512px] h-[300px] xl:h-[512px]"
+          className="w-[300px] xl:w-[512px] h-[300px] xl:h-[512px] text-accent"
           fill="transparent"
           viewBox="0 0 506 506"
           xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,7 @@ const Photo = () => {
             cx="253"
             cy="253"
             r="250"
-            stroke="#00ff99"
+            stroke="currentColor"
             strokeWidth="4"
             strokeLinecap="round"
             strokeLinejoin="round"

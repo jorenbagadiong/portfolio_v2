@@ -4,6 +4,7 @@ import { Toaster } from "sonner"
 
 import Header from "@/components/Header"
 import PageTransition from "@/components/PageTransition"
+import ThemeProvider from "@/components/ThemeProvider"
 import StairTransition from "@/components/StairTransition"
 
 import "./globals.css"
@@ -35,15 +36,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.jpg" sizes="any" />
       </head>
       <body className={jetbrainsMono.variable}>
-        <Header />
-        <StairTransition />
-        <PageTransition>{children}</PageTransition>
-        <Toaster position="top-right" richColors />
+        <ThemeProvider>
+          <Header />
+          <StairTransition />
+          <PageTransition>{children}</PageTransition>
+          <Toaster position="top-right" richColors />
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -88,13 +88,13 @@ const Contact = () => {
               {INFO.map((item, index) => {
                 return (
                   <li key={index} className="flex items-center gap-6 ">
-                    <div className="w-[52px] h-[52px] xl:w-[72px] xl:h-[72px] bg-[#27272c] text-accent rounded-md flex items-center justify-center">
+                    <div className="w-[52px] h-[52px] xl:w-[72px] xl:h-[72px] bg-surface text-accent rounded-md flex items-center justify-center">
                       <div className="text-[28px] ">
                         <item.icon />
                       </div>
                     </div>
                     <div className="flex flex-col w-full">
-                      <p className="text-white/60">{item.title}</p>
+                      <p className="text-muted">{item.title}</p>
                       <h3 className="text-l whitespace-normal break-words">
                         {item.description}
                       </h3>
@@ -108,11 +108,11 @@ const Contact = () => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(sendEmail)}
-                className="flex flex-col gap-6 p-6 bg-[#27272c] rounded-xl0 w-full"
+                className="flex flex-col gap-6 p-6 bg-surface rounded-xl0 w-full"
                 noValidate
               >
                 <h3 className="text-4xl text-accent">Let's work together</h3>
-                <p className="text-white/60 w-full">
+                <p className="text-muted w-full">
                   I’m a frontend web developer specializing in Next.js, Tailwind
                   CSS, and modern JavaScript. I build responsive,
                   high-performance websites with clean, maintainable code. My

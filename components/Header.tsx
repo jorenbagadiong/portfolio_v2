@@ -2,11 +2,12 @@ import Link from "next/link"
 import HireMeButton from "@/components/HireMeButton"
 
 import Nav from "@/components/Nav"
+import ThemeToggle from "@/components/ThemeToggle"
 import MobileNav from "@/components/MobileNav"
 
 const Header = () => {
   return (
-    <header className="py-8 xl:py-12 text-white">
+    <header className="py-8 xl:py-12 text-text">
       <div className="container mx-auto flex justify-between items-center">
         {/* logo */}
         <Link href="/">
@@ -17,6 +18,7 @@ const Header = () => {
         {/* desktop nav & hire me button */}
         <div className="hidden xl:flex gap-8 items-center">
           <Nav />
+          <ThemeToggle />
           <HireMeButton />
         </div>
         {/* mobile nav */}

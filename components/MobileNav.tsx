@@ -7,6 +7,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { navLinks } from "@/lib/site-data"
 import HireMeButton from "@/components/HireMeButton"
+import ThemeToggle from "@/components/ThemeToggle"
 import { CiMenuFries } from "react-icons/ci"
 
 const MobileNav = () => {
@@ -45,7 +46,8 @@ const MobileNav = () => {
             )
           })}
         </nav>
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex justify-center items-center gap-6">
+          <ThemeToggle />
           <HireMeButton />
         </div>
       </SheetContent>

@@ -21,7 +21,7 @@ const Status = () => {
                   className="text-4xl xl:text-6xl font-extrabold"
                 />
                 <p
-                  className={`${text.length < 15 ? "max-w-[100px]" : "max-w-[150px]"} leading-snug text-white/80`}
+                  className={`${text.length < 15 ? "max-w-[100px]" : "max-w-[150px]"} leading-snug text-text/80`}
                 >
                   {text}
                 </p>

@@ -41,10 +41,10 @@ const Work = () => {
               <div className="text-8xl leading-none font-extrabold text-transparent text-outline">
                 {project.num}
               </div>
-              <h2 className="text-[42px] font-bold leading-none text-white group-hover:text-accent transition-all duration-500 capitalize">
+              <h2 className="text-[42px] font-bold leading-none text-text group-hover:text-accent transition-all duration-500 capitalize">
                 {project.title}
               </h2>
-              <p className="text-white/60">{project.description}</p>
+              <p className="text-muted">{project.description}</p>
               <ul className="flex flex-wrap gap-4">
                 {project.stack.map((item, index) => {
                   return (
@@ -55,7 +55,7 @@ const Work = () => {
                   )
                 })}
               </ul>
-              <div className="border border-white/20"></div>
+              <div className="border border-border"></div>
               <div className="flex items-center gap-4">
                 <Link
                   href={project.live}
@@ -64,8 +64,8 @@ const Work = () => {
                 >
                   <TooltipProvider delayDuration={100}>
                     <Tooltip>
-                      <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                        <BsArrowUpRight className="text-white text-3xl group-hover:text-accent" />
+                      <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-surface flex justify-center items-center group">
+                        <BsArrowUpRight className="text-text text-3xl group-hover:text-accent" />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Live Project</p>
@@ -80,8 +80,8 @@ const Work = () => {
                 >
                   <TooltipProvider delayDuration={100}>
                     <Tooltip>
-                      <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                        <BsGithub className="text-white text-3xl group-hover:text-accent" />
+                      <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-surface flex justify-center items-center group">
+                        <BsGithub className="text-text text-3xl group-hover:text-accent" />
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Github repo</p>
@@ -118,7 +118,7 @@ const Work = () => {
               })}
               <WorkSliderBtns
                 containerStyles="flex gap-2 absolute right-0 bottom-[calc(50%_-_22px)] xl:bottom-0 z-20 w-full justify-between xl:w-max xl:justify-none"
-                btnStyles="bg-accent hover:bg-accent-hover text-primary text-[22px] w-[44px] h-[44px] flex justify-center items-center transition-all "
+                btnStyles="bg-accent hover:bg-accent-hover text-bg text-[22px] w-[44px] h-[44px] flex justify-center items-center transition-all "
               />
             </Swiper>
           </div>

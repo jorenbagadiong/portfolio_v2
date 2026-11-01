@@ -50,7 +50,7 @@ const Profile = () => {
                       return (
                         <li
                           key={index}
-                          className="bg-[#232329] h-auto py-6 px-5 xl:px-6 rounded-xl flex flex-col justify-center items-start gap-2"
+                          className="bg-surface h-auto py-6 px-5 xl:px-6 rounded-xl flex flex-col justify-center items-start gap-2"
                         >
                           <div className="flex flex-col xl:flex-row justify-between w-full">
                             <h3 className="text-xl text-left font-bold">
@@ -61,7 +61,7 @@ const Profile = () => {
                             </span>
                           </div>
                           <div className="flex items-center gap-3">
-                            <p className="text-white text-l font-semibold">
+                            <p className="text-text text-l font-semibold">
                               {item.position}
                             </p>
                           </div>
@@ -69,9 +69,7 @@ const Profile = () => {
                             {item.responsibilities.map((resp, i) => (
                               <li className="flex items-start gap-5" key={i}>
                                 <span className="w-[10px] h-[10px] rounded-full bg-accent mt-3" />
-                                <p className="text-white/60 text-left">
-                                  {resp}
-                                </p>
+                                <p className="text-muted text-left">{resp}</p>
                               </li>
                             ))}
                           </ul>
@@ -92,7 +90,7 @@ const Profile = () => {
                     return (
                       <li
                         key={index}
-                        className="bg-[#232329] py-6 px-10 rounded-xl flex flex-col justify-center items-start gap-1"
+                        className="bg-surface py-6 px-10 rounded-xl flex flex-col justify-center items-start gap-1"
                       >
                         <span className="text-accent">{item.duration}</span>
                         <h3 className="text-xl min-h-[60px] text-left">
@@ -100,9 +98,7 @@ const Profile = () => {
                         </h3>
                         <div className="flex items-start gap-5">
                           <span className="w-[10px] h-[10px] rounded-full bg-accent mt-3" />
-                          <p className="text-white/60 text-left">
-                            {item.college}
-                          </p>
+                          <p className="text-muted text-left">{item.college}</p>
                         </div>
                       </li>
                     )
@@ -120,7 +116,7 @@ const Profile = () => {
                       return (
                         <li
                           key={index}
-                          className="bg-[#232329] py-6 px-10 rounded-xl flex flex-col justify-center items-start gap-1"
+                          className="bg-surface py-6 px-10 rounded-xl flex flex-col justify-center items-start gap-1"
                         >
                           <span className="text-accent">{item.duration}</span>
                           <h3 className="text-xl min-h-[60px] text-left">
@@ -128,7 +124,7 @@ const Profile = () => {
                           </h3>
                           <div className="flex items-start gap-5">
                             <span className="w-[10px] h-[10px] rounded-full bg-accent mt-3" />
-                            <p className="text-white/60 text-left">
+                            <p className="text-muted text-left">
                               {item.college}
                             </p>
                           </div>
@@ -169,7 +165,7 @@ const Profile = () => {
                         <li key={index}>
                           <TooltipProvider delayDuration={100}>
                             <Tooltip>
-                              <TooltipTrigger className="w-full h-[150px] bg-[#232329] rounded-xl flex justify-center items-center group">
+                              <TooltipTrigger className="w-full h-[150px] bg-surface rounded-xl flex justify-center items-center group">
                                 <div className="text-6xl group-hover:text-accent transition-all duration-300 ">
                                   <skill.icon />
                                 </div>

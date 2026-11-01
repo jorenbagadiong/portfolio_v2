@@ -22,11 +22,17 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: "#1c1c22",
+        bg: "rgb(var(--bg) / <alpha-value>)",
+        primary: "rgb(var(--bg) / <alpha-value>)",
+        surface: "var(--surface)",
+        border: "var(--border)",
+        text: "rgb(var(--text) / <alpha-value>)",
+        muted: "var(--muted)",
         accent: {
-          DEFAULT: "#00ff99",
-          hover: "#00e187",
+          DEFAULT: "rgb(var(--accent) / <alpha-value>)",
+          hover: "rgb(var(--accent-hover) / <alpha-value>)",
         },
+        particle: "rgb(var(--particle) / <alpha-value>)",
         destructive: "red",
       },
     },
