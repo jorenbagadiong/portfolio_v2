@@ -66,5 +66,15 @@ test("hero is visible with JavaScript disabled", async ({ browser }) => {
   await expect(
     page.getByRole("heading", { name: "Joren Bagadiong" })
   ).toBeVisible()
+  const opacity = await page
+    .getByRole("heading", { name: "Joren Bagadiong" })
+    .evaluate((el) => {
+      let product = 1
+      for (let node: Element | null = el; node; node = node.parentElement) {
+        product *= parseFloat(getComputedStyle(node).opacity)
+      }
+      return product
+    })
+  expect(opacity).toBe(1)
   await context.close()
 })
