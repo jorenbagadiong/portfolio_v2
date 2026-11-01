@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Joren Bagadiong — Portfolio v2
 
-## Getting Started
+Personal portfolio site for Joren Bagadiong, frontend web developer. Built with Next.js (App Router), React 19, TypeScript, and Tailwind CSS, with page and stair transitions done in Framer Motion.
 
-First, run the development server:
+## Tech stack
+
+- **Framework:** [Next.js 15](https://nextjs.org) (App Router, Turbopack in dev)
+- **UI:** React 19, TypeScript, Tailwind CSS 3, [shadcn/ui](https://ui.shadcn.com) components on Radix UI primitives
+- **Animation:** Framer Motion, Swiper (project slider), react-countup (stats)
+- **Forms:** react-hook-form + Zod validation, sent through [EmailJS](https://www.emailjs.com)
+- **Notifications:** sonner
+- **Icons:** react-icons, lucide-react
+
+## Pages
+
+| Route      | File                                             | Content                                                      |
+| ---------- | ------------------------------------------------ | ------------------------------------------------------------ |
+| `/`        | [app/page.tsx](app/page.tsx)                     | Intro, photo, CV download, social links, stats               |
+| `/profile` | [app/profile/page.tsx](app/profile/page.tsx)     | Tabs for experience, education, skills, and certifications   |
+| `/work`    | [app/work/page.tsx](app/work/page.tsx)           | Project slider with live demo and GitHub links               |
+| `/contact` | [app/contact/page.tsx](app/contact/page.tsx)     | Contact form (EmailJS)                                       |
+
+`/motionlab` and `/pokelab` are not part of this codebase. [next.config.ts](next.config.ts) rewrites them to separate Vercel deployments, so they're served under this domain.
+
+## Getting started
+
+Requirements: Node.js 18.18 or later, and Yarn (the repo ships a `yarn.lock`).
 
 ```bash
-npm run dev
-# or
+yarn install
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The contact form needs EmailJS credentials. Create `.env.local` in the project root:
 
-## Learn More
+```bash
+NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id
+NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
+NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
+```
 
-To learn more about Next.js, take a look at the following resources:
+You can find these values in the EmailJS dashboard. Every other page works without them; only form submission will fail.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Command       | What it does                              |
+| ------------- | ----------------------------------------- |
+| `yarn dev`    | Start the dev server with Turbopack       |
+| `yarn build`  | Build for production                      |
+| `yarn start`  | Serve the production build                |
+| `yarn lint`   | Run ESLint (`next lint`)                  |
+| `yarn format` | Format the codebase with Prettier         |
 
-## Deploy on Vercel
+## Project structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/                 Routes (App Router), root layout, global styles
+components/          Site components (Header, Nav, MobileNav, Social, Photo, transitions, ...)
+components/ui/       shadcn/ui components (button, tabs, form, input, sheet, ...)
+lib/utils.ts         cn() class-name helper
+public/assets/       Profile photo, project thumbnails, resume PDFs
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Updating content
+
+Most of the content lives as constants at the top of each page file. You don't need a CMS:
+
+- **Experience, education, skills, certifications:** the constants in [app/profile/page.tsx](app/profile/page.tsx)
+- **Projects:** the `projects` array in [app/work/page.tsx](app/work/page.tsx). Add the thumbnail to `public/assets/profile/projects/`
+- **Social links:** `SOCIALS` in [components/Social.tsx](components/Social.tsx)
+- **Nav links:** [components/Nav.tsx](components/Nav.tsx) and [components/MobileNav.tsx](components/MobileNav.tsx)
+- **Resume:** drop the PDF in `public/assets/files/` and update the `href` in [components/DownloadCVButton.tsx](components/DownloadCVButton.tsx)
+- **SEO metadata:** `metadata` in [app/layout.tsx](app/layout.tsx)
+
+## Deployment
+
+The site is deployed on [Vercel](https://vercel.com). Add the three `NEXT_PUBLIC_EMAILJS_*` variables in the Vercel project settings before you deploy. The `/motionlab` and `/pokelab` rewrites need those external deployments to stay live.
