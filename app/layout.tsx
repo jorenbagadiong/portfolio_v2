@@ -4,6 +4,7 @@ import { Toaster } from "sonner"
 
 import IntroLoader from "@/components/IntroLoader"
 import Header from "@/components/Header"
+import StairTransition from "@/components/StairTransition"
 import PageTransition from "@/components/PageTransition"
 import ThemeProvider from "@/components/ThemeProvider"
 import StaticBackground from "@/components/StaticBackground"
@@ -57,6 +58,7 @@ export default function RootLayout({
           <StaticBackground />
           <ParticleBackground />
           <IntroLoader />
+          <StairTransition />
           <Header />
           <main>
             <PageTransition>{children}</PageTransition>

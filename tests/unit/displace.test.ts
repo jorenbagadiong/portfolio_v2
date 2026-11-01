@@ -1,5 +1,5 @@
 import { expect, test } from "vitest"
-import { displace } from "@/components/three/displace"
+import { displace, RIPPLE_GAIN } from "@/components/three/displace"
 
 const scale = { x: 7, y: 4, z: 1.5 }
 const base = new Float32Array([0.1, 0.2, 0.3, -0.5, 0.4, -0.2, 0.35, 0, 0])
@@ -54,4 +54,17 @@ test("writes into the provided buffer", () => {
   const out = new Float32Array(base.length)
   displace(base, out, 3, state() as never)
   expect(out[0]).not.toBe(0)
+})
+
+test("ripple is gentler than burst and settles", () => {
+  const dist = (o: Float32Array, i: number) =>
+    Math.hypot(o[i * 3], o[i * 3 + 1])
+  const quiet = run(state())
+  const burst = run(state({ burstAge: 0.3 }))
+  const ripple = run(state({ burstAge: 0.3, burstGain: RIPPLE_GAIN }))
+  const gain = (o: Float32Array) => dist(o, 2) - dist(quiet, 2)
+  expect(gain(ripple)).toBeGreaterThan(0)
+  expect(gain(ripple)).toBeLessThan(gain(burst))
+  const late = run(state({ burstAge: 1.5, burstGain: RIPPLE_GAIN }))
+  for (let i = 0; i < 3; i++) expect(offset(late, i)).toBeLessThanOrEqual(0.12)
 })

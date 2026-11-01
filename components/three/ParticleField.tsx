@@ -15,7 +15,7 @@ import { particles } from "@/lib/particle-store"
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
 
 import { nearestPoints } from "./cursor"
-import { displace, type DisplaceState } from "./displace"
+import { displace, RIPPLE_GAIN, type DisplaceState } from "./displace"
 import { createMorphController } from "./morph"
 import { computePairs } from "./pairs"
 import { constellation } from "./patterns"
@@ -138,6 +138,7 @@ export default function ParticleField() {
   const state = useRef({
     active: true,
     burstStart: -Infinity,
+    burstGain: 1,
     colorTween: null as null | {
       from: THREE.Color
       to: THREE.Color
@@ -171,7 +172,8 @@ export default function ParticleField() {
   // Burst pulses (ignored under reduced motion).
   useEffect(() => {
     return particles.subscribe((kind) => {
-      if (kind !== "burst" || reducedRef.current) return
+      if (reducedRef.current) return
+      state.current.burstGain = kind === "ripple" ? RIPPLE_GAIN : 1
       state.current.burstStart = performance.now()
       invalidate()
     })
@@ -321,6 +323,7 @@ export default function ParticleField() {
 
     s.dstate.time = isReduced ? 0 : now / 1000
     s.dstate.burstAge = burstAge
+    s.dstate.burstGain = s.burstGain
     s.dstate.scale = s.scale
     const pos = s.positions
     displace(base, pos, count, s.dstate)

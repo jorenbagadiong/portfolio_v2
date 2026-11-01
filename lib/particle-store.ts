@@ -1,4 +1,4 @@
-export type PulseKind = "burst"
+export type PulseKind = "burst" | "ripple"
 
 type Listener = (kind: PulseKind) => void
 

@@ -4,6 +4,8 @@ export type DisplaceState = {
   /** Seconds since the burst pulse; null when no burst is running. */
   burstAge: number | null
   scale: { x: number; y: number; z: number }
+  /** Burst amplitude multiplier (1 = burst, RIPPLE_GAIN = ripple). */
+  burstGain?: number
 }
 
 export const DRIFT_AMPLITUDE = 0.12
@@ -13,6 +15,7 @@ export const BURST_DURATION = 1.2
 const BURST_SPEED = 9
 const BURST_WIDTH = 2.2
 const BURST_PUSH = 0.9
+export const RIPPLE_GAIN = 0.4
 
 // Each axis contributes at most DRIFT_AXIS, so the vector is <= DRIFT_AMPLITUDE.
 const DRIFT_AXIS = DRIFT_AMPLITUDE / Math.sqrt(3)
@@ -33,11 +36,13 @@ export function displace(
   count: number,
   s: DisplaceState
 ): void {
-  const { time, pointer, burstAge, scale } = s
+  const { time, pointer, burstAge, scale, burstGain = 1 } = s
   const burstOn =
     burstAge !== null && burstAge >= 0 && burstAge < BURST_DURATION
   const ring = burstOn ? burstAge * BURST_SPEED : 0
-  const push = burstOn ? BURST_PUSH * (1 - burstAge / BURST_DURATION) : 0
+  const push = burstOn
+    ? BURST_PUSH * burstGain * (1 - burstAge / BURST_DURATION)
+    : 0
 
   for (let i = 0; i < count; i++) {
     const k = i * 3
