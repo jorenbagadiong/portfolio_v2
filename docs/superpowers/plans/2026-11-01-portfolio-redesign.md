@@ -38,35 +38,37 @@
 
 ## File Structure
 
-| File | Responsibility |
-|---|---|
-| `lib/site-data.ts` | Typed content and nav data, `getProjectBySlug` |
-| `lib/nav.ts` | `shouldShowHireMe(pathname)` |
-| `lib/hooks/usePrefersReducedMotion.ts` | Shared reduced-motion hook |
-| `lib/particle-store.ts` | `particles.pulse()` / `subscribe()` external store |
-| `lib/emailjs-config.ts` | Reads and validates EmailJS env vars |
-| `components/three/patterns/*.ts` | Pure position generators + route mapping |
-| `components/three/morph.ts` | `blendPositions`, `easeInOutCubic` (pure) |
-| `components/three/shaders.ts` | GLSL strings |
-| `components/three/ParticleField.tsx` | Points + LineSegments, morph/pointer/burst/theme |
-| `components/three/ParticleBackground.tsx` | Canvas host, WebGL check, error boundary |
-| `components/StaticBackground.tsx` | CSS fallback layer |
-| `components/ThemeProvider.tsx`, `components/ThemeToggle.tsx` | Theming |
-| `components/motion/*.tsx` | Reveal, Tilt, AnimatedName, DrawRing, CountUp, ScrollLine |
-| `components/projects/ProjectCard.tsx`, `ProjectDetail.tsx`, `ProjectModal.tsx` | Projects UI |
-| `components/profile/Timeline.tsx`, `SkillsPanel.tsx` | Profile UI |
-| `components/contact/ContactForm.tsx` | Form logic, moved out of the page |
-| `tests/unit/**`, `tests/e2e/**` | Vitest and Playwright |
+| File                                                                           | Responsibility                                            |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| `lib/site-data.ts`                                                             | Typed content and nav data, `getProjectBySlug`            |
+| `lib/nav.ts`                                                                   | `shouldShowHireMe(pathname)`                              |
+| `lib/hooks/usePrefersReducedMotion.ts`                                         | Shared reduced-motion hook                                |
+| `lib/particle-store.ts`                                                        | `particles.pulse()` / `subscribe()` external store        |
+| `lib/emailjs-config.ts`                                                        | Reads and validates EmailJS env vars                      |
+| `components/three/patterns/*.ts`                                               | Pure position generators + route mapping                  |
+| `components/three/morph.ts`                                                    | `blendPositions`, `easeInOutCubic` (pure)                 |
+| `components/three/shaders.ts`                                                  | GLSL strings                                              |
+| `components/three/ParticleField.tsx`                                           | Points + LineSegments, morph/pointer/burst/theme          |
+| `components/three/ParticleBackground.tsx`                                      | Canvas host, WebGL check, error boundary                  |
+| `components/StaticBackground.tsx`                                              | CSS fallback layer                                        |
+| `components/ThemeProvider.tsx`, `components/ThemeToggle.tsx`                   | Theming                                                   |
+| `components/motion/*.tsx`                                                      | Reveal, Tilt, AnimatedName, DrawRing, CountUp, ScrollLine |
+| `components/projects/ProjectCard.tsx`, `ProjectDetail.tsx`, `ProjectModal.tsx` | Projects UI                                               |
+| `components/profile/Timeline.tsx`, `SkillsPanel.tsx`                           | Profile UI                                                |
+| `components/contact/ContactForm.tsx`                                           | Form logic, moved out of the page                         |
+| `tests/unit/**`, `tests/e2e/**`                                                | Vitest and Playwright                                     |
 
 ---
 
 ### Task 1: Test tooling and content data module
 
 **Files:**
+
 - Create: `vitest.config.ts`, `tests/setup.ts`, `lib/site-data.ts`, `tests/unit/site-data.test.ts`
 - Modify: `package.json` (scripts and devDeps), `app/profile/page.tsx`, `app/work/page.tsx`, `app/contact/page.tsx`, `components/Status.tsx`, `components/Social.tsx`, `components/Nav.tsx`, `components/MobileNav.tsx` (import from `site-data` instead of local constants)
 
 **Interfaces:**
+
 - Produces, in `lib/site-data.ts`:
   - `type NavLink = { name: string; path: string }`
   - `navLinks: NavLink[]`, in this order: home `/`, profile `/profile`, projects `/projects`, contact `/contact`
@@ -94,7 +96,12 @@ Use the jsdom environment, `@vitejs/plugin-react`, `resolve.alias` `@` → the r
 import { navLinks, projects, getProjectBySlug, stats } from "@/lib/site-data"
 
 test("nav links are home, profile, projects, contact", () => {
-  expect(navLinks.map((l) => l.path)).toEqual(["/", "/profile", "/projects", "/contact"])
+  expect(navLinks.map((l) => l.path)).toEqual([
+    "/",
+    "/profile",
+    "/projects",
+    "/contact",
+  ])
 })
 test("project slugs are unique kebab-case", () => {
   const slugs = projects.map((p) => p.slug)
@@ -133,11 +140,13 @@ Expected: the tests PASS and the build succeeds.
 ### Task 2: Projects route rename, redirect, Hire me rule, Playwright
 
 **Files:**
+
 - Create: `lib/nav.ts`, `tests/unit/nav.test.ts`, `playwright.config.ts`, `tests/e2e/nav.spec.ts`, `app/projects/page.tsx` (the current work page moved here; unchanged UI for now)
 - Delete: `app/work/`
 - Modify: `next.config.ts` (add `redirects()`), `components/Header.tsx`, `components/MobileNav.tsx`, `.gitignore` (`/test-results`, `/playwright-report`)
 
 **Interfaces:**
+
 - Consumes: `navLinks` (Task 1)
 - Produces: `shouldShowHireMe(pathname: string): boolean`
 
@@ -145,8 +154,13 @@ Expected: the tests PASS and the build succeeds.
 
 ```ts
 import { shouldShowHireMe } from "@/lib/nav"
-test.each([["/", true], ["/profile", true], ["/projects", true], ["/projects/cryptolist", true], ["/contact", false]])(
-  "%s → %s", (p, v) => expect(shouldShowHireMe(p)).toBe(v))
+test.each([
+  ["/", true],
+  ["/profile", true],
+  ["/projects", true],
+  ["/projects/cryptolist", true],
+  ["/contact", false],
+])("%s → %s", (p, v) => expect(shouldShowHireMe(p)).toBe(v))
 ```
 
 - [ ] **Step 2: Run it and confirm it fails.** Run `yarn test tests/unit/nav.test.ts` and expect FAIL.
@@ -160,6 +174,7 @@ test.each([["/", true], ["/profile", true], ["/projects", true], ["/projects/cry
 Run: `yarn add -D @playwright/test && npx playwright install chromium`
 
 `playwright.config.ts` settings:
+
 - `testDir: "tests/e2e"`
 - projects `desktop` (1280×800) and `mobile` (devices["Pixel 7"])
 - `use.baseURL: "http://localhost:3100"`
@@ -182,10 +197,12 @@ Add the script `"test:e2e": "playwright test"`.
 ### Task 3: Theme system and toggle
 
 **Files:**
+
 - Create: `components/ThemeProvider.tsx`, `components/ThemeToggle.tsx`, `tests/e2e/theme.spec.ts`
 - Modify: `app/globals.css` (tokens), `tailwind.config.ts`, `app/layout.tsx` (`<html suppressHydrationWarning>`, wrap in provider), `components/Header.tsx`, `components/MobileNav.tsx`, and every file the grep below finds
 
 **Interfaces:**
+
 - Produces:
   - Tailwind color names `bg`, `surface`, `border`, `text`, `muted`, `accent` (DEFAULT, hover) and `particle`, each `rgb(var(--x) / <alpha-value>)` or `var(--x)` for the rgba tokens
   - CSS vars `--bg --surface --border --text --muted --accent --accent-hover --particle` on `:root` (light) and `.dark` (dark)
@@ -231,9 +248,11 @@ Replace each hit with the token classes (`bg-bg`, `text-text`, `text-muted`, `te
 ### Task 4: Reduced-motion hook and particle store
 
 **Files:**
+
 - Create: `lib/hooks/usePrefersReducedMotion.ts`, `lib/particle-store.ts`, `tests/unit/reduced-motion.test.tsx`, `tests/unit/particle-store.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `usePrefersReducedMotion(): boolean`. It's `false` on the server and in the first render, then reflects `matchMedia("(prefers-reduced-motion: reduce)")` and updates on change.
   - `type PulseKind = "burst"`
@@ -249,8 +268,11 @@ Replace each hit with the token classes (`bg-bg`, `text-text`, `text-muted`, `te
 test("pulse notifies subscribers and unsubscribe stops it", () => {
   const fn = vi.fn()
   const off = particles.subscribe(fn)
-  particles.pulse("burst"); expect(fn).toHaveBeenCalledWith("burst")
-  off(); particles.pulse("burst"); expect(fn).toHaveBeenCalledTimes(1)
+  particles.pulse("burst")
+  expect(fn).toHaveBeenCalledWith("burst")
+  off()
+  particles.pulse("burst")
+  expect(fn).toHaveBeenCalledTimes(1)
 })
 ```
 
@@ -266,9 +288,11 @@ In `reduced-motion.test.tsx`, stub `window.matchMedia` with a controllable `Medi
 ### Task 5: Particle patterns and morph math
 
 **Files:**
+
 - Create: `components/three/patterns/cloud.ts`, `column.ts`, `grid.ts`, `sphere.ts`, `config.ts`, `index.ts`, `components/three/morph.ts`, `lib/random.ts`, `tests/unit/patterns.test.ts`, `tests/unit/morph.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `type PatternName = "cloud" | "column" | "grid" | "sphere"`
   - `type PatternFn = (count: number, seed: number) => Float32Array`. The length is `count * 3`, it's deterministic per seed, and all coordinates fall within ±6 world units, so the camera from Task 6 frames it.
@@ -279,6 +303,7 @@ In `reduced-motion.test.tsx`, stub `window.matchMedia` with a controllable `Medi
   - `blendPositions(from: Float32Array, to: Float32Array, t: number, out: Float32Array): Float32Array`. It writes `from + (to - from) * easeInOutCubic(clamp(t, 0, 1))` into `out` and returns `out`.
 
 Pattern shapes:
+
 - **cloud:** a gaussian-ish blob with x spread 6, y 3.5, z 3, offset to the right (+1.5 x) so it sits behind the photo side.
 - **column:** points in a thin vertical band (|x| ≤ 0.8 around x = −4, y ∈ [−6, 6]), echoing the timeline.
 - **grid:** a jittered lattice on the z = −1 plane across x ∈ [−6, 6] and y ∈ [−4, 4].
@@ -292,26 +317,47 @@ const names = ["cloud", "column", "grid", "sphere"] as const
 test.each(names)("%s returns count*3 finite values within bounds", (n) => {
   const a = patterns[n](1500, 1)
   expect(a.length).toBe(4500)
-  a.forEach((v) => { expect(Number.isFinite(v)).toBe(true); expect(Math.abs(v)).toBeLessThanOrEqual(6) })
+  a.forEach((v) => {
+    expect(Number.isFinite(v)).toBe(true)
+    expect(Math.abs(v)).toBeLessThanOrEqual(6)
+  })
 })
 test.each(names)("%s is deterministic per seed", (n) => {
   expect(patterns[n](50, 7)).toEqual(patterns[n](50, 7))
 })
-test.each([["/", "cloud"], ["/profile", "column"], ["/projects", "grid"], ["/projects/cryptolist", "grid"], ["/contact", "sphere"], ["/whatever", "cloud"]])(
-  "patternForPath(%s) = %s", (p, n) => expect(patternForPath(p)).toBe(n))
-test("works for count 0 and 1", () => { expect(patterns.sphere(0, 1).length).toBe(0); expect(patterns.grid(1, 1).length).toBe(3) })
+test.each([
+  ["/", "cloud"],
+  ["/profile", "column"],
+  ["/projects", "grid"],
+  ["/projects/cryptolist", "grid"],
+  ["/contact", "sphere"],
+  ["/whatever", "cloud"],
+])("patternForPath(%s) = %s", (p, n) => expect(patternForPath(p)).toBe(n))
+test("works for count 0 and 1", () => {
+  expect(patterns.sphere(0, 1).length).toBe(0)
+  expect(patterns.grid(1, 1).length).toBe(3)
+})
 ```
 
 ```ts
 // morph.test.ts
 test("t=0 gives from, t=1 gives to, t clamps", () => {
-  const f = new Float32Array([0, 0, 0]), to = new Float32Array([2, 4, 6]), out = new Float32Array(3)
+  const f = new Float32Array([0, 0, 0]),
+    to = new Float32Array([2, 4, 6]),
+    out = new Float32Array(3)
   expect(Array.from(blendPositions(f, to, 0, out))).toEqual([0, 0, 0])
   expect(Array.from(blendPositions(f, to, 1, out))).toEqual([2, 4, 6])
   expect(Array.from(blendPositions(f, to, 2, out))).toEqual([2, 4, 6])
   expect(Array.from(blendPositions(f, to, 0.5, out))).toEqual([1, 2, 3]) // easeInOutCubic(0.5) = 0.5
 })
-test("easing is monotonic", () => { let p = -1; for (let t = 0; t <= 1; t += 0.05) { const v = easeInOutCubic(t); expect(v).toBeGreaterThanOrEqual(p); p = v } })
+test("easing is monotonic", () => {
+  let p = -1
+  for (let t = 0; t <= 1; t += 0.05) {
+    const v = easeInOutCubic(t)
+    expect(v).toBeGreaterThanOrEqual(p)
+    p = v
+  }
+})
 ```
 
 - [ ] **Step 2: Run them and confirm they fail.** Run `yarn test tests/unit/patterns.test.ts tests/unit/morph.test.ts` and expect FAIL.
@@ -324,11 +370,13 @@ test("easing is monotonic", () => { let p = -1; for (let t = 0; t <= 1; t += 0.0
 ### Task 6: Particle background in the layout
 
 **Files:**
+
 - Create: `components/three/shaders.ts`, `components/three/ParticleField.tsx`, `components/three/ParticleBackground.tsx`, `components/three/useParticleCount.ts`, `components/StaticBackground.tsx`, `tests/unit/particle-field.test.ts`, `tests/e2e/background.spec.ts`
 - Modify: `app/layout.tsx`, `components/PageTransition.tsx`
 - Delete: `components/StairTransition.tsx`, `components/Stairs.tsx`
 
 **Interfaces:**
+
 - Consumes: `patterns`, `patternForPath`, `blendPositions` (Task 5); `particles.subscribe` (Task 4); `usePrefersReducedMotion` (Task 4); the `--particle` CSS var (Task 3)
 - Produces: `<ParticleBackground />` (a default export, rendered only through `next/dynamic` from the layout)
 
@@ -339,10 +387,12 @@ Run: `yarn add three @react-three/fiber @react-three/drei && yarn add -D @types/
 - [ ] **Step 2: Extract the morph-controller logic as a pure class and test it**
 
 Write `createMorphController(initial: Float32Array)` in `components/three/morph.ts` with this interface:
+
 - `{ start(to: Float32Array, now: number): void; update(now: number): Float32Array; isMorphing(now: number): boolean }`
 - The duration is 1200ms.
 
 Its test file is `tests/unit/particle-field.test.ts`:
+
 - `"update returns target after 1200ms"`
 - `"starts new morph from displayed positions"`: start A→B at t=0. At t=600, call `start(C)`. Then `update(600)` must equal the blended A→B position at 600ms, not A and not B. `update(1800)` must equal C.
 
@@ -351,6 +401,7 @@ Run `yarn test tests/unit/particle-field.test.ts`. It should FAIL first, then PA
 - [ ] **Step 3: Write the shaders** in `shaders.ts`
 
 The vertex shader takes the attribute `position` (the CPU-blended position from the controller) and `aSeed`. Its uniforms are `uTime`, `uPointer` (vec3), `uBurst` (0..1), `uSize` and `uPixelRatio`. It applies three effects:
+
 - **Drift:** `sin/cos(uTime * 0.2 + aSeed * 6.28) * 0.15`
 - **Cursor attraction:** within radius 2.0, pull up to 0.4 toward `uPointer` with smoothstep falloff.
 - **Burst:** push outward along `normalize(pos) * uBurst * 2.5`.
@@ -403,6 +454,7 @@ Run: `yarn test && yarn test:e2e tests/e2e/background.spec.ts`
 Expected: PASS.
 
 Then do a manual check with `yarn dev`:
+
 - The particles morph between each pair of routes in about 1.2s.
 - The cursor pull works.
 - Both themes look right.
@@ -417,11 +469,13 @@ Then do a manual check with `yarn dev`:
 The user rejected the per-route dense patterns. This task replaces them with the spec's revised "Particle system (revised 2026-11-01)" and "Loading intro" sections, which are normative. Read them first.
 
 **Files:**
+
 - Create: `components/three/patterns/constellation.ts`, `components/three/displace.ts`, `components/three/cursor.ts`, `lib/intro.ts`, `components/IntroLoader.tsx`, `tests/unit/constellation.test.ts`, `tests/unit/displace.test.ts`, `tests/unit/cursor.test.ts`, `tests/unit/intro.test.ts`, `tests/e2e/intro.spec.ts`, `tests/e2e/fixtures.ts`
 - Modify: `components/three/ParticleField.tsx`, `components/three/shaders.ts`, `components/three/pairs.ts` (add per-pair distance output), `components/three/useParticleCount.ts`, `components/three/patterns/index.ts`, `lib/particle-store.ts` only if needed, `app/layout.tsx` (inline head script and `IntroLoader`), `app/globals.css` (`html.intro` rules and the 3s fallback), every existing `tests/e2e/*.spec.ts` (switch to the shared fixture that skips the intro)
 - Delete: `components/three/patterns/{cloud,column,grid,sphere,config}.ts`, the route-morph logic in `ParticleField`, and the pattern tests for the deleted patterns in `tests/unit/patterns.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `constellation(count: number, seed: number): Float32Array`. The length is `count * 3`, every value is in [−1, 1], it's deterministic per seed, and it's evenly spread.
   - `displace(base: Float32Array, out: Float32Array, count: number, s: { time: number; pointer: { x: number; y: number } | null; burstAge: number | null; scale: { x: number; y: number; z: number } }): void`. This is pure, allocation-free, and applies drift, cursor pull and the burst ripple from the spec values. `burstAge` is seconds since the pulse, and `null` means no burst.
@@ -475,10 +529,12 @@ The user rejected the per-route dense patterns. This task replaces them with the
 The spec section "Route transition, 'stair wipe'" is normative. Read it first.
 
 **Files:**
+
 - Create: `components/StairTransition.tsx`, `lib/route-label.ts`, `tests/unit/route-label.test.ts`, `tests/e2e/transition.spec.ts`
 - Modify: `app/layout.tsx` (render `StairTransition`), `lib/particle-store.ts` (add `PulseKind` `"ripple"`), `components/three/displace.ts` and `ParticleField.tsx` (handle `"ripple"` at 40% amplitude), `tests/unit/displace.test.ts`
 
 **Interfaces:**
+
 - Produces:
   - `routeLabel(pathname: string): string`. It maps using `navLinks` names, capitalized: `/` gives "Home" and `/projects/x` gives "Projects". An unknown route gives "".
   - `PulseKind = "burst" | "ripple"`
@@ -508,9 +564,11 @@ The spec section "Route transition, 'stair wipe'" is normative. Read it first.
 ### Task 7: Motion primitives
 
 **Files:**
+
 - Create: `components/motion/Reveal.tsx`, `Tilt.tsx`, `AnimatedName.tsx`, `DrawRing.tsx`, `CountUp.tsx`, `ScrollLine.tsx`, `tests/unit/motion.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `usePrefersReducedMotion` (Task 4)
 - Produces:
   - `<Reveal as?: "div" | "li" | "section"; delay?: number; y?: number = 24; children />`. It uses Framer `whileInView` with `once: true` and `amount: 0.2`. With reduced motion it renders statically.
@@ -542,10 +600,12 @@ Mock `matchMedia` to return reduced motion true.
 ### Task 8: Home redesign
 
 **Files:**
+
 - Modify: `app/page.tsx`, `components/Photo.tsx` (use `DrawRing`), `components/Status.tsx` (glass tiles with `CountUp`)
 - Create: `tests/e2e/home.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `intro`, `stats`, `socials` (Task 1); `AnimatedName`, `DrawRing`, `CountUp`, `Reveal` (Task 7); `DownloadCVButton` (existing)
 
 The layout follows spec "Pages → Home". Keep the copy "Hello, I'm" and change it from "Hi, I'm" to match the approved wireframe. The `h1` contains the `AnimatedName` for "Joren Bagadiong". Stats are 4 `bg-surface border-border backdrop-blur` tiles using `CountUp`.
@@ -563,19 +623,37 @@ The layout follows spec "Pages → Home". Keep the copy "Hello, I'm" and change 
 
 ---
 
+### Task 8b: Remove the Home stats strip (added 2026-11-01)
+
+The user decided to drop the stats. The spec's "Pages → Home" bullet on the stats strip is normative.
+
+**Files:**
+- Modify: `app/page.tsx` (remove `<Status />` and add the badge), `lib/site-data.ts` (remove `stats`), `tests/unit/site-data.test.ts` (remove the stats test), `tests/e2e/home.spec.ts` (replace the stats test)
+- Delete: `components/Status.tsx`
+
+- [ ] **Step 1: Replace the e2e stats test** with `"shows experience badge, no stats strip"`. On `/`, the text "5+ years" is visible near the role, and the texts "Code commits" and "Projects completed" have count 0. Run it and confirm it FAILS.
+- [ ] **Step 2: Implement.** Remove the strip and `Status.tsx`. Add the badge as a small pill (`border-accent text-accent`, mono, uppercase optional) on the "Frontend Web Developer" line, reading "Frontend Web Developer · 5+ years" or with the badge beside it. Keep the layout balanced on desktop and mobile, so no big empty gap is left where the strip was. Remove `stats` from site-data and its unit test. Keep `CountUp`; Task 12 decides whether unused primitives are removed.
+- [ ] **Step 3: Run the checks.** Run `yarn test`, `yarn build` and `E2E_PORT=<free> yarn test:e2e tests/e2e/home.spec.ts`, and expect PASS. Take screenshots of `/` in desktop and mobile, dark and light, and look at them.
+- [ ] **Step 4: Commit.** `git commit -m "feat: replace home stats strip with experience badge"`
+
+---
+
 ### Task 9: Profile redesign
 
 **Files:**
+
 - Create: `components/profile/Timeline.tsx`, `components/profile/SkillsPanel.tsx`, `tests/e2e/profile.spec.ts`
 - Modify: `app/profile/page.tsx` (drop the Tabs and compose the new components)
 
 **Interfaces:**
+
 - Consumes: `experience`, `education`, `certifications`, `skills`, `proficiency` (Task 1); `ScrollLine`, `Reveal` (Task 7); the existing `components/ui/tooltip`
 - Produces:
   - `<Timeline groups: { title: string; items: TimelineItem[] }[] />`, where `type TimelineItem = { date: string; title: string; subtitle: string; details?: string[] }`
   - `<SkillsPanel skills proficiency />`
 
 Map the data to timeline items like this:
+
 - Experience is `{date: duration, title: position, subtitle: company, details: responsibilities}`.
 - Education and certifications are `{date: duration, title: degree, subtitle: college}`.
 
@@ -601,11 +679,13 @@ The details are collapsed behind a `<button aria-expanded aria-controls>` labele
 ### Task 10: Projects grid and detail view
 
 **Files:**
+
 - Create: `components/projects/ProjectCard.tsx`, `ProjectDetail.tsx`, `ProjectModal.tsx`, `app/projects/layout.tsx`, `app/projects/[slug]/page.tsx`, `app/projects/@modal/default.tsx`, `app/projects/@modal/(.)[slug]/page.tsx`, `tests/e2e/projects.spec.ts`
 - Modify: `app/projects/page.tsx` (grid replaces Swiper)
 - Delete: `components/WorkSliderBtns.tsx`
 
 **Interfaces:**
+
 - Consumes: `projects`, `getProjectBySlug` (Task 1); `Tilt`, `Reveal` (Task 7); `@radix-ui/react-dialog` (existing dependency)
 - Produces:
   - `<ProjectCard project: Project />`. It's a `Link` to `/projects/${slug}` (`scroll={false}`) wrapped in `Tilt`, with a Framer `layoutId={"project-" + slug}` on the image container.
@@ -613,9 +693,10 @@ The details are collapsed behind a `<button aria-expanded aria-controls>` labele
   - `<ProjectModal project: Project />`. It's a Radix `Dialog` that's open by default. Its `onOpenChange(false)` calls `router.back()`. The title is a `Dialog.Title`, and the close button is labeled "Close".
 
 Route details:
+
 - `app/projects/layout.tsx` receives `{ children, modal }` and renders both.
 - `@modal/default.tsx` returns `null`.
-- `[slug]/page.tsx` exports `generateStaticParams()` from `projects` and `generateMetadata()` with `title: \`${project.title} | Joren Bagadiong\`` and the project description. It calls `notFound()` for an unknown slug.
+- `[slug]/page.tsx` exports `generateStaticParams()` from `projects` and `generateMetadata()` with `title: \`${project.title} | Joren Bagadiong\``and the project description. It calls`notFound()` for an unknown slug.
 - In Next 15, `params` is a Promise: `{ params }: { params: Promise<{ slug: string }> }`.
 
 - [ ] **Step 1: Write the e2e tests**
@@ -638,14 +719,17 @@ Route details:
 ### Task 11: Contact redesign, EmailJS guard and burst
 
 **Files:**
+
 - Create: `lib/emailjs-config.ts`, `components/contact/ContactForm.tsx`, `tests/unit/emailjs-config.test.ts`, `tests/e2e/contact.spec.ts`
 - Modify: `app/contact/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `contactInfo` (Task 1); `particles.pulse` (Task 4); `Reveal` (Task 7)
 - Produces: `getEmailJsConfig(env?: Record<string, string | undefined>): { ok: true; serviceId: string; templateId: string; publicKey: string } | { ok: false; missing: string[] }`. It defaults to reading the three `NEXT_PUBLIC_EMAILJS_*` values. Access them as literal `process.env.NEXT_PUBLIC_…` expressions so Next inlines them.
 
 Form behavior:
+
 - The fields and the Zod schema stay as they are today (fullname, email, subject, message).
 - Submit is disabled and shows "Sending…" while `formState.isSubmitting`.
 - On success: `toast.success`, `form.reset()`, `particles.pulse("burst")`.
@@ -658,15 +742,30 @@ Form behavior:
 ```ts
 test("reports missing vars", () => {
   expect(getEmailJsConfig({ NEXT_PUBLIC_EMAILJS_SERVICE_ID: "s" })).toEqual({
-    ok: false, missing: ["NEXT_PUBLIC_EMAILJS_TEMPLATE_ID", "NEXT_PUBLIC_EMAILJS_PUBLIC_KEY"] })
+    ok: false,
+    missing: [
+      "NEXT_PUBLIC_EMAILJS_TEMPLATE_ID",
+      "NEXT_PUBLIC_EMAILJS_PUBLIC_KEY",
+    ],
+  })
 })
 test("returns config when complete", () => {
-  expect(getEmailJsConfig({ NEXT_PUBLIC_EMAILJS_SERVICE_ID: "s", NEXT_PUBLIC_EMAILJS_TEMPLATE_ID: "t", NEXT_PUBLIC_EMAILJS_PUBLIC_KEY: "k" }))
-    .toEqual({ ok: true, serviceId: "s", templateId: "t", publicKey: "k" })
+  expect(
+    getEmailJsConfig({
+      NEXT_PUBLIC_EMAILJS_SERVICE_ID: "s",
+      NEXT_PUBLIC_EMAILJS_TEMPLATE_ID: "t",
+      NEXT_PUBLIC_EMAILJS_PUBLIC_KEY: "k",
+    })
+  ).toEqual({ ok: true, serviceId: "s", templateId: "t", publicKey: "k" })
 })
 test("treats empty strings as missing", () => {
-  expect(getEmailJsConfig({ NEXT_PUBLIC_EMAILJS_SERVICE_ID: "", NEXT_PUBLIC_EMAILJS_TEMPLATE_ID: "t", NEXT_PUBLIC_EMAILJS_PUBLIC_KEY: "k" }))
-    .toEqual({ ok: false, missing: ["NEXT_PUBLIC_EMAILJS_SERVICE_ID"] })
+  expect(
+    getEmailJsConfig({
+      NEXT_PUBLIC_EMAILJS_SERVICE_ID: "",
+      NEXT_PUBLIC_EMAILJS_TEMPLATE_ID: "t",
+      NEXT_PUBLIC_EMAILJS_PUBLIC_KEY: "k",
+    })
+  ).toEqual({ ok: false, missing: ["NEXT_PUBLIC_EMAILJS_SERVICE_ID"] })
 })
 ```
 
@@ -691,6 +790,7 @@ Stub `**/api.emailjs.com/api/v1.0/email/send` with `page.route`, responding 200 
 ### Task 12: Cleanup, layout hardening, docs
 
 **Files:**
+
 - Modify: `package.json` (remove deps), `README.md`, any page that overflows at 320px
 - Create: `tests/e2e/layout.spec.ts`
 
@@ -720,6 +820,7 @@ Run: `yarn lint && yarn test && yarn test:e2e && yarn build`
 Expected: all of them pass with no errors.
 
 Then do the manual pass:
+
 - Run Lighthouse in Chrome DevTools against `yarn start`. Desktop performance should be at least 90 and mobile at least 75, with CLS 0. Record the numbers in the PR description.
 - Check contrast in DevTools for the accent text and the buttons in light mode. They should meet WCAG AA (4.5:1 for body text). If light-mode accent text fails, darken `--accent` in light mode only, and note it in the PR.
 

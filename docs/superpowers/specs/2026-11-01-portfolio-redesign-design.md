@@ -30,16 +30,16 @@ Redesign the portfolio so it impresses three audiences at once:
 
 ## Decisions made
 
-| Topic | Decision |
-|---|---|
-| 3D intensity | A persistent 3D background across all pages |
+| Topic            | Decision                                                                                                                                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 3D intensity     | A persistent 3D background across all pages                                                                                                                                                                |
 | Visual direction | A sparse particle constellation (as in the approved mockup), the same on every page, with an assembling intro on first visit. Glowing points joined by thin lines, in the current dark + `#00ff99` palette |
-| Structure | Keep 4 pages. Rename **Work → Projects** (`/work` → `/projects`, with a permanent redirect) |
-| Layouts | All four pages fully redesigned (see Pages) |
-| 3D tech | React Three Fiber + drei, one persistent canvas in the root layout |
-| Motion libraries | Framer Motion (React-driven motion) + Anime.js v4 (timelines, SVG, text, counters) |
-| "Hire me" button | In the header on every page **except** `/contact`, on desktop and in the mobile menu |
-| Themes | Light + dark through next-themes. Defaults to the system setting and remembers the user's choice |
+| Structure        | Keep 4 pages. Rename **Work → Projects** (`/work` → `/projects`, with a permanent redirect)                                                                                                                |
+| Layouts          | All four pages fully redesigned (see Pages)                                                                                                                                                                |
+| 3D tech          | React Three Fiber + drei, one persistent canvas in the root layout                                                                                                                                         |
+| Motion libraries | Framer Motion (React-driven motion) + Anime.js v4 (timelines, SVG, text, counters)                                                                                                                         |
+| "Hire me" button | In the header on every page **except** `/contact`, on desktop and in the mobile menu                                                                                                                       |
+| Themes           | Light + dark through next-themes. Defaults to the system setting and remembers the user's choice                                                                                                           |
 
 ## Architecture
 
@@ -103,16 +103,16 @@ The user asked to bring back the original stair page transition, enhanced, and t
 - **next-themes** with `attribute="class"`, `defaultTheme="system"` and `enableSystem`. Tailwind uses `darkMode: "class"`.
 - **Color tokens** are CSS variables in `app/globals.css` (`:root` for light, `.dark` for dark), exposed in `tailwind.config.ts`:
 
-| Token | Dark | Light |
-|---|---|---|
-| `--bg` | `#1c1c22` | `#f5f7f6` |
+| Token               | Dark                     | Light                   |
+| ------------------- | ------------------------ | ----------------------- |
+| `--bg`              | `#1c1c22`                | `#f5f7f6`               |
 | `--surface` (glass) | `rgba(255,255,255,0.05)` | `rgba(255,255,255,0.7)` |
-| `--border` | `rgba(255,255,255,0.12)` | `rgba(0,0,0,0.08)` |
-| `--text` | `#ffffff` | `#111317` |
-| `--muted` | `rgba(255,255,255,0.6)` | `#5b6370` |
-| `--accent` | `#00ff99` | `#00a86b` |
-| `--accent-hover` | `#00e187` | `#008f5b` |
-| `--particle` | `#00ff99` | `#00a86b` |
+| `--border`          | `rgba(255,255,255,0.12)` | `rgba(0,0,0,0.08)`      |
+| `--text`            | `#ffffff`                | `#111317`               |
+| `--muted`           | `rgba(255,255,255,0.6)`  | `#5b6370`               |
+| `--accent`          | `#00ff99`                | `#00a86b`               |
+| `--accent-hover`    | `#00e187`                | `#008f5b`               |
+| `--particle`        | `#00ff99`                | `#00a86b`               |
 
 - Hardcoded colors such as `text-white`, `bg-primary` and `#1c1c22` are replaced with the token classes throughout.
 - Particles read `--particle` from computed style when the theme changes. They tween `uColor` over about 400ms and switch to additive blending in dark mode and normal blending in light mode.
@@ -120,11 +120,11 @@ The user asked to bring back the original stair page transition, enhanced, and t
 
 ### Motion responsibilities
 
-| Library | Used for |
-|---|---|
-| **Framer Motion** | Route transitions, `Reveal` (scroll-in), `Tilt` (3D card tilt toward the cursor), the shared-layout card→detail expansion, mobile menu and theme icon animation |
+| Library                     | Used for                                                                                                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Framer Motion**           | Route transitions, `Reveal` (scroll-in), `Tilt` (3D card tilt toward the cursor), the shared-layout card→detail expansion, mobile menu and theme icon animation     |
 | **Anime.js v4** (`animejs`) | The hero name letter animation, the photo ring SVG drawing, timeline line drawing linked to scroll, stat counters (replaces `react-countup`), staggered skill icons |
-| **R3F** | The particle background only |
+| **R3F**                     | The particle background only                                                                                                                                        |
 
 Each library gets a reduced-motion-aware wrapper in `components/motion/`. All of them use one shared `usePrefersReducedMotion()` hook from `lib/hooks/`.
 
@@ -147,7 +147,7 @@ The logo, the nav (Home · Profile · Projects · Contact), the `ThemeToggle`, a
   - The **Download CV** button (primary, above the fold)
   - The social icons
 - **Right:** the photo with an SVG ring that draws on load (Anime.js) and rotates slowly.
-- **Below:** 4 glass stat tiles (5 years, 18 projects, 16 technologies, 500 commits) that count up once in view.
+- **Stats strip removed (user decision 2026-11-01).** "18 projects" conflicted with the 4 shown, and "500 commits" and "16 technologies mastered" read as vanity numbers. Instead, the role line shows a small accent badge: "Frontend Web Developer · 5+ years".
 
 ### Profile `/profile`
 
@@ -223,14 +223,14 @@ tests/
 
 ## Error handling summary
 
-| Failure | Behavior |
-|---|---|
-| No WebGL or a canvas runtime error | Static fallback layer only. The site works fully |
-| Slow 3D chunk | Content is already visible. The canvas fades in when ready |
-| EmailJS send error | Error toast, no burst, form values kept |
-| Missing EmailJS env var | Error toast plus a console message naming the variable |
-| Unknown project slug | 404 |
-| Theme not yet resolved | next-themes inline script sets the class before paint. The toggle shows a placeholder until mounted |
+| Failure                            | Behavior                                                                                            |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------- |
+| No WebGL or a canvas runtime error | Static fallback layer only. The site works fully                                                    |
+| Slow 3D chunk                      | Content is already visible. The canvas fades in when ready                                          |
+| EmailJS send error                 | Error toast, no burst, form values kept                                                             |
+| Missing EmailJS env var            | Error toast plus a console message naming the variable                                              |
+| Unknown project slug               | 404                                                                                                 |
+| Theme not yet resolved             | next-themes inline script sets the class before paint. The toggle shows a placeholder until mounted |
 
 ## Testing
 
