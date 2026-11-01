@@ -1,6 +1,5 @@
 import Social from "@/components/Social"
 import Photo from "@/components/Photo"
-import Status from "@/components/Status"
 import DownloadCVButton from "@/components/DownloadCVButton"
 import { AnimatedName } from "@/components/motion/AnimatedName"
 import { Reveal } from "@/components/motion/Reveal"
@@ -12,7 +11,12 @@ const Home = () => {
       <div className="container mx-auto">
         <div className="flex flex-col xl:flex-row items-center justify-between xl:pt-8 xl:pb-16">
           <div className="text-center xl:text-left order-2 xl:order-none">
-            <span className="text-xl text-muted">Frontend Web Developer</span>
+            <div className="flex flex-wrap items-center justify-center xl:justify-start gap-3">
+              <span className="text-xl text-muted">Frontend Web Developer</span>
+              <span className="inline-flex items-center rounded-full border border-accent px-3 py-1 font-mono text-xs uppercase tracking-wider text-accent">
+                5+ years
+              </span>
+            </div>
             <h1 className="text-[34px] sm:text-[48px] xl:text-[60px] leading-[1.1] font-semibold mb-6">
               Hello, I&apos;m <br />
               <AnimatedName text="Joren Bagadiong" className="text-accent" />
@@ -35,7 +39,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <Status />
     </section>
   )
 }

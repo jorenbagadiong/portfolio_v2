@@ -19,11 +19,11 @@ test("heading names Joren", async ({ page }) => {
   )
 })
 
-test("stats reach final values", async ({ page }) => {
+test("shows experience badge, no stats strip", async ({ page }) => {
   await page.goto("/")
-  await page.getByText("Years of experience").scrollIntoViewIfNeeded()
-  await page.waitForTimeout(2000)
-  for (const n of ["5", "18", "16", "500"]) {
-    await expect(page.getByText(n, { exact: true })).toBeVisible()
-  }
+  await expect(page.getByText("5+ years", { exact: true })).toBeVisible()
+  await expect(page.getByText("Code commits", { exact: true })).toHaveCount(0)
+  await expect(
+    page.getByText("Projects completed", { exact: true })
+  ).toHaveCount(0)
 })

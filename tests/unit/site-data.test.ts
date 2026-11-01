@@ -1,5 +1,5 @@
 import { expect, test } from "vitest"
-import { navLinks, projects, getProjectBySlug, stats } from "@/lib/site-data"
+import { navLinks, projects, getProjectBySlug } from "@/lib/site-data"
 
 test("nav links are home, profile, projects, contact", () => {
   expect(navLinks.map((l) => l.path)).toEqual([
@@ -17,7 +17,4 @@ test("project slugs are unique kebab-case", () => {
 test("getProjectBySlug finds and misses", () => {
   expect(getProjectBySlug("cryptoweb-app")?.title).toBe("Cryptoweb App")
   expect(getProjectBySlug("nope")).toBeUndefined()
-})
-test("stats keep current values", () => {
-  expect(stats.map((s) => s.num)).toEqual([5, 18, 16, 500])
 })

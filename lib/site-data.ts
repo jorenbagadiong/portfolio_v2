@@ -267,13 +267,6 @@ export const skills = {
   ] as SkillItem[],
 }
 
-export const stats: { num: number; text: string }[] = [
-  { num: 5, text: "Years of experience" },
-  { num: 18, text: "Projects completed" },
-  { num: 16, text: "Technologies mastered" },
-  { num: 500, text: "Code commits" },
-]
-
 export type SocialItem = { icon: IconType; path: string }
 
 export const socials: SocialItem[] = [
