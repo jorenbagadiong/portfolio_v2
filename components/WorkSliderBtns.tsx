@@ -22,16 +22,21 @@ const WorkSliderBtns = ({
   useEffect(() => {
     if (!swiper) return
 
-    setTotal(swiper.slides.length)
-    setActiveIndex(swiper.activeIndex)
-
-    const handleSlideChange = () => {
-      setActiveIndex(swiper.activeIndex)
+    // Swiper may not be initialized yet, so slides can be undefined on first run
+    const sync = () => {
+      setTotal(swiper.slides?.length ?? 0)
+      setActiveIndex(swiper.activeIndex ?? 0)
     }
 
-    swiper.on("slideChange", handleSlideChange)
+    sync()
+
+    swiper.on("init", sync)
+    swiper.on("slideChange", sync)
+    swiper.on("slidesLengthChange", sync)
     return () => {
-      swiper.off("slideChange", handleSlideChange)
+      swiper.off("init", sync)
+      swiper.off("slideChange", sync)
+      swiper.off("slidesLengthChange", sync)
     }
   }, [swiper])
 
