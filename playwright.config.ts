@@ -1,8 +1,10 @@
 import { defineConfig, devices } from "@playwright/test"
 
+const PORT = Number(process.env.E2E_PORT ?? 3100)
+
 export default defineConfig({
   testDir: "tests/e2e",
-  use: { baseURL: "http://localhost:3100" },
+  use: { baseURL: `http://localhost:${PORT}` },
   projects: [
     {
       name: "desktop",
@@ -25,8 +27,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "yarn build && yarn start -p 3100",
-    port: 3100,
+    command: `yarn build && yarn start -p ${PORT}`,
+    port: PORT,
     reuseExistingServer: !process.env.CI,
     timeout: 240_000,
     env: {
