@@ -470,6 +470,41 @@ The user rejected the per-route dense patterns. This task replaces them with the
 
 ---
 
+### Task 6c: Stair-wipe route transition (added 2026-11-01)
+
+The spec section "Route transition, 'stair wipe'" is normative. Read it first.
+
+**Files:**
+- Create: `components/StairTransition.tsx`, `lib/route-label.ts`, `tests/unit/route-label.test.ts`, `tests/e2e/transition.spec.ts`
+- Modify: `app/layout.tsx` (render `StairTransition`), `lib/particle-store.ts` (add `PulseKind` `"ripple"`), `components/three/displace.ts` and `ParticleField.tsx` (handle `"ripple"` at 40% amplitude), `tests/unit/displace.test.ts`
+
+**Interfaces:**
+- Produces:
+  - `routeLabel(pathname: string): string`. It maps using `navLinks` names, capitalized: `/` gives "Home" and `/projects/x` gives "Projects". An unknown route gives "".
+  - `PulseKind = "burst" | "ripple"`
+  - `<StairTransition />`
+- Consumes: `navLinks` (site-data), `usePrefersReducedMotion`, `particles.pulse`, and Anime.js `animate` and `stagger`.
+
+- [ ] **Step 1: Write the failing tests**
+  - `routeLabel` cases: `/` → "Home", `/profile` → "Profile", `/projects` → "Projects", `/projects/cryptolist` → "Projects", `/contact` → "Contact", `/nope` → "".
+  - `displace`: with a ripple at age 0.3, the offset is greater than 0 and smaller than a burst at the same age. By about 1.5s, the offset is back within the drift bound.
+- [ ] **Step 2: Run them and confirm they fail.** Run `yarn test` and expect FAIL.
+- [ ] **Step 3: Implement**
+  - `StairTransition` skips the first render, using a ref of the previous pathname.
+  - On a pathname change it mounts the bars and label keyed by pathname, then unmounts them after the wipe.
+  - Reduced motion renders nothing.
+  - Bars use `bg-surface` over `bg-bg`, plus the accent bottom edge with glow.
+  - It fires `particles.pulse("ripple")`.
+- [ ] **Step 4: Write the e2e tests** in `tests/e2e/transition.spec.ts`, using the intro-skipping fixture:
+  - `"no wipe on first load"`: after `goto("/")`, the locator `[data-stair-transition]` count is 0.
+  - `"wipe plays on navigation"`: click the "Profile" nav link (on mobile, open the menu first). `[data-stair-transition]` becomes attached, shows the label text "Profile", and is detached within 1.2s.
+  - `"reduced motion: no wipe"`: with `emulateMedia({ reducedMotion: "reduce" })`, navigating never attaches it.
+  - `"clicks not blocked"`: immediately after clicking Profile, the "Projects" link is clickable and navigates.
+- [ ] **Step 5: Run the checks.** Run `yarn test`, `yarn build` and `E2E_PORT=<free> yarn test:e2e`, and expect PASS. Take screenshots mid-wipe, at about 150ms and 400ms after clicking, in both themes, and look at them.
+- [ ] **Step 6: Commit.** `git commit -m "feat: enhanced stair-wipe route transition"`
+
+---
+
 ### Task 7: Motion primitives
 
 **Files:**

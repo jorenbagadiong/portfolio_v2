@@ -47,7 +47,7 @@ Redesign the portfolio so it impresses three audiences at once:
 
 1. **Static fallback.** A CSS radial gradient plus a dot pattern, with one version per theme. It's always rendered, so it shows before and instead of WebGL.
 2. **`<ParticleBackground />`.** A fixed, full-viewport R3F `<Canvas>` with `pointer-events: none` and `aria-hidden`. It loads with `next/dynamic({ ssr: false })` and mounts after first paint. It stays mounted across route changes.
-3. **Content.** The header, then each page wrapped in a Framer Motion `AnimatePresence` fade/slide transition. This replaces `PageTransition`'s current behavior and removes `StairTransition` and `Stairs`.
+3. **Content.** The header, then each page wrapped in a Framer Motion `AnimatePresence` fade/slide transition. The original stair transition is restored and enhanced as the "stair wipe" (see Route transition).
 
 ### Particle system (revised 2026-11-01)
 
@@ -85,6 +85,18 @@ One-off effects still go through `lib/particle-store.ts`, `particles.pulse("burs
 - **WebGL unsupported:** the intro ends immediately and content shows.
 - **Component:** `components/IntroLoader.tsx`, a client component in the root layout. The overlay is `fixed inset-0 z-50`, with a transparent background so the assembling particles stay visible, and `aria-hidden`. The real content is not hidden from screen readers.
 - **Performance note:** the intro delays the visible hero by up to about 2s on the first visit only. The Lighthouse desktop target of 90 or higher still applies, so measure it in Task 12.
+
+### Route transition, "stair wipe" (added 2026-11-01)
+
+The user asked to bring back the original stair page transition, enhanced, and to keep the loading intro for first load only.
+
+- **When it plays:** on every client-side route change. It never plays on the initial page load, whether or not the intro runs, and never with reduced motion. Reduced motion swaps the page instantly.
+- **Bars:** 6 full-height vertical bars (`fixed inset-0 z-40 flex pointer-events-none`), filled with the theme `surface`/`bg` color so they look dark in dark mode and light in light mode. Each bar's bottom edge has a 2px `accent` line with a soft glow (`box-shadow` in the accent color).
+- **Motion:** the bars start covering the screen (`top: 0%`) and slide down to `top: 100%`. Each takes 0.45s with an `easeInOut` ease, staggered 0.06s from right to left, matching the original's reversed order. The whole wipe finishes in about 0.8s.
+- **Destination label:** while the bars cover the screen, the destination page name is centered in the mono font ("Home", "Profile", "Projects" or "Contact", from `navLinks`). For `/projects/[slug]` it shows "Projects". The letters stagger in with Anime.js, then the label fades out as the bars leave, about 0.35s in all. It's `aria-hidden`.
+- **Particles:** each route change sends `particles.pulse("ripple")`, a gentler, smaller version of the burst ripple at about 40% amplitude.
+- **Content:** the new page renders immediately underneath, and the existing `PageTransition` fade continues. The bars never block clicks (`pointer-events: none`), and keyboard focus isn't trapped.
+- **Component:** `components/StairTransition.tsx` (restored and rewritten) in the root layout.
 
 ### Theming
 
