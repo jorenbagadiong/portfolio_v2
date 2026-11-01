@@ -37,7 +37,7 @@ const readColors = (page: import("@playwright/test").Page) =>
   page.evaluate(() => ({
     bg: getComputedStyle(document.body).backgroundColor,
     accent: getComputedStyle(
-      document.querySelector("header span.text-accent") as Element
+      document.querySelector("header span.text-accent-text") as Element
     ).color,
     particle: getComputedStyle(document.documentElement)
       .getPropertyValue("--particle")
@@ -57,7 +57,7 @@ test.describe("computed colors", () => {
     await page.reload()
     const light = await readColors(page)
     expect(light.bg).toBe("rgb(245, 247, 246)")
-    expect(light.accent).toBe("rgb(0, 168, 107)")
+    expect(light.accent).toBe("rgb(0, 122, 77)")
     expect(light.accent).not.toBe(dark.accent)
   })
 })

@@ -32,7 +32,7 @@ export default defineConfig({
   webServer: {
     command: `yarn build && yarn start -p ${PORT}`,
     port: PORT,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 240_000,
     env: {
       NEXT_PUBLIC_EMAILJS_SERVICE_ID: "test_service",
