@@ -5,7 +5,12 @@ import { useFrame, useThree } from "@react-three/fiber"
 import { useTheme } from "next-themes"
 import * as THREE from "three"
 
-import { INTRO_MORPH_MS, INTRO_SKIP_EVENT, introClock } from "@/lib/intro"
+import {
+  INTRO_MORPH_MS,
+  INTRO_READY_EVENT,
+  INTRO_SKIP_EVENT,
+  introClock,
+} from "@/lib/intro"
 import { particles } from "@/lib/particle-store"
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
 
@@ -74,10 +79,16 @@ export default function ParticleField() {
     const start = new Float32Array(target.length)
     for (let i = 0; i < start.length; i++) start[i] = target[i] * 0.02
     const c = createMorphController(start, INTRO_MORPH_MS)
-    const t0 = introClock.t0 || now
-    c.start(target, t0)
-    return { controller: c, introStart: t0 }
+    c.start(target, now)
+    return { controller: c, introStart: now }
   }, [count, intro])
+
+  // Tell IntroLoader the canvas is live so the intro timing follows it.
+  useEffect(() => {
+    if (!intro) return
+    introClock.ready = introStart
+    window.dispatchEvent(new Event(INTRO_READY_EVENT))
+  }, [intro, introStart])
 
   const geometry = useMemo(() => {
     const g = new THREE.BufferGeometry()
@@ -133,6 +144,7 @@ export default function ParticleField() {
       start: number
     },
     hasColor: false,
+    skipped: false,
     lineBase: 0.3,
     pairs: new Uint16Array(maxPairs * 2),
     pairDist: new Float32Array(maxPairs),
@@ -168,6 +180,7 @@ export default function ParticleField() {
   // Skipping the intro jumps the points to their final positions.
   useEffect(() => {
     const onSkip = () => {
+      state.current.skipped = true
       controller.start(
         constellation(count, SEED),
         performance.now() - INTRO_MORPH_MS
@@ -270,7 +283,7 @@ export default function ParticleField() {
     // Field scale tracks the visible viewport so it fills any aspect ratio.
     const { width, height } = frame.viewport
     s.scale.x = (width / 2) * VIEW_FILL
-    s.scale.y = (height / 2) * VIEW_FILL
+    s.scale.y = (height / 2) * VIEW_FILL + SCROLL_LIMIT
     s.scale.z = Z_RANGE
 
     // Group transform: scroll parallax and pointer tilt.
@@ -319,7 +332,7 @@ export default function ParticleField() {
 
     // Line opacity ramps in over the last 30% of the intro morph.
     let ramp = 1
-    if (intro) {
+    if (intro && !s.skipped) {
       ramp = Math.min(
         1,
         Math.max(0, ((now - introStart) / INTRO_MORPH_MS - 0.7) / 0.3)

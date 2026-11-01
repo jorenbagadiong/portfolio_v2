@@ -60,3 +60,17 @@ test("no WebGL ends intro", async ({ page }) => {
     timeout: 500 + 1500,
   })
 })
+
+test("particles assemble after the canvas appears", async ({ page }) => {
+  const t0 = Date.now()
+  await page.goto("/", { waitUntil: "commit" })
+  const html = page.locator("html")
+  await page.locator("canvas").waitFor({ state: "attached" })
+  const attached = Date.now()
+  await page.waitForTimeout(1200)
+  // The assemble takes 1.4s from canvas mount, so the intro is still running.
+  await expect(html).toHaveClass(/\bintro\b/)
+  await expect(html).not.toHaveClass(/\bintro\b/, { timeout: 2000 })
+  expect(Date.now() - t0).toBeLessThan(2800 + 400)
+  expect(Date.now() - attached).toBeGreaterThan(1400)
+})

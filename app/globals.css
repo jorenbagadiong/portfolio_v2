@@ -92,3 +92,17 @@ main {
     display: flex;
   }
 }
+
+/* If hydration fails the overlay must not linger over the revealed content. */
+@keyframes intro-overlay-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.intro .intro-overlay {
+    animation: intro-overlay-failsafe 0.3s ease 3s forwards;
+  }
+}

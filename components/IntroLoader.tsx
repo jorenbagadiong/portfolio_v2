@@ -6,13 +6,13 @@ import { AnimatedName } from "@/components/motion/AnimatedName"
 import {
   hasWebGL,
   INTRO_FLAG,
-  INTRO_MORPH_MS,
   INTRO_SKIP_EVENT,
+  INTRO_READY_EVENT,
   introClock,
+  introEndAt,
   shouldPlayIntro,
 } from "@/lib/intro"
 
-const HOLD_MS = 300
 const FADE_MS = 300
 
 /**
@@ -67,10 +67,21 @@ export default function IntroLoader() {
       return
     }
 
-    introClock.t0 = performance.now()
+    // Page load is performance.now() = 0. The end follows the canvas ready
+    // time when it arrives, otherwise a fixed fallback from load.
+    let endTimer = 0
+    const schedule = () => {
+      window.clearTimeout(endTimer)
+      const delay = introEndAt(0, introClock.ready) - performance.now()
+      endTimer = window.setTimeout(() => end(false), Math.max(0, delay))
+      timers.push(endTimer)
+    }
+    const onReady = () => schedule()
+    window.addEventListener(INTRO_READY_EVENT, onReady)
     events.forEach((e) => window.addEventListener(e, onSkip, { passive: true }))
-    timers.push(window.setTimeout(() => end(false), INTRO_MORPH_MS + HOLD_MS))
+    schedule()
     return () => {
+      window.removeEventListener(INTRO_READY_EVENT, onReady)
       ended = true
       timers.forEach(window.clearTimeout)
       events.forEach((e) => window.removeEventListener(e, onSkip))

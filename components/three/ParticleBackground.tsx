@@ -24,8 +24,10 @@ class CanvasBoundary extends Component<
 export default function ParticleBackground() {
   const [supported, setSupported] = useState(false)
   const [ready, setReady] = useState(false)
+  const [intro, setIntro] = useState(false)
 
   useEffect(() => {
+    setIntro(document.documentElement.classList.contains("intro"))
     setSupported(hasWebGL())
   }, [])
 
@@ -35,7 +37,10 @@ export default function ParticleBackground() {
     <div
       aria-hidden="true"
       className="fixed inset-0 -z-10 pointer-events-none transition-opacity"
-      style={{ opacity: ready ? 1 : 0, transitionDuration: "600ms" }}
+      style={{
+        opacity: ready || intro ? 1 : 0,
+        transitionDuration: intro ? "0ms" : "600ms",
+      }}
     >
       <CanvasBoundary>
         <Canvas
