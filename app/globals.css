@@ -66,6 +66,9 @@
   .js .motion-hidden-letters > span {
     opacity: 0;
   }
+  .js .motion-hidden-ring circle {
+    opacity: 0;
+  }
 }
 
 /* Loading intro. The head script sets html.intro before first paint; header and
@@ -83,16 +86,26 @@ main {
 @keyframes intro-failsafe {
   to {
     opacity: 1;
+    pointer-events: auto;
   }
+}
+
+/* Hidden content must not be clickable, and the click that skips the intro is
+   swallowed by .intro-lock (see IntroLoader). */
+html.intro-lock header,
+html.intro-lock main {
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html.intro header,
   html.intro main {
     opacity: 0;
+    pointer-events: none;
     animation: intro-failsafe 0.3s ease 3s forwards;
   }
-  html.intro .intro-overlay {
+  html.intro .intro-overlay,
+  .intro-overlay[data-phase="fading"] {
     display: flex;
   }
 }

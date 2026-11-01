@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react"
 import { motion, useInView } from "framer-motion"
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
+import { useIntroDone } from "@/lib/hooks/useIntroDone"
 
 type RevealProps = {
   as?: "div" | "li" | "section"
@@ -26,9 +27,11 @@ export function Reveal({
   const reduced = usePrefersReducedMotion()
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.2 })
-  const [armed, setArmed] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const introDone = useIntroDone()
+  const armed = mounted && introDone
 
-  useEffect(() => setArmed(true), [])
+  useEffect(() => setMounted(true), [])
 
   const MotionTag = motion[as]
 

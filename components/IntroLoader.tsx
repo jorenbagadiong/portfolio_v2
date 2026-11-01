@@ -1,10 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { flushSync } from "react-dom"
 
 import { AnimatedName } from "@/components/motion/AnimatedName"
 import {
   hasWebGL,
+  INTRO_END_EVENT,
   INTRO_FLAG,
   INTRO_SKIP_EVENT,
   INTRO_READY_EVENT,
@@ -14,6 +16,29 @@ import {
 } from "@/lib/intro"
 
 const FADE_MS = 300
+
+/**
+ * The pointerdown/touchstart that skips the intro is followed by a click. Keep
+ * the page non-interactive until that click has passed so it cannot land on
+ * content that just became visible. Falls back to a timer (keyboard skips and
+ * cancelled gestures never produce a click).
+ */
+function lockPointer(root: HTMLElement) {
+  root.classList.add("intro-lock")
+  let t = 0
+  const release = () => {
+    window.clearTimeout(t)
+    window.removeEventListener("click", onClick, true)
+    window.removeEventListener("pointercancel", release, true)
+    root.classList.remove("intro-lock")
+  }
+  const onClick = () => {
+    window.setTimeout(release, 0)
+  }
+  window.addEventListener("click", onClick, true)
+  window.addEventListener("pointercancel", release, true)
+  t = window.setTimeout(release, 1500)
+}
 
 /**
  * Centered "Joren." over the assembling particles. The overlay is always
@@ -40,14 +65,18 @@ export default function IntroLoader() {
       ended = true
       timers.forEach(window.clearTimeout)
       events.forEach((e) => window.removeEventListener(e, onSkip))
+      // Commit the fading phase before dropping html.intro so the overlay
+      // never has a frame where neither selector displays it.
+      if (!skipped) flushSync(() => setPhase("fading"))
       root.classList.remove("intro")
+      if (skipped) lockPointer(root)
       try {
         sessionStorage.setItem(INTRO_FLAG, "1")
       } catch {}
       if (skipped) window.dispatchEvent(new Event(INTRO_SKIP_EVENT))
-      setPhase(skipped ? "done" : "fading")
-      if (!skipped)
-        timers.push(window.setTimeout(() => setPhase("done"), FADE_MS))
+      window.dispatchEvent(new Event(INTRO_END_EVENT))
+      if (skipped) setPhase("done")
+      else timers.push(window.setTimeout(() => setPhase("done"), FADE_MS))
     }
     const onSkip = () => end(true)
 
@@ -93,6 +122,7 @@ export default function IntroLoader() {
   return (
     <div
       aria-hidden="true"
+      data-phase={phase}
       className="intro-overlay fixed inset-0 z-50 pointer-events-none items-center justify-center"
       style={{
         opacity: phase === "fading" ? 0 : 1,

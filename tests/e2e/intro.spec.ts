@@ -77,3 +77,83 @@ test("particles assemble after the canvas appears", async ({ page }) => {
   // slack; 1200ms still proves the intro is not skipped or instant.
   expect(Date.now() - attached).toBeGreaterThan(1200)
 })
+
+test("the click that skips the intro does not activate content beneath", async ({
+  page,
+}) => {
+  let downloaded = false
+  page.on("download", () => (downloaded = true))
+  await page.goto("/")
+  await expect(page.locator("html")).toHaveClass(/\bintro\b/)
+  await page.waitForTimeout(200)
+  const box = await page
+    .getByRole("link", { name: /download cv/i })
+    .boundingBox()
+  expect(box).not.toBeNull()
+  await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2)
+  await expect(page.locator("html")).not.toHaveClass(/\bintro\b/, {
+    timeout: 600,
+  })
+  await page.waitForTimeout(500)
+  expect(downloaded).toBe(false)
+  expect(new URL(page.url()).pathname).toBe("/")
+})
+
+test("overlay fades out instead of vanishing", async ({ page }) => {
+  await page.goto("/")
+  // Sample the overlay on the frame right after html.intro is removed.
+  await page.evaluate(() => {
+    const w = window as unknown as { __fade: unknown }
+    const root = document.documentElement
+    new MutationObserver((_, obs) => {
+      if (root.classList.contains("intro")) return
+      obs.disconnect()
+      setTimeout(() => {
+        const el = document.querySelector(".intro-overlay")
+        w.__fade = el
+          ? {
+              display: getComputedStyle(el).display,
+              opacity: Number(getComputedStyle(el).opacity),
+            }
+          : null
+      }, 100)
+    }).observe(root, { attributes: true, attributeFilter: ["class"] })
+  })
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() => (window as never as { __fade: unknown }).__fade),
+      {
+        timeout: 4000,
+      }
+    )
+    .not.toBeUndefined()
+  const fade = (await page.evaluate(
+    () => (window as never as { __fade: unknown }).__fade
+  )) as { display: string; opacity: number } | null
+  expect(fade).not.toBeNull()
+  expect(fade!.display).not.toBe("none")
+  expect(fade!.opacity).toBeGreaterThan(0)
+  expect(fade!.opacity).toBeLessThan(1)
+  await expect(page.locator(".intro-overlay")).toHaveCount(0, { timeout: 600 })
+})
+
+test("hero name does not animate while the intro is hidden", async ({
+  page,
+}) => {
+  await page.goto("/")
+  await expect(page.locator("html")).toHaveClass(/\bintro\b/)
+  await expect(page.locator("html")).not.toHaveClass(/\bintro\b/, {
+    timeout: 3000,
+  })
+  // Right after the intro ends the hero letters must just be starting.
+  const minOpacity = await page.evaluate(() => {
+    const letters = document.querySelectorAll(
+      "h1 .motion-hidden-letters > span"
+    )
+    return Math.min(
+      ...Array.from(letters).map((l) => Number(getComputedStyle(l).opacity))
+    )
+  })
+  expect(minOpacity).toBeLessThan(1)
+})

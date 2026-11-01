@@ -21,6 +21,7 @@ const Home = () => {
               Hello, I&apos;m <br />
               <AnimatedName
                 text="Joren Bagadiong"
+                waitForIntro
                 className="text-accent-text"
               />
             </h1>

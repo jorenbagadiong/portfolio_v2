@@ -3,18 +3,27 @@
 import { useEffect, useRef } from "react"
 import { animate, stagger } from "animejs"
 import { usePrefersReducedMotion } from "@/lib/hooks/usePrefersReducedMotion"
+import { useIntroDone } from "@/lib/hooks/useIntroDone"
 
 type AnimatedNameProps = {
   text: string
   className?: string
+  /** Hold the animation until the loading intro has ended (hero use). */
+  waitForIntro?: boolean
 }
 
-export function AnimatedName({ text, className }: AnimatedNameProps) {
+export function AnimatedName({
+  text,
+  className,
+  waitForIntro = false,
+}: AnimatedNameProps) {
   const reduced = usePrefersReducedMotion()
+  const introDone = useIntroDone()
+  const ready = !waitForIntro || introDone
   const ref = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
-    if (reduced || !ref.current) return
+    if (reduced || !ready || !ref.current) return
     const letters = ref.current.querySelectorAll("span")
     const anim = animate(letters, {
       opacity: [0, 1],
@@ -26,7 +35,7 @@ export function AnimatedName({ text, className }: AnimatedNameProps) {
     return () => {
       anim.revert()
     }
-  }, [reduced, text])
+  }, [reduced, ready, text])
 
   return (
     <span className={className}>

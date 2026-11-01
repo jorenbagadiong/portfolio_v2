@@ -22,6 +22,8 @@ export function hasWebGL(): boolean {
 export const introClock: { ready: number | null } = { ready: null }
 export const INTRO_READY_EVENT = "intro:ready"
 export const INTRO_SKIP_EVENT = "intro:skip"
+/** Fired once when the intro ends (played or skipped); see useIntroDone. */
+export const INTRO_END_EVENT = "intro:end"
 export const INTRO_MORPH_MS = 1400
 export const INTRO_HOLD_MS = 300
 export const INTRO_CAP_MS = 2600
