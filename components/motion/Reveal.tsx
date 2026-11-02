@@ -16,7 +16,8 @@ type RevealProps = {
  * The element type is stable (always motion[as]) so a reduced-motion flip
  * never remounts children. Server markup carries no inline opacity; the hidden
  * state comes from the CSS-gated `motion-hidden` class (JS present + motion
- * allowed). After mount we take over with animate values, revealing once in view.
+ * allowed). After mount we take over with animate values, revealing once in
+ * view and the intro is over.
  */
 export function Reveal({
   as = "div",
@@ -29,16 +30,18 @@ export function Reveal({
   const inView = useInView(ref, { once: true, amount: 0.2 })
   const [mounted, setMounted] = useState(false)
   const introDone = useIntroDone()
-  const armed = mounted && introDone
 
   useEffect(() => setMounted(true), [])
 
   const MotionTag = motion[as]
 
+  // After mount, hold the hidden state explicitly (not just via the CSS class)
+  // until the intro is over. Otherwise Motion assumes opacity is already 1 and
+  // skips the reveal for elements that came into view during the intro.
   let animate
-  if (!armed) animate = undefined
+  if (!mounted) animate = undefined
   else if (reduced) animate = { opacity: 1, y: 0, transition: { duration: 0 } }
-  else if (inView)
+  else if (introDone && inView)
     animate = {
       opacity: 1,
       y: 0,
