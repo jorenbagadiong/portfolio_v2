@@ -9,6 +9,21 @@ export type TimelineItem = {
   title: string
   subtitle: string
   details?: string[]
+  /** Show details openly instead of behind a toggle. */
+  expanded?: boolean
+}
+
+function Details({ details }: { details: string[] }) {
+  return (
+    <ul className="flex flex-col gap-2 mt-1">
+      {details.map((d, i) => (
+        <li key={i} className="flex items-start gap-3">
+          <span className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
+          <p className="text-muted">{d}</p>
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 export type TimelineGroup = { title: string; items: TimelineItem[] }
@@ -29,7 +44,8 @@ function Entry({ item }: { item: TimelineItem }) {
           <span className="text-accent-text text-sm">{item.date}</span>
           <h3 className="text-xl font-bold text-text">{item.title}</h3>
           <p className="text-muted">{item.subtitle}</p>
-          {hasDetails && (
+          {hasDetails && item.expanded && <Details details={item.details!} />}
+          {hasDetails && !item.expanded && (
             <>
               <button
                 type="button"
@@ -40,17 +56,9 @@ function Entry({ item }: { item: TimelineItem }) {
               >
                 {open ? "Hide responsibilities" : "Show responsibilities"}
               </button>
-              <ul
-                id={panelId}
-                className={open ? "flex flex-col gap-2 mt-1" : "hidden"}
-              >
-                {item.details!.map((d, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <span className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
-                    <p className="text-muted">{d}</p>
-                  </li>
-                ))}
-              </ul>
+              <div id={panelId} className={open ? undefined : "hidden"}>
+                <Details details={item.details!} />
+              </div>
             </>
           )}
         </div>

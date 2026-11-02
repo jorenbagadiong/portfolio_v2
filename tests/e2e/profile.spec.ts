@@ -8,6 +8,35 @@ test("timeline shows all experience entries", async ({ page }) => {
   await expect(page.getByText("MadTech Geek")).toBeVisible()
 })
 
+test("intro, heading, and core strengths", async ({ page }) => {
+  await page.goto("/about")
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("About Me")
+  await expect(
+    page.getByRole("heading", { name: "Core Strengths", level: 2 })
+  ).toBeVisible()
+  for (const s of [
+    "Reusable Components",
+    "Business Application Development",
+    "Collaboration & Problem Solving",
+  ])
+    await expect(
+      page.getByRole("heading", { name: s, exact: true })
+    ).toHaveCount(1)
+})
+
+test("recent roles show responsibilities without a toggle", async ({
+  page,
+}) => {
+  await page.goto("/about")
+  await expect(
+    page.getByText("Maintain the company's web applications")
+  ).toBeVisible()
+  await expect(
+    page.getByText("Debugged and improved existing applications.")
+  ).toBeAttached()
+  await expect(page.locator("main button[aria-controls]")).toHaveCount(2)
+})
+
 test("responsibilities toggle", async ({ page }) => {
   await page.goto("/about")
   await expect(
@@ -18,7 +47,7 @@ test("responsibilities toggle", async ({ page }) => {
   await expect(toggle).toHaveAttribute("aria-expanded", "false")
   await toggle.click()
   await expect(toggle).toHaveAttribute("aria-expanded", "true")
-  const text = page.getByText("Built a custom React icon library")
+  const text = page.getByText("Started my frontend career")
   await expect(text).toBeVisible()
   await toggle.focus()
   await page.keyboard.press("Enter")

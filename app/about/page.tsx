@@ -1,9 +1,16 @@
 import type { Metadata } from "next"
 
-import { experience, education, certifications, skills } from "@/lib/site-data"
+import {
+  about,
+  experience,
+  education,
+  certifications,
+  skills,
+} from "@/lib/site-data"
 import { pageMetadata } from "@/lib/metadata"
 import { Timeline, type TimelineGroup } from "@/components/profile/Timeline"
 import { SkillsPanel } from "@/components/profile/SkillsPanel"
+import { StrengthsPanel } from "@/components/profile/StrengthsPanel"
 
 export const metadata: Metadata = pageMetadata({
   title: "About",
@@ -15,11 +22,13 @@ export const metadata: Metadata = pageMetadata({
 const groups: TimelineGroup[] = [
   {
     title: experience.title,
-    items: experience.items.map((e) => ({
+    items: experience.items.map((e, i) => ({
       date: e.duration,
       title: e.position,
       subtitle: e.company,
       details: e.responsibilities,
+      // Recent roles are open for quick scanning; older ones stay compact.
+      expanded: i < 2,
     })),
   },
   {
@@ -43,10 +52,22 @@ const groups: TimelineGroup[] = [
 export default function About() {
   return (
     <div className="container mx-auto py-12">
-      <h1 className="sr-only">About</h1>
+      <header className="max-w-[640px] mb-14 flex flex-col gap-4">
+        <h1 className="text-4xl xl:text-5xl font-bold">
+          About <span className="text-accent-text">Me</span>
+        </h1>
+        {about.intro.map((p) => (
+          <p key={p} className="text-muted leading-relaxed">
+            {p}
+          </p>
+        ))}
+      </header>
       <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-14">
         <Timeline groups={groups} />
-        <SkillsPanel skills={skills} />
+        <div className="flex flex-col gap-14">
+          <StrengthsPanel strengths={about.strengths} />
+          <SkillsPanel skills={skills} />
+        </div>
       </div>
     </div>
   )
