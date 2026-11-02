@@ -62,7 +62,7 @@ export default function About() {
           </p>
         ))}
       </header>
-      <div className="grid grid-cols-1 xl:grid-cols-[3fr_2fr] gap-14">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-14">
         <Timeline groups={groups} />
         <div className="flex flex-col gap-14">
           <StrengthsPanel strengths={about.strengths} />

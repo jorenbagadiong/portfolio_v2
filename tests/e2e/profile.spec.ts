@@ -35,6 +35,12 @@ test("recent roles show responsibilities without a toggle", async ({
     page.getByText("Debugged and improved existing applications.")
   ).toBeAttached()
   await expect(page.locator("main button[aria-controls]")).toHaveCount(2)
+  // each toggle names its role, so screen-reader button lists can tell them apart
+  await expect(
+    page.getByRole("button", {
+      name: "Show responsibilities for Frontend Web Developer at OLE Elite Software Philippines Inc",
+    })
+  ).toHaveCount(1)
 })
 
 test("responsibilities toggle", async ({ page }) => {
