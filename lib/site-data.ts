@@ -6,6 +6,9 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaMapMarkerAlt,
+  FaCubes,
+  FaBriefcase,
+  FaUsers,
 } from "react-icons/fa"
 
 // Text in [square brackets] is a placeholder still to be filled in.
@@ -196,8 +199,9 @@ const allProjects: Project[] = [
     description:
       "Frontend work at TDH International Inc (February 2022 – present). [Two or three sentences on the product: what it is, who uses it, and the scale, e.g. [number] merchants or [number] transactions a month, if you're allowed to share.]",
     stack: [
-      { name: "[Framework, e.g. React / Next.js]" },
-      { name: "[Styling, e.g. Tailwind CSS / Material UI]" },
+      { name: "React" },
+      { name: "Tailwind CSS" },
+      { name: "Material UI" },
       { name: "Jest" },
       { name: "Cypress" },
     ],
@@ -209,10 +213,11 @@ const allProjects: Project[] = [
     outcome:
       "[Measurable results: e.g. page load cut by [X%], conversion or completion rate up [X%], [number] screens shipped, test coverage at [X%]. Use approximate or relative numbers if exact ones are confidential.]",
     highlights: [
-      "Built a custom React icon library that turns SVG files into reusable icon components, shared across all of our applications.",
+      "Maintain the company's web applications and back-office systems, troubleshooting and fixing issues to keep them reliable.",
+      "Work closely with the UI/UX team, business analysts, and backend developers to turn requirements into new features and enhancements.",
       "Added dark mode to our applications. [How: e.g. theme tokens, CSS variables.]",
-      "Built a landing page from Figma designs. [What it was for, without naming confidential clients.]",
-      "Shipped enhancements from the UI/UX and Business Analyst teams, and fixed bugs daily.",
+      "Built an icon library that converts SVG files into reusable React components.",
+      "Built a Next.js landing page from Figma designs. [What it was for, without naming confidential clients.]",
       "[Optional: a screenshot you're allowed to share, with sensitive data blurred, saved to /public/assets/profile/projects/ and set as image + imageAlt above.]",
     ],
   },
@@ -241,6 +246,44 @@ export type ExperienceItem = {
   responsibilities: string[]
 }
 
+export type Strength = { icon: IconType; title: string; description: string }
+
+// Worded to complement, not repeat, the homepage intro.
+export const about: {
+  title: string
+  intro: string[]
+  strengths: { title: string; items: Strength[] }
+} = {
+  title: "About Me",
+  intro: [
+    "I build and maintain web applications that solve real business needs, from internal back-office systems to public-facing platforms.",
+    "I work closely with business analysts, designers, and backend developers to turn requirements into interfaces that are reliable and easy to maintain.",
+  ],
+  strengths: {
+    title: "Core Strengths",
+    items: [
+      {
+        icon: FaCubes,
+        title: "Reusable Components",
+        description:
+          "Building maintainable and consistent frontend interfaces.",
+      },
+      {
+        icon: FaBriefcase,
+        title: "Business Application Development",
+        description:
+          "Translating requirements into functional web application features.",
+      },
+      {
+        icon: FaUsers,
+        title: "Collaboration & Problem Solving",
+        description:
+          "Working with backend developers and stakeholders to deliver reliable solutions.",
+      },
+    ],
+  },
+}
+
 export type EducationItem = {
   college: string
   degree: string
@@ -261,12 +304,10 @@ export const experience = {
       position: "Frontend Web Developer",
       duration: "February 2022 - Present",
       responsibilities: [
-        "Built a custom React icon library that turns SVG files into reusable icon components, shared across all of our applications.",
-        "Added dark mode to our applications.",
-        "Built a landing page from Figma designs, with clean, reusable components.",
-        "Shipped enhancements requested by the UI/UX and Business Analyst teams.",
-        "Fixed bugs daily across the payment platform and back-office systems to keep them reliable.",
-        "Tested features with Jest unit tests and Cypress end-to-end tests, and kept code quality high through Git workflows and peer reviews.",
+        "Maintain the company's web applications and back-office systems built with React, Tailwind CSS, and Material UI, troubleshooting and fixing issues to keep them reliable.",
+        "Work closely with the UI/UX team, business analysts, and backend developers to turn requirements into new features and enhancements.",
+        "Shipped enhancements such as dark mode across our applications, an icon library that converts SVG files into reusable React components, and a Next.js landing page built from Figma designs.",
+        "Test features with Jest unit tests and Cypress end-to-end tests, and keep code quality high through Git workflows and peer reviews.",
       ],
     },
     {
