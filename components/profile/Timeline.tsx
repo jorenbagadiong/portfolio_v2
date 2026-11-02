@@ -16,8 +16,8 @@ export type TimelineItem = {
 function Details({ details }: { details: string[] }) {
   return (
     <ul className="flex flex-col gap-2 mt-1">
-      {details.map((d, i) => (
-        <li key={i} className="flex items-start gap-3">
+      {details.map((d) => (
+        <li key={d} className="flex items-start gap-3">
           <span className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0" />
           <p className="text-muted">{d}</p>
         </li>
@@ -55,6 +55,10 @@ function Entry({ item }: { item: TimelineItem }) {
                 className="self-start text-sm text-accent-text underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-text rounded"
               >
                 {open ? "Hide responsibilities" : "Show responsibilities"}
+                <span className="sr-only">
+                  {" "}
+                  for {item.title} at {item.subtitle}
+                </span>
               </button>
               <div id={panelId} className={open ? undefined : "hidden"}>
                 <Details details={item.details!} />
@@ -76,8 +80,8 @@ export function Timeline({ groups }: { groups: TimelineGroup[] }) {
           <div className="relative ml-1.5">
             <ScrollLine className="absolute inset-y-0 left-0 text-accent" />
             <ul className="flex flex-col gap-6">
-              {group.items.map((item, i) => (
-                <Entry key={i} item={item} />
+              {group.items.map((item) => (
+                <Entry key={`${item.subtitle}-${item.date}`} item={item} />
               ))}
             </ul>
           </div>
