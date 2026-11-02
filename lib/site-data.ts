@@ -190,37 +190,6 @@ const allProjects: Project[] = [
     outcome:
       "A deployed portfolio with a working contact form, later replaced by this site.",
   },
-  {
-    slug: "tdh-payments",
-    num: "Case study",
-    title: "[Payment platform & back-office systems]",
-    pitch:
-      "[One line: what the platform does and who uses it, without naming confidential clients.]",
-    description:
-      "Frontend work at TDH International Inc (February 2022 – present). [Two or three sentences on the product: what it is, who uses it, and the scale, e.g. [number] merchants or [number] transactions a month, if you're allowed to share.]",
-    stack: [
-      { name: "React" },
-      { name: "Tailwind CSS" },
-      { name: "Material UI" },
-      { name: "Jest" },
-      { name: "Cypress" },
-    ],
-    tier: "main",
-    draft: true,
-    problem:
-      "[The problem: e.g. a slow or hard-to-maintain checkout flow, manual back-office tasks, or a redesign. Keep it general enough for your NDA: no client names, internal URLs, or figures you can't share.]",
-    role: "Frontend Web Developer. [Team size and who you worked with, e.g. [number] frontend devs, designers, and back-end teams. Which parts you owned.]",
-    outcome:
-      "[Measurable results: e.g. page load cut by [X%], conversion or completion rate up [X%], [number] screens shipped, test coverage at [X%]. Use approximate or relative numbers if exact ones are confidential.]",
-    highlights: [
-      "Maintain the company's web applications and back-office systems, troubleshooting and fixing issues to keep them reliable.",
-      "Work closely with the UI/UX team, business analysts, and backend developers to turn requirements into new features and enhancements.",
-      "Added dark mode to our applications. [How: e.g. theme tokens, CSS variables.]",
-      "Built an icon library that converts SVG files into reusable React components.",
-      "Built a Next.js landing page from Figma designs. [What it was for, without naming confidential clients.]",
-      "[Optional: a screenshot you're allowed to share, with sensitive data blurred, saved to /public/assets/profile/projects/ and set as image + imageAlt above.]",
-    ],
-  },
 ]
 
 const showDrafts = process.env.NODE_ENV !== "production"

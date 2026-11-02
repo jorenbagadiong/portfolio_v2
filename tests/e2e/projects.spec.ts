@@ -24,11 +24,6 @@ test("main projects, then earlier work", async ({ page }) => {
   await expect(page.getByText(/\[|tdh/i)).toHaveCount(0)
 })
 
-test("draft case study is not published", async ({ page }) => {
-  const res = await page.goto("/projects/tdh-payments")
-  expect(res?.status()).toBe(404)
-})
-
 test("card opens overlay; Esc closes and returns focus", async ({ page }) => {
   await page.goto("/projects")
   const link = card(page, "CryptoWeb App")
