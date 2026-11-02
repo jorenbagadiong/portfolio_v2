@@ -15,15 +15,15 @@ Personal portfolio site for Joren Bagadiong, frontend web developer. Built with 
 
 ## Pages
 
-| Route              | File                                                         | Content                                                    |
-| ------------------ | ------------------------------------------------------------ | ---------------------------------------------------------- |
-| `/`                | [app/page.tsx](app/page.tsx)                                 | Intro, photo, CV download, social links, experience badge  |
-| `/profile`         | [app/profile/page.tsx](app/profile/page.tsx)                 | Experience and education timelines, skills, certifications |
-| `/projects`        | [app/projects/page.tsx](app/projects/page.tsx)               | Project grid with tilt cards and a detail overlay          |
-| `/projects/[slug]` | [app/projects/[slug]/page.tsx](app/projects/[slug]/page.tsx) | Shareable project detail page                              |
-| `/contact`         | [app/contact/page.tsx](app/contact/page.tsx)                 | Contact form (EmailJS)                                     |
+| Route              | File                                                         | Content                                                                                   |
+| ------------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `/`                | [app/page.tsx](app/page.tsx)                                 | Intro, photo, CV download, social links, experience badge                                 |
+| `/about`           | [app/about/page.tsx](app/about/page.tsx)                     | About Me intro, experience, education and certification timelines, core strengths, skills |
+| `/projects`        | [app/projects/page.tsx](app/projects/page.tsx)               | Project grid with tilt cards and a detail overlay                                         |
+| `/projects/[slug]` | [app/projects/[slug]/page.tsx](app/projects/[slug]/page.tsx) | Shareable project detail page                                                             |
+| `/contact`         | [app/contact/page.tsx](app/contact/page.tsx)                 | Contact form (EmailJS)                                                                    |
 
-`/work` permanently redirects to `/projects`.
+`/work` permanently redirects to `/projects`, and `/profile` to `/about`.
 
 `/motionlab` and `/pokelab` are not part of this codebase. [next.config.ts](next.config.ts) rewrites them to separate Vercel deployments, so they're served under this domain.
 
@@ -96,6 +96,7 @@ The background is one page-independent constellation, rendered by a single persi
 Content lives in one data file. You don't need a CMS:
 
 - **Experience, education, skills, certifications, projects, socials:** [lib/site-data.ts](lib/site-data.ts)
+- **About Me intro and core strengths:** `about` in [lib/site-data.ts](lib/site-data.ts). The two most recent roles show their responsibilities openly; older ones sit behind a toggle (`expanded` in [app/about/page.tsx](app/about/page.tsx))
 - **Nav links:** `navLinks` in [lib/site-data.ts](lib/site-data.ts)
 - **Resume:** drop the PDF in `public/assets/files/` and update the `href` in [components/DownloadCVButton.tsx](components/DownloadCVButton.tsx)
 - **Theme colors:** CSS variables in [app/globals.css](app/globals.css). Use `text-accent-text` for small accent text (AA contrast in both themes)
