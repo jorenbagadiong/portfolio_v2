@@ -26,6 +26,14 @@ const nextConfig: NextConfig = {
         source: "/pokelab/:path*",
         destination: "https://pokelab-steel.vercel.app/pokelab/:path*",
       },
+      {
+        source: "/spendwise",
+        destination: "https://spendwise-ten-murex.vercel.app/spendwise",
+      },
+      {
+        source: "/spendwise/:path*",
+        destination: "https://spendwise-ten-murex.vercel.app/spendwise/:path*",
+      },
     ]
   },
 }
