@@ -52,8 +52,39 @@ export type Project = {
 
 const allProjects: Project[] = [
   {
-    slug: "motionlab",
+    slug: "spendwise",
     num: "01",
+    title: "SpendWise",
+    pitch:
+      "Personal finance tracker for income, expenses, and multiple accounts, with monthly reports, CSV export, and data that stays in your browser.",
+    description:
+      "A spreadsheet-style personal finance tracker for salary, daily expenses, and multiple accounts. Shows what's left each month, with a dashboard, monthly reports and trends, custom categories, CSV export, and JSON backups. Everything is saved in the browser, with no sign-up, and it has light and dark themes.",
+    stack: [
+      { name: "Next.js" },
+      { name: "TypeScript" },
+      { name: "Tailwind CSS" },
+      { name: "shadcn/ui" },
+      { name: "Zustand" },
+      { name: "React Hook Form" },
+      { name: "Zod" },
+      { name: "Vitest" },
+      { name: "Playwright" },
+    ],
+    image: "/assets/profile/projects/spendwise.png",
+    imageAlt:
+      "SpendWise landing page in dark mode: the headline “Know Where Your Money Goes.” beside a monthly summary card showing ₱45,000 income and ₱20,000 expenses.",
+    live: "https://www.jorenbagadiong.dev/spendwise",
+    github: "https://github.com/jorenbagadiong/spendwise",
+    tier: "main",
+    problem:
+      "Most budgeting apps want an account before you can log a single expense, and many keep your financial data on their servers. Spreadsheets avoid that but get messy once you have several accounts and months of transactions. I wanted a tracker that feels as direct as a spreadsheet, needs no sign-up, keeps data in the browser, and still gets the money right: correct totals across accounts and months, and peso amounts that never drift from floating-point rounding.",
+    role: "Personal project, built on my own.",
+    outcome:
+      "Shipped a tracker with a dashboard, transactions, accounts, categories, monthly reports, CSV export, and JSON backups. All data stays in the browser. The finance logic is covered by Vitest unit tests, and Playwright tests run axe accessibility checks.",
+  },
+  {
+    slug: "motionlab",
+    num: "02",
     title: "MotionLab",
     pitch:
       "Animated React component library: 24 accessible components with live playgrounds, copy-ready Motion/Anime.js code, keyboard and reduced-motion support.",
@@ -81,7 +112,7 @@ const allProjects: Project[] = [
   },
   {
     slug: "pokelab",
-    num: "02",
+    num: "03",
     title: "PokeLab",
     pitch:
       "Interactive Pokédex for all 1,025 Pokémon: search, stat comparison, evolution chains, favorites, and a 3D WebGL showcase.",
@@ -108,7 +139,7 @@ const allProjects: Project[] = [
   },
   {
     slug: "cryptoweb-app",
-    num: "03",
+    num: "04",
     title: "CryptoWeb App",
     pitch:
       "Landing page for a crypto investment platform, built to practice layout and UI animation.",
@@ -129,7 +160,7 @@ const allProjects: Project[] = [
   },
   {
     slug: "pet-grooming",
-    num: "04",
+    num: "05",
     title: "Pet Grooming",
     pitch: "Landing page for a pet grooming business with a hero carousel.",
     description:
@@ -148,7 +179,7 @@ const allProjects: Project[] = [
   },
   {
     slug: "cryptolist",
-    num: "05",
+    num: "06",
     title: "CryptoList",
     pitch: "Live cryptocurrency price table built while learning React.",
     description:
@@ -167,7 +198,7 @@ const allProjects: Project[] = [
   },
   {
     slug: "portfolio-v1",
-    num: "06",
+    num: "07",
     title: "Portfolio v1",
     pitch:
       "My first portfolio website, with a contact form powered by EmailJS.",
