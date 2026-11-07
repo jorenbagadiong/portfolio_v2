@@ -16,6 +16,14 @@ export default function ProjectsPage() {
   return (
     <section className="container mx-auto py-12">
       <h1 className="sr-only">Projects</h1>
+      <Reveal>
+        <p className="mb-10 max-w-2xl text-muted">
+          Personal projects I built on my own: SpendWise, a personal finance
+          tracker; MotionLab, a library of animated React components; and
+          PokeLab, an interactive Pokédex. Earlier practice projects are further
+          down.
+        </p>
+      </Reveal>
       <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {mainProjects.map((project, i) => (
           <Reveal as="li" key={project.slug} delay={i * 0.08}>

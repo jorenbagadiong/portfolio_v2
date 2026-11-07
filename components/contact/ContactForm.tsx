@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { getEmailJsConfig } from "@/lib/emailjs-config"
 import { particles } from "@/lib/particle-store"
 
-const EMAIL = "joren.bagadiong14@gmail.com"
+const EMAIL = "joren.bagadiong@gmail.com"
 
 const ContactFormSchema = z.object({
   fullname: z.string().nonempty("Full Name is required"),
