@@ -398,7 +398,7 @@ export const skills: { title: string; groups: SkillGroup[] } = {
       category: "Animation",
       items: ["Framer Motion", "Anime.js", "Three.js"],
     },
-    { category: "Tools", items: ["Git", "Figma", "Axios", "EmailJS"] },
+    { category: "Tools", items: ["Vite", "Git", "Figma", "Axios", "EmailJS"] },
   ],
 }
 
@@ -445,12 +445,12 @@ export const contactInfo: {
   {
     icon: FaEnvelope,
     title: "Email",
-    description: "joren.bagadiong14@gmail.com",
-    href: "mailto:joren.bagadiong14@gmail.com",
+    description: "joren.bagadiong@gmail.com",
+    href: "mailto:joren.bagadiong@gmail.com",
   },
   {
     icon: FaMapMarkerAlt,
     title: "Address",
-    description: "Cavite, Philippines",
+    description: "Tanza, Cavite, Philippines",
   },
 ]
